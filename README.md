@@ -3,13 +3,11 @@
 
 ## 简单配置
 - 要求：PHP>=7.0
-### 登录信息
-|key|value|
-|---|---|
-|默认账号|admin|
-|默认密码|password|
+- 1. 上传文件至服务器
+- 2. 访问`http://{your_website}`进行初次配置
+- 3. Run!
 ## 备注
-本模板内大部分内容均可在`{your_website}/admin`中修改
+本模板内大部分内容均可在`http://{your_website}/admin`中修改
 
 # 感谢
 [parsedown](https://github.com/erusev/parsedown):一个开源的php解析markdown方法
