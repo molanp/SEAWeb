@@ -2,6 +2,50 @@
     font-family: MiSans;
 }
 
+body {
+	font-family:PingFang SC,HarmonyOS_Regular,Helvetica Neue,Microsoft YaHei,sans-serif !important;
+	font-weight:400;
+	overflow-x:auto;
+	color:#666666;
+	margin:0 auto !important;
+}
+
+#badge {
+  display:inline-block;
+  min-width:10px;
+  padding:6px 10px;
+  font-size:12px;
+  font-weight:bold;
+  color:#000000;
+  line-height:1;
+  vertical-align:middle;
+  white-space:nowrap;
+  text-align:center;
+  background-color:#E0E0E0;
+  border-radius:10px;
+  margin:5px;
+}
+
+.dark #badge {
+  display:inline-block;
+  min-width:10px;
+  padding:6px 10px;
+  font-size:12px;
+  font-weight:bold;
+  color:#000000;
+  line-height:1;
+  vertical-align:middle;
+  white-space:nowrap;
+  text-align:center;
+  background-color:#555555;
+  border-radius:10px;
+  margin:5px;
+}
+
+h1 {
+	text-align:center
+}
+
 html {
     margin:0 auto;
 }
