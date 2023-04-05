@@ -1,7 +1,7 @@
 # easyapi_wesbite
 一个简单的api模板网页(未完工)
 
-## [帮助文档](https://molanp.github.io/easyapi_website/)
+## <a href="https://molanp.github.io/easyapi_website/" target="_blank">帮助文档</a>
 
 ## 简单配置
 - 要求：PHP>=7.0
