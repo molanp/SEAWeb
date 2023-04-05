@@ -23,5 +23,6 @@ foreach($filename as $v){
     }
     $api_name = $api_profile = $api_address = $version = $author = $request_parameters = $return_parameters = $type = $status = 'None';
 }
+header('Content-type:text/json;charset=utf-8');
 die(json_encode($conname,JSON_UNESCAPED_UNICODE|JSON_PRETTY_PRINT));
 ?>
