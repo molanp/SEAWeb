@@ -1,11 +1,7 @@
-# 还没写完！
-
-# 还没写完！
-
-# 还没写完！
-
 # easyapi_wesbite
-一个简单的api模板网页
+一个简单的api模板网页(未完工)
+
+## [帮助文档](https://molanp.github.io/easyapi_website/)
 
 ## 简单配置
 - 要求：PHP>=7.0
