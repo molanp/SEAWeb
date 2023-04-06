@@ -57,7 +57,7 @@ $aside_list = curl_get('http://'.$_SERVER['HTTP_HOST'].'/api');
             foreach(array_keys($aside_list) as $type){
                 echo "<v>$type</v>";
                 foreach(array_keys($aside_list[$type]) as $plugin){
-                    echo "<a href='i.php/".$aside_list[$type][$plugin]["path"]."'><li>&nbsp;".$plugin."</li></a>";
+                    echo "<a href='/i/".$aside_list[$type][$plugin]["path"]."'><li>&nbsp;".$plugin."</li></a>";
                 }
             }
             ?>

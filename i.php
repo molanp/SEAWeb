@@ -74,9 +74,9 @@ if($status=='true') {
                 echo "<v>$type</v>";
                 foreach(array_keys($types[$type]) as $plugin){
                     if ($api_name == $plugin) {
-                        echo "<a href='http://".$_SERVER['HTTP_HOST']."/i.php/".$types[$type][$plugin]["path"]."'><li id='active'>&nbsp;".$Parsedown->setBreaksEnabled(true)->line($plugin)."</li></a>";
+                        echo "<a href='/i/".$types[$type][$plugin]["path"]."'><li id='active'>&nbsp;".$Parsedown->setBreaksEnabled(true)->line($plugin)."</li></a>";
                     } else {
-                        echo "<a href='http://".$_SERVER['HTTP_HOST']."/i.php/".$types[$type][$plugin]["path"]."'><li>&nbsp;".$Parsedown->setBreaksEnabled(true)->line($plugin)."</li></a>";
+                        echo "<a href='/i/".$types[$type][$plugin]["path"]."'><li>&nbsp;".$Parsedown->setBreaksEnabled(true)->line($plugin)."</li></a>";
                     }
                 }
             }
