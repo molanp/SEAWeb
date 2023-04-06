@@ -1,0 +1,31 @@
+php_value date.timezone Asia/Shanghai
+Options -Indexes
+ErrorDocument 404 /404.php
+ErrorDocument 403 /403.php
+RewriteEngine On  
+RewriteBase /
+# proc/self/environ? 没门！  
+RewriteCond %{QUERY_STRING} proc/self/environ [OR]  
+# 阻止脚本企图通过URL修改mosConfig值  
+RewriteCond %{QUERY_STRING} mosConfig_[a-zA-Z_]{1,21}(=|%3D) [OR]  
+# 阻止脚本通过URL传递的base64_encode垃圾信息  
+RewriteCond %{QUERY_STRING} base64_encode.*(.*) [OR]  
+# 阻止在URL含有<script>标记的脚本  
+RewriteCond %{QUERY_STRING} (<|%3C).*script.*(>|%3E) [NC,OR]  
+# 阻止企图通过URL设置PHP的GLOBALS变量的脚本  
+RewriteCond %{QUERY_STRING} GLOBALS(=|[|%[0-9A-Z]{0,2}) [OR]  
+# 阻止企图通过URL设置PHP的_REQUEST变量的脚本  
+RewriteCond %{QUERY_STRING} _REQUEST(=|[|%[0-9A-Z]{0,2})  
+# 把所有被阻止的请求转向到403禁止提示页面！  
+RewriteRule ^(.*)$ /403.php [F]
+# 防止跨站脚本攻击（XSS）
+RewriteCond %{QUERY_STRING} (\<|%3C).*script.*(\>|%3E) [NC,OR]
+RewriteCond %{QUERY_STRING} base64_encode.*\(.*\) [NC,OR]
+RewriteCond %{QUERY_STRING} (%24&x)\[.*\].*HTTP [NC,OR]
+RewriteCond %{QUERY_STRING} mosConfig_[a-zA-Z_]{1,21}(=|\%3D) [NC,OR]
+RewriteCond %{QUERY_STRING} GlobalSettings\[path\] [NC,OR]
+RewriteCond %{QUERY_STRING} ([\~\`\!\@\$\%\^\&\*\(\)\-\=\+\[\]\{\}\|\\\:\,\.\/\<\>\?\s]) [NC,OR]
+RewriteCond %{QUERY_STRING} cmd=cd [NC]
+RewriteRule ^(.*)$ - [F,L]
+# 伪静态优化
+RewriteRule ^i/(.*)$ i.php/$1 [L]
