@@ -13,6 +13,9 @@ body {
 #badge {
   display:inline-block;
   min-width:10px;
+  text-align: center;
+  text-decoration:none;
+  vertical-align:middle;
   padding:6px 10px;
   font-size:12px;
   font-weight:bold;
@@ -29,6 +32,9 @@ body {
 .dark #badge {
   display:inline-block;
   min-width:10px;
+  text-align: center;
+  text-decoration:none;
+  vertical-align:middle;
   padding:6px 10px;
   font-size:12px;
   font-weight:bold;
