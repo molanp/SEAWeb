@@ -1,5 +1,5 @@
 <?php
-include_once('../Config.class.php');
+include_once('../services/Config.class.php');
 $DATA = new Config('../db/db');
 $account = $DATA->get('account');
 // 处理用户登录信息
