@@ -23,7 +23,6 @@ $pics = ["https://pan.whgpc.com/view.php/27b7c41acda522aee52d08fc34eeafba.jpg",
     "https://images2.alphacoders.com/879/879339.jpg",
     "https://images4.alphacoders.com/101/101854.jpg",];
 
-$host = 'http://'.$_SERVER['HTTP_HOST'];
 $api_name = 'MC 美图';
 $api_profile='随机返回mc图片';
 $version='1.0';
@@ -32,7 +31,7 @@ $type='随机图片';
 $api_address="
 |请求方式|请求地址|说明|
 |---|---|---|
-|get|$host/api/mc_pic|-|";
+|get|[/api/mc_pic](/api/mc_pic)|-|";
 $request_par='
 |参数|说明|
 |---|---|

@@ -2,7 +2,6 @@
 php_value date.timezone Asia/Shanghai
 Options -Indexes
 ErrorDocument 404 /404.php
-ErrorDocument 403 /403.php
 RewriteEngine On  
 RewriteBase /
 # proc/self/environ? 没门！  
@@ -21,5 +20,5 @@ RewriteCond %{QUERY_STRING} ([\~\`\!\@\$\%\^\&\*\(\)\-\=\+\[\]\{\}\|\\\:\,\.\/\<
 RewriteCond %{QUERY_STRING} cmd=cd [NC]
 RewriteRule ^(.*)$ - [F,L]
 # 伪静态优化
-RewriteRule ^i/(.*)$ i.php/$1 [L]
+RewriteRule ^i/(.*)$ page/api.php/$1 [L]
 </IfModule>

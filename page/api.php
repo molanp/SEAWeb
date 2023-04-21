@@ -1,12 +1,17 @@
 <?php
 define('IN_SYS', TRUE);
-include_once('Config.class.php');
-include_once('mark.php');
-include_once('services/until.php');
-include_once('__version__.php');
+include_once('../services/Config.class.php');
+include_once('../services/mark.php');
+include_once('../services/until.php');
+include_once('../__version__.php');
 
 $Parsedown = new Parsedown();
 $types = curl_get('http://'.$_SERVER['HTTP_HOST'].'/api');
+if ($types["data"]["status"]!=200) {
+    die($types["data"]["data"]);
+} else {
+    $types = $types["data"]["data"];
+}
 $goto = $_SERVER["REQUEST_URI"];
 preg_match('/[^\/]+[^\/]+$/', $goto, $goto);
 $goto = $goto[0];
@@ -20,8 +25,8 @@ foreach(array_keys($types) as $type) {
     }
 }
 if (!isset($data)) {
-    die(json_encode($goto));
-    //die(header("location: http://".$_SERVER['HTTP_HOST']));
+    //die(json_encode($goto));
+    die(header("location: http://".$_SERVER['HTTP_HOST']));
 }
 $status = $data['status'];
 $api_profile = $Parsedown->setBreaksEnabled(true)->line($data['api_profile']);
@@ -36,8 +41,6 @@ if($status=='true') {
     $status = '<strong><img src="data:image/gif;base64,R0lGODlhEAAQAMQAAE1zRW62cj6XTipfILXZt0OHRs/S0zaBO9He7nGpg0CpYfX19V15WTtmNZucm2V8ZV65dbq6uunv9U+1a1SdXovBj27ChPv7+wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAAAAAAALAAAAAAQABAAAAWW4CVKztMMzeNIYntFTAFZNFUwkRsBUOXTNUDuImH0fkAIhAJAXBwFXwVooVQIBorj8jhSrSwE5XFpWKaBWmWxICQojcuA5pv02BXKZDIoWyASCxEBBgt5ewpxDxQBFSyBBHp7AmRQfwkGRAF7ewdbRRRVAQQRkhMCDCwvABQQExSwk0I6DAcCiAIHOC4jJScpK7zCwyIhADs="title="正常">正常</font></strong>';
 } elseif($status=='false') {
     $status = '<strong><img src="data:image/gif;base64,R0lGODlhEAAQAOYAAAAAAP////ngvfjXtfjPu/atnvawofezpfSgkvWklvWomvWqnPauoPydj4xNRvd/dfmRiO0YF+4bGu0bGukcHOkdHeUcHOMcHO4eHuMdHdwcHO4gH+kgIO8kI+oiIuokJOckJOEkJOonJ+8rKusqKussLN8qKustLewwMMwqKuAvL+w0NNwyMuw3N9ozM+w4OO06Ou0/P907O+5DQts8PMA1Ne5EROBCQt9CQu9KSuFISO9NTe9OTuBKSvBUVMFERONRUfFZWeRVVfFbW99UVPFdXd9WVudaWthUVPJiYvJjY+lgYPJlZfJmZuljY/NqavNra/NtbfNubvv29vv5+fv7+/X19f///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAAFcALAAAAAAQABAAAAfGgFeCgg6FhoOIV4VIQkA9ODWFiQ5HS05KRT45NC4mDoMORElPUVBKQTszLSUhn4pGTFYCUk1DBlYvJyCfDj+iT1UHSgxVBasfGYU6PkVKEFbQCzErJB4WhTc7PkFDA1NWNjAoIhzXDjI2OTwKVTlWBCMdHxXmLDAxCVUJMQ9UBBscKJhLoWIFAgQtVqBoQECCQA28RJAocaIECREYJkQQ6MoBBw8fQnrgUIGCyWugKFRYabIlBVegHFywQNPCBUmJCBnCOSgQADs="title="维护">维护</font></strong>';
-} else{
-    $status = "<strong><img src='data:image/gif;base64,R0lGODlhEAAQAKIAAAAAAP///6vANwkJCPvNWvaTA7hoDv///yH5BAEAAAcALAAAAAAQABAAAAM6eLrcRzBKKV65OONKdBmZIVRWBmLi0pnoyKzXWaQvO7sN3Drld5MOHY0HEwGJlyHPYly+cE4F4chIAAA7'title='未知'>未知:$status</font></strong>";
 }
 ?>
 
@@ -94,7 +97,7 @@ if($status=='true') {
     <div id="box">
         <h3><i class="fa fa-star-o fa-fw"></i>&nbsp;API 简介</h3>
         <p><?php echo $api_profile?></p>
-        <p><div id="badge">版本&nbsp;<?php echo $version?></div>&nbsp;&nbsp;<div id="badge">作者&nbsp;<?php echo $author?></div>&nbsp;&nbsp;<div id="badge">状态&nbsp;<?php echo $status?></div>
+        <p><div id="badge">版本&nbsp;<?php echo $version?></div>&nbsp;&nbsp;<div id="badge">作者&nbsp;<?php echo $author?></div>&nbsp;&nbsp;<span id="badge">状态&nbsp;<?php echo $status?></span>
     </div>
     <div id="box">
         <h3><i class="fa fa-paper-plane-o fa-fw"></i>&nbsp;API 地址</h3>

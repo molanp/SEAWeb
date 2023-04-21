@@ -1,7 +1,7 @@
 <?php
 define('IN_SYS', TRUE);
-include_once('../Config.class.php');
-include_once('../mark.php');
+include_once('../services/Config.class.php');
+include_once('../services/mark.php');
 include_once('../__version__.php');
 
 $phpversion = phpversion();

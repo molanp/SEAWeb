@@ -1,7 +1,7 @@
 <?php
 define('IN_SYS', TRUE);
-include_once('Config.class.php');
-include_once('mark.php');
+include_once('services/Config.class.php');
+include_once('services/mark.php');
 include_once('services/until.php');
 include_once('__version__.php');
 $DATA = new Config($_SERVER['DOCUMENT_ROOT'].'/db/db');
@@ -15,14 +15,19 @@ if(!file_exists('db')) {
         "copyright"=>"All copyright molanp",
         "index_description"=>"这是网站简介，这里支持*MarkDown*语法",
         "notice"=>[
-            "data"=>"> **这里也支持markdown语法**\n欢迎使用 Easy API模板，本模板由[molanp](https://github.com/molanp)开发与维护。目前正在不断完善~\n如果你觉得这个API有什么不完善的地方或者说你有什么更好的想♂法，可以在[issues](https://github.com/molanp/easyapi_wesbite/issues)上提出建议",
+            "data"=>"> **这里也支持markdown语法**\n欢迎使用SEAWeb，本模板由[molanp](https://github.com/molanp)开发与维护。目前正在不断完善~\n如果你觉得这个API有什么不完善的地方或者说你有什么更好的想♂法，可以在[issues](https://github.com/molanp/easyapi_wesbite/issues)上提出建议",
             "latesttime"=>date('Y-m-d')],
         "keywords"=>"API,api",
-        "links"=>"[GitHub](https://github.com/molanp/easyapi_wesbite)\n[Issues](https://github.com/molanp/easyapi_wesbite/issues)\n[开发指南](https://molanp.github.io/easyapi_website/)"])->save();
+        "links"=>"[GitHub](https://github.com/molanp/SEAWeb)\n[Issues](https://github.com/molanp/SEAWeb/issues)\n[开发指南](https://molanp.github.io/easyapi_website/)"])->save();
 }
 $Parsedown = new Parsedown();
 $web = $DATA->get('web');
 $aside_list = curl_get('http://'.$_SERVER['HTTP_HOST'].'/api');
+if ($aside_list["data"]["status"]!=200) {
+    die($aside_list["data"]["data"]);
+} else {
+    $aside_list = $aside_list["data"]["data"];
+}
 ?>
 
 <!DOCTYPE html>
@@ -81,13 +86,13 @@ $aside_list = curl_get('http://'.$_SERVER['HTTP_HOST'].'/api');
     </div>
     <div id="box">
             <h3><i class="fa fa-link fa-fw"></i>&nbsp;友情链接</h3>
-            <p><ul class="readers-list clearfix"><?php
+            <p><?php
             if(!empty($web['links'])){
                 $links = preg_split("/\n/", $Parsedown->setBreaksEnabled(true)->line($web['links']));
                 for($i = 0; $i < count($links); $i++) {
-                    echo '<li class="wow slideInUp animated" style="visibility: visible; animation-name: slideInUp;">'.$links[$i].'</li>';
+                    echo '<span id="badge">'.$links[$i].'</span>';
                 }
-            }?></ul></p>
+            }?></p>
     </div>
     <div id="footer">
         <p><?php echo $web['record']?></p>
