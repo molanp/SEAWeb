@@ -90,7 +90,7 @@ if ($aside_list["data"]["status"]!=200) {
             if(!empty($web['links'])){
                 $links = preg_split("/\n/", $Parsedown->setBreaksEnabled(true)->line($web['links']));
                 for($i = 0; $i < count($links); $i++) {
-                    echo '<span id="badge">'.$links[$i].'</span>';
+                    echo '<span id="badge" style="text-decoration:none; display:inline-block; vertical-align:middle;">'.$links[$i].'</span>';
                 }
             }?></p>
     </div>
