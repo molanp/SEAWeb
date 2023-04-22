@@ -55,11 +55,7 @@ if ($_SERVER['REQUEST_URI'] != '/api/') {
         "你觉得我听懂了吗？嗯？",
         "我！不！知！道！",
     ];
-    if (isset($_GET['msg'])) {
-        $msg = $_GET['msg'];
-    } else {
-        $msg= NULL;
-    }
+    $msg = $_GET['msg'] ?? NULL;
     if (!empty($msg)) {
         foreach(["你好啊","你好","在吗","在不在","您好","您好啊","你好","在",] as $zai){
             if (strpos($msg,$zai)!==false) {
