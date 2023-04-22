@@ -42,17 +42,18 @@ $return_par='
 |`/`|图片url|';
 
 if ($_SERVER['REQUEST_URI'] != '/api/') {
+    handle_check();
     $pic = $pics[array_rand($pics)];
-if (isset($_GET['type'])) {
-    $type = $_GET['type'];
-} else {
-    $type = NULL;
-}
-switch($type){
-    case 'json':
-        _return_($pic);
-    default:
-        _return_($pic,200,true);
-}
+    if (isset($_GET['type'])) {
+        $type = $_GET['type'];
+    } else {
+        $type = NULL;
+    }
+    switch($type){
+        case 'json':
+            _return_($pic);
+        default:
+            _return_($pic,200,true);
+    }
 }
 ?>
