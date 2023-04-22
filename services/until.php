@@ -50,6 +50,15 @@ set_error_handler("Error");
 //check status
 function handle_check() {
     global $api_name;
+    $DATA = new Config($_SERVER['DOCUMENT_ROOT'].'/db/status');
+    if($DATA->get($api_name)){
+        $status=$DATA->get($api_name);
+    } else {
+        $status='true';
+    }
+    if ($status != 'true') {
+        _return_("API已关闭",406);
+    }
 
 }
 ?>
