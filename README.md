@@ -1,7 +1,7 @@
 # easyapi_wesbite
 一个简单的api模板网页
 
-## <a href="https://molanp.github.io/SEAWeb/" target="_blank">帮助文档</a>
+## <a href="https://molanp.github.io/SEAWeb_docs/" target="_blank">帮助文档</a>
 
 ## 简单配置
 
