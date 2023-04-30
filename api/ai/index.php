@@ -38,8 +38,7 @@ function findMostSimilarWord($input, $dictionary) {
     }
 }
 
-if ($_SERVER['REQUEST_URI'] != '/api/') {
-    handle_check();
+if (handle_check()) {
     include_once('anime.php');
     $wozai = [
         "哦豁？！",
@@ -55,38 +54,34 @@ if ($_SERVER['REQUEST_URI'] != '/api/') {
         "你觉得我听懂了吗？嗯？",
         "我！不！知！道！",
     ];
-    $msg = $_GET['msg'] ?? NULL;
-    if (!empty($msg)) {
-        foreach(["你好啊","你好","在吗","在不在","您好","您好啊","你好","在",] as $zai){
-            if (strpos($msg,$zai)!==false) {
-                $data = $wozai[array_rand($wozai)];
-                break;
-            } else {$data = NULL;}
-        }
-        if (empty($data)) {
-            $words = $anime[findMostSimilarWord($msg,array_keys($anime))];
-            $data = $words[array_rand($words)];
-        }
-        if (empty($data)) {
-            $result = curl_get("http://api.qingyunke.com/api.php",["key"=>"free","appid"=>0,"msg"=>$msg])["data"];
-            if ($result["result"]==0) {
-                $data = $result["content"];
-                str_ireplace("菲菲","咱",$data);
-                str_ireplace("艳儿","咱",$data);
-                str_ireplace("{br}","\n",$data);
-                if(strpos($data,"提示")!==false){$data=mb_substr($data,0,strpos($data,"提示"),"utf-8");}
-                if(strpos($data,"公众号")!==false){$data=NULL;}
-                if(strpos($data,"taobao.com")!==false){$data=NULL;}
-                if(strpos($data,"淘宝")!==false){$data=NULL;}
-                $data = preg_replace('/{face:(\d+)}/','', $data);
-            }
-        }
-        if (empty($data)) {
-            $data = $budong[array_rand($budong)];
-        }
-        _return_($data, 200);
-    } else {
-        _return_("请求内容有误", 400);
+    $msg = $_GET['msg'] ?? '都不知道说什么';
+    foreach(["你好啊","你好","在吗","在不在","您好","您好啊","你好","在",] as $zai){
+        if (strpos($msg,$zai)!==false) {
+            $data = $wozai[array_rand($wozai)];
+            break;
+        } else {$data = NULL;}
     }
+    if (empty($data)) {
+        $words = $anime[findMostSimilarWord($msg,array_keys($anime))];
+        $data = $words[array_rand($words)];
+    }
+    if (empty($data)) {
+        $result = curl_get("http://api.qingyunke.com/api.php",["key"=>"free","appid"=>0,"msg"=>$msg])["data"];
+        if ($result["result"]==0) {
+            $data = $result["content"];
+            str_ireplace("菲菲","咱",$data);
+            str_ireplace("艳儿","咱",$data);
+            str_ireplace("{br}","\n",$data);
+            if(strpos($data,"提示")!==false){$data=mb_substr($data,0,strpos($data,"提示"),"utf-8");}
+            if(strpos($data,"公众号")!==false){$data=NULL;}
+            if(strpos($data,"taobao.com")!==false){$data=NULL;}
+            if(strpos($data,"淘宝")!==false){$data=NULL;}
+            $data = preg_replace('/{face:(\d+)}/','', $data);
+        }
+    }
+    if (empty($data)) {
+        $data = $budong[array_rand($budong)];
+    }
+    _return_($data, 200);
 }
 ?>

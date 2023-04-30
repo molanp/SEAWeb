@@ -22,8 +22,7 @@ $return_par='
 |`name`|文件名称|
 |`filesize`|文件大小|
 |`url`|文件下载地址|';
-if ($_SERVER['REQUEST_URI']!='/api/') {
-    handle_check();
+if (handle_check()) {
     include_once('lanzou.php');
     $url = $_GET['url'] ?? NULL;
     $pwd = $_GET['pwd'] ?? NULL;

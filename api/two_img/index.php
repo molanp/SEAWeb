@@ -375,8 +375,7 @@ $return_par='
 |基础数据|说明|
 |---|---|
 |`/`|图片url|';
-if ($_SERVER['REQUEST_URI']!='/api/') {
-    handle_check();
+if (handle_check()) {
     $pic = $pics[array_rand($pics)];
     $type = $_GET['type'] ?? NULL;
     switch($type){

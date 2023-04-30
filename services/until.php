@@ -16,15 +16,15 @@ function curl_get($url,$data=[]){
     curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
     $output = curl_exec($ch);
     if(curl_exec($ch) === false){
-        return ["status"=>500,"data"=>'Curl error:'.curl_error($ch)];
+        return curl_error($ch);
     }
     curl_close($ch);
     try {
-        return ["status"=>200,"data"=>json_decode($output,JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE)];
+        return (string) $output;
     } catch (\Exception $error) {
-        return ["status"=>500,"data"=>$error];
+        return $error;
     } catch (\Error $error) {
-        return ["status"=>500,"data"=>$error];
+        return $error;
     }
 }
 //return
@@ -44,6 +44,7 @@ function _return_($context,$status=200,$location=false) {
 //Error http
 function Error($errno, $errstr, $errfile, $errline) {
     header("HTTP/1.1 500");
+    //error_log(date(Y-m-d H:i:s)."[$errno] $errstr in $errfile line $errline.", 1,"logs/log.log");
     _return_("Error:[$errno] $errstr in $errfile line $errline.",500);//";)
 }
 set_error_handler("Error");
@@ -51,14 +52,10 @@ set_error_handler("Error");
 function handle_check() {
     global $api_name;
     $DATA = new Config($_SERVER['DOCUMENT_ROOT'].'/db/status');
-    if($DATA->get($api_name)){
-        $status=$DATA->get($api_name);
-    } else {
-        $status='true';
-    }
-    if ($status != 'true') {
+    $status=$DATA->get($api_name) ?: true;
+    if ($status != true) {
         _return_("API已关闭",406);
     }
-
+    return strpos($_SERVER['REQUEST_URI'], 'api/') !== false;
 }
 ?>
