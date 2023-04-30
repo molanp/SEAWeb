@@ -6,15 +6,9 @@ include_once('../services/until.php');
 include_once('../__version__.php');
 
 $Parsedown = new Parsedown();
-$types = curl_get('http://'.$_SERVER['HTTP_HOST'].'/api');
-if ($types["data"]["status"]!=200) {
-    die($types["data"]["data"]);
-} else {
-    $types = $types["data"]["data"];
-}
-$goto = $_SERVER["REQUEST_URI"];
-preg_match('/[^\/]+[^\/]+$/', $goto, $goto);
-$goto = $goto[0];
+$types = json_decode(curl_get('http://'.$_SERVER['HTTP_HOST'].'/info'),true);
+$types = ($types["status"] != 200) ? die($types["data"]) : $types["data"];
+$goto = preg_replace('/\/i\//', '', $_SERVER["REQUEST_URI"]);
 
 foreach(array_keys($types) as $type) {
     foreach(array_keys($types[$type]) as $p_name) {
@@ -36,11 +30,12 @@ $api_address = $Parsedown->setBreaksEnabled(true)->text($data['api_address']);
 $request_parameters = $Parsedown->setBreaksEnabled(true)->text($data['request_parameters']);
 $return_parameters = $Parsedown->setBreaksEnabled(true)->text($data['return_parameters']);
 $DATA = new Config($_SERVER['DOCUMENT_ROOT'].'/db/db');
-$web = $DATA->get('web');
-if($status=='true') {
-    $status = '<strong><img src="data:image/gif;base64,R0lGODlhEAAQAMQAAE1zRW62cj6XTipfILXZt0OHRs/S0zaBO9He7nGpg0CpYfX19V15WTtmNZucm2V8ZV65dbq6uunv9U+1a1SdXovBj27ChPv7+wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAAAAAAALAAAAAAQABAAAAWW4CVKztMMzeNIYntFTAFZNFUwkRsBUOXTNUDuImH0fkAIhAJAXBwFXwVooVQIBorj8jhSrSwE5XFpWKaBWmWxICQojcuA5pv02BXKZDIoWyASCxEBBgt5ewpxDxQBFSyBBHp7AmRQfwkGRAF7ewdbRRRVAQQRkhMCDCwvABQQExSwk0I6DAcCiAIHOC4jJScpK7zCwyIhADs="title="正常">正常</font></strong>';
-} elseif($status=='false') {
-    $status = '<strong><img src="data:image/gif;base64,R0lGODlhEAAQAOYAAAAAAP////ngvfjXtfjPu/atnvawofezpfSgkvWklvWomvWqnPauoPydj4xNRvd/dfmRiO0YF+4bGu0bGukcHOkdHeUcHOMcHO4eHuMdHdwcHO4gH+kgIO8kI+oiIuokJOckJOEkJOonJ+8rKusqKussLN8qKustLewwMMwqKuAvL+w0NNwyMuw3N9ozM+w4OO06Ou0/P907O+5DQts8PMA1Ne5EROBCQt9CQu9KSuFISO9NTe9OTuBKSvBUVMFERONRUfFZWeRVVfFbW99UVPFdXd9WVudaWthUVPJiYvJjY+lgYPJlZfJmZuljY/NqavNra/NtbfNubvv29vv5+fv7+/X19f///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAAFcALAAAAAAQABAAAAfGgFeCgg6FhoOIV4VIQkA9ODWFiQ5HS05KRT45NC4mDoMORElPUVBKQTszLSUhn4pGTFYCUk1DBlYvJyCfDj+iT1UHSgxVBasfGYU6PkVKEFbQCzErJB4WhTc7PkFDA1NWNjAoIhzXDjI2OTwKVTlWBCMdHxXmLDAxCVUJMQ9UBBscKJhLoWIFAgQtVqBoQECCQA28RJAocaIECREYJkQQ6MoBBw8fQnrgUIGCyWugKFRYabIlBVegHFywQNPCBUmJCBnCOSgQADs="title="维护">维护</font></strong>';
+$web = json_decode(curl_get('http://'.$_SERVER['HTTP_HOST'].'/info/web'),true);
+$web = ($web["status"] != 200) ? die($web["data"]) : $web["data"];
+if($status==true) {
+    $status = '<strong><img src="data:image/gif;base64,R0lGODlhEAAQAMQAAE1zRW62cj6XTipfILXZt0OHRs/S0zaBO9He7nGpg0CpYfX19V15WTtmNZucm2V8ZV65dbq6uunv9U+1a1SdXovBj27ChPv7+wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAAAAAAALAAAAAAQABAAAAWW4CVKztMMzeNIYntFTAFZNFUwkRsBUOXTNUDuImH0fkAIhAJAXBwFXwVooVQIBorj8jhSrSwE5XFpWKaBWmWxICQojcuA5pv02BXKZDIoWyASCxEBBgt5ewpxDxQBFSyBBHp7AmRQfwkGRAF7ewdbRRRVAQQRkhMCDCwvABQQExSwk0I6DAcCiAIHOC4jJScpK7zCwyIhADs="title="正常">正常</strong>';
+} else{
+    $status = '<strong><img src="data:image/gif;base64,R0lGODlhEAAQAOYAAAAAAP////ngvfjXtfjPu/atnvawofezpfSgkvWklvWomvWqnPauoPydj4xNRvd/dfmRiO0YF+4bGu0bGukcHOkdHeUcHOMcHO4eHuMdHdwcHO4gH+kgIO8kI+oiIuokJOckJOEkJOonJ+8rKusqKussLN8qKustLewwMMwqKuAvL+w0NNwyMuw3N9ozM+w4OO06Ou0/P907O+5DQts8PMA1Ne5EROBCQt9CQu9KSuFISO9NTe9OTuBKSvBUVMFERONRUfFZWeRVVfFbW99UVPFdXd9WVudaWthUVPJiYvJjY+lgYPJlZfJmZuljY/NqavNra/NtbfNubvv29vv5+fv7+/X19f///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAAFcALAAAAAAQABAAAAfGgFeCgg6FhoOIV4VIQkA9ODWFiQ5HS05KRT45NC4mDoMORElPUVBKQTszLSUhn4pGTFYCUk1DBlYvJyCfDj+iT1UHSgxVBasfGYU6PkVKEFbQCzErJB4WhTc7PkFDA1NWNjAoIhzXDjI2OTwKVTlWBCMdHxXmLDAxCVUJMQ9UBBscKJhLoWIFAgQtVqBoQECCQA28RJAocaIECREYJkQQ6MoBBw8fQnrgUIGCyWugKFRYabIlBVegHFywQNPCBUmJCBnCOSgQADs="title="维护">维护</strong>';
 }
 ?>
 
@@ -54,6 +49,7 @@ if($status=='true') {
     <meta name="force-rendering" content="webkit" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="keywords" content="<?php echo $web["keywords"];?>">
+    <meta name="description" content="<?php echo str_replace("\n", "", strip_tags($api_profile))?>">
     <link rel="stylesheet" href="https://font.sec.miui.com/font/css?family=MiSans:400,500,600,700:Chinese_Simplify,Latin,Chinese_Traditional&amp;display=swap">
     <link rel="Shortcut Icon" href="<?php echo 'http://'.$_SERVER['HTTP_HOST']?>/favicon.ico">
     <link rel="bookmark" href="<?php echo 'http://'.$_SERVER['HTTP_HOST']?>/favicon.ico" type="image/x-icon" /> 
@@ -63,7 +59,7 @@ if($status=='true') {
     <link rel="stylesheet" href="<?php echo 'http://'.$_SERVER['HTTP_HOST']?>/assets/css/style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mdui/1.0.2/js/mdui.min.js"></script>  
     <script src="<?php echo 'http://'.$_SERVER['HTTP_HOST']?>/assets/js/app.js"></script>  
-    <title><?php echo $web["index_web_name"]?></title>
+    <title><?php echo $api_name." - ".$web["index_web_name"]?></title>
 </head>
 <body>
     <button onmouseover="goout(this)" onmouseout="goin(this)" id="aside_btn"> </button>
