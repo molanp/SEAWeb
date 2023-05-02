@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
             foreach($relative_paths as $v){
                 include_once("../api/".$v);
                 $conname[$api_name] = [
-                    'status'=>$DATA->get($api_name,'true')
+                    'status'=>$DATA->get($api_name,true)
                 ];
             }
             break;
@@ -46,9 +46,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
                     'author'=>$author,
                     'request_parameters'=>trim($request_par),
                     'return_parameters'=>trim($return_par),
-                    'status'=>$DATA->get($api_name,'true')
+                    'status'=>$DATA->get($api_name,true)
                 ];
-                empty($DATA->get($api_name))&&$DATA->set($api_name,'true')->save();
+                if ($DATA->get($api_name) === '' || $DATA->get($api_name) === null) {
+                    $DATA->set($api_name,true)->save();
+                }
             }
             $api_name = $api_profile = $api_address = $version = $author = $request_parameters = $return_parameters = $type = $status = 'None';
             break;
