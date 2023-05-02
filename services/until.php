@@ -116,17 +116,20 @@ function Error($errno, $errstr, $errfile, $errline) {
 set_error_handler("Error");
 //check status
 function handle_check() {
-    return strpos($_SERVER['REQUEST_URI'], 'api/') !== false;
-}
-//check
-function ck() {
-    global $api_name;
-    $DATA = new Config($_SERVER['DOCUMENT_ROOT'].'/db/status');
-    $status=$DATA->get($api_name,true);
-    if ($status != true) {
-        _return_("API已关闭",406);
+    if (strpos($_SERVER['REQUEST_URI'], 'api/') !== false) {
+        global $api_name;
+        $DATA = new Config($_SERVER['DOCUMENT_ROOT'].'/db/status');
+        $status=$DATA->get($api_name,'true');
+        if ($status != 'true') {
+            _return_("API已关闭",406);
+        } else {
+            return true;
+        }
+    } else {
+        return false;
     }
 }
+
 //递归查询
 function find_files($dir, $prefix = '') {
     $files = glob("$dir/*/index.php"); // 查找所有名称为index.php的文件

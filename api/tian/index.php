@@ -19,7 +19,6 @@ $return_par='
 |---|---|
 |`data`|舔狗语录|';
 if (handle_check()) {
-    ck();
     include_once('tgrj.php');
     _return_($data[array_rand($data)]);
 }
