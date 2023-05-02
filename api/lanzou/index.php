@@ -23,6 +23,7 @@ $return_par='
 |`filesize`|文件大小|
 |`url`|文件下载地址|';
 if (handle_check()) {
+    ck();
     include_once('lanzou.php');
     $url = $_GET['url'] ?? NULL;
     $pwd = $_GET['pwd'] ?? NULL;

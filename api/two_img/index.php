@@ -376,6 +376,7 @@ $return_par='
 |---|---|
 |`/`|图片url|';
 if (handle_check()) {
+    ck();
     $pic = $pics[array_rand($pics)];
     $type = $_GET['type'] ?? NULL;
     switch($type){

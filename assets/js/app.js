@@ -1,3 +1,21 @@
+
+window.onload = function() {
+    //夜间模式
+    let darkMode = getCookie("theme");
+    let theme = document.querySelector("#theme");
+    if (darkMode === "dark") enableDarkMode();
+    //侧边栏
+    let box = document.getElementById("aside")
+    let btn = document.getElementById("aside_btn")
+    btn.onclick = function() {
+        if (box.offsetLeft == 0) {
+            box.style['margin-left'] = -1*document.body.clientWidth + "px"
+        } else {
+            box.style['margin-left'] = 0 + "px"
+        }
+    }
+    btn.style.marginLeft="-20px";
+}
 //cookies
 function getCookie(cname)
 {
@@ -10,19 +28,18 @@ function getCookie(cname)
     }
     return "";
 }
+
 function setCookie(cname,cvalue)
 {
     document.cookie = cname + "=" + cvalue + "; " + "path=/";
 }
-//夜间模式
-let darkMode = getCookie("theme");
-if (darkMode === "dark") enableDarkMode();
+
 function enableDarkMode() {
-    document.body.classList.add("dark");
+    theme.classList.add("dark");
     setCookie("theme", "dark");
 };
 function disableDarkMode() {
-    document.body.classList.remove("dark");
+    theme.classList.remove("dark");
     setCookie("theme", "light");
 };
 function changeTheme() {
