@@ -31,7 +31,7 @@ $request_parameters = $Parsedown->setBreaksEnabled(true)->text($data['request_pa
 $return_parameters = $Parsedown->setBreaksEnabled(true)->text($data['return_parameters']);
 $web = json_decode(curl_get('http://'.$_SERVER['HTTP_HOST'].'/info/web'),true);
 $web = ($web["status"] != 200) ? die($web["data"]) : $web["data"];
-if ($status == 'true') {
+if ($status === true) {
     $status = $ping == 200 || $ping == 301 || $ping == 302 ?
         '<strong><font color=Green><img src="data:image/gif;base64,R0lGODlhEAAQAMQAAE1zRW62cj6XTipfILXZt0OHRs/S0zaBO9He7nGpg0CpYfX19V15WTtmNZucm2V8ZV65dbq6uunv9U+1a1SdXovBj27ChPv7+wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAAAAAAALAAAAAAQABAAAAWW4CVKztMMzeNIYntFTAFZNFUwkRsBUOXTNUDuImH0fkAIhAJAXBwFXwVooVQIBorj8jhSrSwE5XFpWKaBWmWxICQojcuA5pv02BXKZDIoWyASCxEBBgt5ewpxDxQBFSyBBHp7AmRQfwkGRAF7ewdbRRRVAQQRkhMCDCwvABQQExSwk0I6DAcCiAIHOC4jJScpK7zCwyIhADs=" title="正常">正常</font></strong>' :
         "<strong><font color=#ffbb2f><img src='data:image/gif;base64,R0lGODlhEAAQAKIAAAAAAP///6vANwkJCPvNWvaTA7hoDv///yH5BAEAAAcALAAAAAAQABAAAAM6eLrcRzBKKV65OONKdBmZIVRWBmLi0pnoyKzXWaQvO7sN3Drld5MOHY0HEwGJlyHPYly+cE4F4chIAAA7' title='$ping - $httpStatus[$ping]'>HTTP - $ping $httpStatus[$ping]</font></strong>";

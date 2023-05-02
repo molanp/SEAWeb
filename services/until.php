@@ -119,8 +119,8 @@ function handle_check() {
     if (strpos($_SERVER['REQUEST_URI'], 'api/') !== false) {
         global $api_name;
         $DATA = new Config($_SERVER['DOCUMENT_ROOT'].'/db/status');
-        $status=$DATA->get($api_name,'true');
-        if ($status != 'true') {
+        $status=$DATA->get($api_name,true);
+        if ($status !== true) {
             _return_("API已关闭",406);
         } else {
             return true;
