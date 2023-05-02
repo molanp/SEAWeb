@@ -39,7 +39,6 @@ function findMostSimilarWord($input, $dictionary) {
 }
 
 if (handle_check()) {
-    ck();
     include_once('anime.php');
     $wozai = [
         "哦豁？！",
