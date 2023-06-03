@@ -63,7 +63,62 @@ $httpStatus = [
     508 => 'Loop Detected',
     510 => 'Not Extended',
     511 => 'Network Authentication Required'];
+//随机ip
+function randip(){
+    $ip_1 = -1;
+    $ip_2 = -1;
+    $ip_3 = rand(0,255);
+    $ip_4 = rand(0,255);
+    $ipall = array(
+                    array(array(58,14),array(58,25)),
+                    array(array(58,30),array(58,63)),
+                    array(array(58,66),array(58,67)),
+                    array(array(60,200),array(60,204)),
+                    array(array(60,160),array(60,191)),
+                    array(array(60,208),array(60,223)),
+                    array(array(117,48),array(117,51)),
+                    array(array(117,57),array(117,57)),
+                    array(array(121,8),array(121,29)),
+                    array(array(121,192),array(121,199)),
+                    array(array(123,144),array(123,149)),
+                    array(array(124,112),array(124,119)),
+                    array(array(125,64),array(125,98)),
+                    array(array(222,128),array(222,143)),
+                    array(array(222,160),array(222,163)),
+                    array(array(220,248),array(220,252)),
+                    array(array(211,163),array(211,163)),
+                    array(array(210,21),array(210,22)),
+                    array(array(125,32),array(125,47))     
+    );
+    $ip_p = rand(0,count($ipall)-1);#随机生成需要IP段
+    $ip_1 = $ipall[$ip_p][0][0];
+    if($ipall[$ip_p][0][1] == $ipall[$ip_p][1][1]){
+        $ip_2 = $ipall[$ip_p][0][1];
+    }else{
+        $ip_2 = rand(intval($ipall[$ip_p][0][1]),intval($ipall[$ip_p][1][1]));
+    }
+    $member = null;
+    $ipall  = null;
+    return $ip_1.'.'.$ip_2.'.'.$ip_3.'.'.$ip_4;
+}
 
+//组合table
+function re_add($type=[],$url=[],$info=[]) {
+    $table = '|Method|URL|Info|
+    |---|---|---|';
+    for($i=0; $i<count($type); $i++) {
+        $table .= "\n|{$type[$i]}|[{$url[$i]}]({$url[$i]})|{$info[$i]}|";
+    };
+    return $table;
+}
+function re_par($key=[],$info=[]) {
+    $table = '|Key|Info|
+    |---|---|';
+    for($i=0; $i<count($key); $i++) {
+        $table .= "\n|`{$key[$i]}`|{$info[$i]}|";
+    };
+    return $table;
+}
 //curl_get获取数据
 function curl_get($url,$data=[],$code=false){
     if($url == "" ){
@@ -71,23 +126,41 @@ function curl_get($url,$data=[],$code=false){
     }
     $url = $url.'?'.http_build_query($data);
     $ch = curl_init();
+    $ip = randip();
+    $user_agents = [
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36',
+        'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:54.0) Gecko/20100101 Firefox/54.0',
+        'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36',
+        'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; AS; rv:11.0) like Gecko',
+        'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:54.0) Gecko/20100101 Firefox/54.0'];
     curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true) ;
     curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
     curl_setopt($ch, CURLOPT_HEADER,0);
+    curl_setopt($ch, CURLOPT_USERAGENT, $user_agents[array_rand($user_agents)]);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        'Accept-Language: en-US,en;q=0.8',
+        'Upgrade-Insecure-Requests: 1',
+        'Cache-Control: no-cache']);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        'X-Forwarded-For: ' . $ip,
+        'Client-Ip: ' . $ip]);
+    curl_setopt($ch,CURLOPT_TIMEOUT,5);
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
     curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
     $output = curl_exec($ch);
+    curl_close($ch);
     if(curl_exec($ch) === false){
         return curl_error($ch);
     }
     if($code === true){
         return curl_getinfo($ch, CURLINFO_HTTP_CODE);
     }
-    curl_close($ch);
     try {
         return json_decode($output,true);
     } catch (\Exception $error) {
+        return (string) $output;
+    } catch (\Error $error) {
         return (string) $output;
     }
 }

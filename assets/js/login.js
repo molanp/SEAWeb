@@ -93,7 +93,7 @@ function resetpassword() {
             if (status === 'success') {
                 if (data.status == 200) {
                     regsuc(data.data);
-                    loginout();
+                    loginout()
                 } else {
                     regFail(data.data)
                 }

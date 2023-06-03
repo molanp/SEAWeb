@@ -8,18 +8,9 @@ _~~或许词库有点二次元?~~_';
 $version='1.0';
 $author='molanp';
 $type='一些工具';
-$api_address="
-|请求方式|请求地址|说明|
-|---|---|---
-|get|[/api/ai](/api/ai)|-|";
-$request_par='
-|参数|说明|
-|---|---|
-|*`msg`|你要对ai说的话|';
-$return_par='
-|基础数据|说明|
-|---|---|
-|`data`|ai给你的回复|';
+$api_address=re_add(['GET'],['/api/ai'],['-']);
+$request_par=re_par(['*msg'],['你要对ai说的话']);
+$return_par=re_par(['data'],['ai给你的回复']);
 
 function findMostSimilarWord($input, $dictionary) {
     $bestMatch = '';
