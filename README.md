@@ -1,4 +1,4 @@
-# easyapi_wesbite
+# SEAWeb
 一个简单的api模板网页
 
 ## <a href="https://molanp.github.io/SEAWeb_docs/" target="_blank">帮助文档</a>

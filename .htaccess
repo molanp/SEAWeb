@@ -7,7 +7,5 @@ RewriteBase /
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^i/(.*)$ page/api.php/$1 [L]
-RewriteRule ^info/(.*)$ page/info.php?for=$1 [L]
-RewriteRule ^info$ page/info.php [L]
-RewriteRule ^login/(.*)$ page/login.php/$1 [L]
+RewriteRule ^v2/([^/]+)$ page/v2/$1.php [QSA,L]
 </IfModule>

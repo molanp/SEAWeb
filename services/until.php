@@ -86,11 +86,9 @@ function curl_get($url,$data=[],$code=false){
     }
     curl_close($ch);
     try {
-        return (string) $output;
+        return json_decode($output,true);
     } catch (\Exception $error) {
-        return $error;
-    } catch (\Error $error) {
-        return $error;
+        return (string) $output;
     }
 }
 //return
@@ -153,12 +151,11 @@ function load() {
     $DATA = new Config($_SERVER['DOCUMENT_ROOT'].'/db/db');
     if(!file_exists($_SERVER['DOCUMENT_ROOT'].'/db')) {
         mkdir($_SERVER['DOCUMENT_ROOT'].'/db');
-        $DATA->set("account",["username"=>"admin","password"=>base64_encode('password')])->save();
+        $DATA->set("account",["username"=>"admin","password"=>hash('sha256', 'password')])->save();
         $DATA->set("web",[
             "record"=>"",
-            "index_web_name"=>"SEAWeb",
             "index_title"=>"SEAWeb",
-            "copyright"=>"All copyright molanp",
+            "copyright"=>"",
             "index_description"=>"这是网站简介，这里支持*MarkDown*语法",
             "notice"=>[
                 "data"=>"> **这里也支持markdown语法**\n欢迎使用SEAWeb，本模板由[molanp](https://github.com/molanp)开发与维护。目前正在不断完善~\n如果你觉得这个API有什么不完善的地方或者说你有什么更好的想♂法，可以在[issues](https://github.com/molanp/easyapi_wesbite/issues)上提出建议",
