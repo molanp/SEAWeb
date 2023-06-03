@@ -7,8 +7,8 @@ include_once('__version__.php');
 
 load();
 $Parsedown = new Parsedown();
-$web = json_decode(curl_get('http://'.$_SERVER['HTTP_HOST'].'/info/web'),true);
-$aside_list = json_decode(curl_get('http://'.$_SERVER['HTTP_HOST'].'/info'),true);
+$web = curl_get('http://'.$_SERVER['HTTP_HOST'].'/v2/info',["for"=>"web"]);
+$aside_list = curl_get('http://'.$_SERVER['HTTP_HOST'].'/v2/info');
 $web = ($web["status"] != 200) ? die($web["data"]) : $web["data"];
 $aside_list = ($aside_list["status"] != 200) ? die($aside_list["data"]) : $aside_list["data"];
 ?>
@@ -25,15 +25,16 @@ $aside_list = ($aside_list["status"] != 200) ? die($aside_list["data"]) : $aside
     <meta name="description" content="<?= str_replace("\n", "", strip_tags($web['index_description']));?>">
     <meta name="keywords" content="<?= $web["keywords"];?>">
     <link rel="stylesheet" href="https://font.sec.miui.com/font/css?family=MiSans:400,500,600,700:Chinese_Simplify,Latin,Chinese_Traditional&amp;display=swap">
-    <link rel="Shortcut Icon" href="<?= 'http://'.$_SERVER['HTTP_HOST']?>/favicon.ico">
-    <link rel="bookmark" href="<?= 'http://'.$_SERVER['HTTP_HOST']?>/favicon.ico" type="image/x-icon" /> 
+    <link rel="Shortcut Icon" href="/favicon.ico">
+    <link rel="bookmark" href="/favicon.ico" type="image/x-icon" /> 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mdui/1.0.2/css/mdui.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="assets/css/aside.css">
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="/assets/css/aside.css">
+    <link rel="stylesheet" href="/assets/css/style.css">
+    <link rel="stylesheet" href="/assets/css/mark.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mdui/1.0.2/js/mdui.min.js"></script>
-    <script src="assets/js/app.js"></script>  
-    <title><?= $web["index_web_name"]?></title>
+    <script src="/assets/js/app.js"></script>  
+    <title><?= $web["index_title"]?></title>
 </head>
 <body>
     <button onmouseover="goout(this)" onmouseout="goin(this)" id="aside_btn"> </button>

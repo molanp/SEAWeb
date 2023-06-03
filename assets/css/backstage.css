@@ -72,7 +72,46 @@
     background-color: #fff;
   }
 
-    #editor {
-        width: 50%;
-        height: 300px;
-    }
+  #editor {
+    width: 50%;
+    height: 200px;
+  }
+
+  ul#sidebar-nav {
+      text-align: left;
+      margin-left: -10%;
+  }
+  
+  ul#sidebar-nav li {
+      height: 40px;
+      width: 100%;
+      padding-left: 10px;
+      line-height: 40px;
+      list-style-type: none;
+      text-align: left;
+      text-decoration:none;
+      white-space: nowrap;
+      border-radius: 5px;
+  }
+  
+  ul#sidebar-nav #active{
+      background: #c6c6c6;
+  }
+  
+  ul#sidebar-nav li:hover {
+      background: #979797;
+  }
+  
+  ul#sidebar-nav a {
+      color: black;
+      text-decoration: none;
+      position: relative;
+      text-align: left;
+  }
+  
+  .dark ul#sidebar-nav a {
+      color: #ffffff;
+      text-decoration: none;
+      position: relative;
+      text-align: left;
+  }

@@ -1,13 +1,13 @@
 <?php
 if ($_SERVER['REQUEST_METHOD'] == 'GET') {
-    include_once('../services/Config.class.php');
-    include_once('../services/until.php');
+    include_once($_SERVER['DOCUMENT_ROOT'].'/services/Config.class.php');
+    include_once($_SERVER['DOCUMENT_ROOT'].'/services/until.php');
 
     load();
     $DATA = new Config($_SERVER['DOCUMENT_ROOT'].'/db/status');
     $WEB= new Config($_SERVER['DOCUMENT_ROOT'].'/db/db');
 
-    $dir = '../api'; // 文件夹路径
+    $dir = $_SERVER['DOCUMENT_ROOT'].'/api'; // 文件夹路径
     $relative_paths = find_files($dir);
 
     $for = $_GET['for'] ?? NULL;
@@ -16,7 +16,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
             $WEB = $WEB->get('web');
             $conname = [
                 "record"=>$WEB['record'],
-                "index_web_name"=>$WEB['index_web_name'],
                 "index_title"=>$WEB['index_title'],
                 "copyright"=>$WEB['copyright'],
                 "index_description"=>$WEB['index_description'],
@@ -27,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
             break;
         case 'status':
             foreach($relative_paths as $v){
-                include_once("../api/".$v);
+                include_once($_SERVER['DOCUMENT_ROOT']."/api/".$v);
                 $conname[$api_name] = [
                     'status'=>$DATA->get($api_name,true)
                 ];
@@ -35,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
             break;
         default:
             foreach($relative_paths as $v){
-                include_once("../api/".$v);
+                include_once($_SERVER['DOCUMENT_ROOT']."/api/".$v);
                 preg_match('/^(.*)\/index\.php$/', $v, $v);
                 $type = $type ?? '一些工具';
                 $conname[$type][$api_name] = [
@@ -56,5 +55,35 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
             break;
     }
     _return_($conname);
+} elseif ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    include_once($_SERVER['DOCUMENT_ROOT'].'/services/Config.class.php');
+    include_once($_SERVER['DOCUMENT_ROOT'].'/services/until.php');
+
+    load();
+    $WEB= new Config($_SERVER['DOCUMENT_ROOT'].'/db/db');
+
+    $dir = $_SERVER['DOCUMENT_ROOT'].'/api'; // 文件夹路径
+    $relative_paths = find_files($dir);
+
+    $for = $_POST['for'] ?? NULL;
+    switch($for) {
+        case 'edit':
+            if (isset($_POST['token']) && $_POST['token'] == $WEB->get('account')['password']) {
+                $WEB->set("web",[
+                    "record"=>$_POST["record"],
+                    "index_title"=>$_POST["index_title"],
+                    "copyright"=>$_POST["copyright"],
+                    "index_description"=>$_POST["index_description"],
+                    "notice"=>[
+                        "data"=>$_POST["notice"],
+                        "latesttime"=>date('Y-m-d')],
+                    "keywords"=>$_POST["keywords"],
+                    "links"=>$_POST["links"]])->save();
+                _return_("修改成功");
+            } else {
+                _return_("身份验证失败",403);
+            }
+            break;
+        }
 }
 ?>
