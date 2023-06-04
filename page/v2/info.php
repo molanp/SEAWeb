@@ -21,7 +21,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
                 "index_description"=>$WEB['index_description'],
                 "notice"=>$WEB['notice'],
                 "keywords"=>$WEB['keywords'],
-                "links"=>$WEB['links']
+                "links"=>$WEB['links'],
+                "version"=>$WEB['version']
             ];
             break;
         case 'status':
