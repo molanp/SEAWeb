@@ -84,6 +84,7 @@ function load_home() {
             if (status=='success') {
                 let content = document.getElementsByClassName('content')[0];
                 content.innerHTML = `
+                <blockquote>SEAWeb版本:<span name="version"></span>(最新版本:<span name="latest"></span>)</blockquote>
                 <h3>修改网页信息</h3>
                 <br>
                 网站标题：<p><textarea id='editor' name='index_title'>正在加载...</textarea></p>
@@ -104,6 +105,17 @@ function load_home() {
                 document.getElementsByName("record")[0].value = data.record;
                 document.getElementsByName("links")[0].value = data.links;
                 document.getElementsByName("keywords")[0].value = data.keywords;
+                document.getElementsByName("version")[0].innerHTML = data.version;
+            }
+        }
+    );
+    $.get(
+        url="https://api.github.com/repos/molanp/seaweb/releases/latest",
+        function(data,status) {
+            if (status=='success') {
+                latest = data.name;
+                latest = latest.match(/v(\w+)/)[1];
+                document.getElementsByName("latest")[0].innerHTML = `<a href='${data.html_url}' target='_blank'>${latest}<a>`;
             }
         }
     )
