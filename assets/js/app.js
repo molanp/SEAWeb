@@ -52,7 +52,7 @@ function changeTheme() {
 };
 window
 .matchMedia("(prefers-color-scheme: dark)")
-.addListener(e => (e.matches ? enableDarkMode() : disableDarkMode()))
+.addListener(e=>(e.matches ? enableDarkMode() : disableDarkMode()))
 //aside
 function goout(x) {
     x.style.backgroundColor='#eb6161';
