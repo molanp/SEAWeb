@@ -4,7 +4,6 @@ include_once('services/Config.class.php');
 include_once('services/mark.php');
 include_once('services/markExtra.php');
 include_once('services/until.php');
-include_once('__version__.php');
 
 load();
 $Parsedown = new ParsedownExtra();
@@ -40,7 +39,7 @@ $aside_list = ($aside_list["status"] != 200) ? die($aside_list["data"]) : $aside
 <body>
     <button onmouseover="goout(this)" onmouseout="goin(this)" id="aside_btn"> </button>
     <aside class="aside_box" id="aside">
-        <center><h1><?= $web["index_title"]?></h1><v><?= 'Version '.$__version__ ?></v><hr></center>
+        <center><h1><?= $web["index_title"]?></h1><v><?= 'Version '.$web["version"] ?></v><hr></center>
         <ul>
             <a href="#"><li id="active"><i class="fa fa-home fa-fw"></i>&nbsp;主页</li></a>
             <a href="javascript:changeTheme()"><li>🌙&nbsp;夜间模式</li></a>
