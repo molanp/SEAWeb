@@ -1,11 +1,12 @@
 <?php
 define('IN_SYS', TRUE);
 include_once('../services/mark.php');
+include_once('../services/markExtra.php');
 include_once('../services/until.php');
 include_once('../__version__.php');
 
 load();
-$Parsedown = new Parsedown();
+$Parsedown = new ParsedownExtra();
 $types = curl_get('http://'.$_SERVER['HTTP_HOST'].'/v2/info');
 $types = ($types["status"] != 200) ? die($types["data"]) : $types["data"];
 $goto = preg_replace('/\/i\//', '', $_SERVER["REQUEST_URI"]);
@@ -22,7 +23,6 @@ if (!isset($data)) {
     die(header("location: http://".$_SERVER['HTTP_HOST']));
 }
 $status = $data['status'];
-$ping = curl_get('http://'.$_SERVER['HTTP_HOST']."/api/$goto",[],true);
 $api_profile = $Parsedown->setBreaksEnabled(true)->line($data['api_profile']);
 $version = $data['version'];
 $author = $data['author'];
@@ -31,13 +31,6 @@ $request_parameters = $Parsedown->setBreaksEnabled(true)->text($data['request_pa
 $return_parameters = $Parsedown->setBreaksEnabled(true)->text($data['return_parameters']);
 $web = curl_get('http://'.$_SERVER['HTTP_HOST'].'/v2/info',["for"=>"web"]);
 $web = ($web["status"] != 200) ? die($web["data"]) : $web["data"];
-if ($status === true) {
-    $status = $ping == 200 || $ping == 301 || $ping == 302 ?
-        '<strong><font color=Green><img src="data:image/gif;base64,R0lGODlhEAAQAMQAAE1zRW62cj6XTipfILXZt0OHRs/S0zaBO9He7nGpg0CpYfX19V15WTtmNZucm2V8ZV65dbq6uunv9U+1a1SdXovBj27ChPv7+wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAAAAAAALAAAAAAQABAAAAWW4CVKztMMzeNIYntFTAFZNFUwkRsBUOXTNUDuImH0fkAIhAJAXBwFXwVooVQIBorj8jhSrSwE5XFpWKaBWmWxICQojcuA5pv02BXKZDIoWyASCxEBBgt5ewpxDxQBFSyBBHp7AmRQfwkGRAF7ewdbRRRVAQQRkhMCDCwvABQQExSwk0I6DAcCiAIHOC4jJScpK7zCwyIhADs=" title="正常">正常</font></strong>' :
-        "<strong><font color=#ffbb2f><img src='data:image/gif;base64,R0lGODlhEAAQAKIAAAAAAP///6vANwkJCPvNWvaTA7hoDv///yH5BAEAAAcALAAAAAAQABAAAAM6eLrcRzBKKV65OONKdBmZIVRWBmLi0pnoyKzXWaQvO7sN3Drld5MOHY0HEwGJlyHPYly+cE4F4chIAAA7' title='$ping - $httpStatus[$ping]'>HTTP - $ping $httpStatus[$ping]</font></strong>";
-} else {
-    $status = '<strong><font color=Red><img src="data:image/gif;base64,R0lGODlhEAAQAOYAAAAAAP////ngvfjXtfjPu/atnvawofezpfSgkvWklvWomvWqnPauoPydj4xNRvd/dfmRiO0YF+4bGu0bGukcHOkdHeUcHOMcHO4eHuMdHdwcHO4gH+kgIO8kI+oiIuokJOckJOEkJOonJ+8rKusqKussLN8qKustLewwMMwqKuAvL+w0NNwyMuw3N9ozM+w4OO06Ou0/P907O+5DQts8PMA1Ne5EROBCQt9CQu9KSuFISO9NTe9OTuBKSvBUVMFERONRUfFZWeRVVfFbW99UVPFdXd9WVudaWthUVPJiYvJjY+lgYPJlZfJmZuljY/NqavNra/NtbfNubvv29vv5+fv7+/X19f///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAAFcALAAAAAAQABAAAAfGgFeCgg6FhoOIV4VIQkA9ODWFiQ5HS05KRT45NC4mDoMORElPUVBKQTszLSUhn4pGTFYCUk1DBlYvJyCfDj+iT1UHSgxVBasfGYU6PkVKEFbQCzErJB4WhTc7PkFDA1NWNjAoIhzXDjI2OTwKVTlWBCMdHxXmLDAxCVUJMQ9UBBscKJhLoWIFAgQtVqBoQECCQA28RJAocaIECREYJkQQ6MoBBw8fQnrgUIGCyWugKFRYabIlBVegHFywQNPCBUmJCBnCOSgQADs=" title="维护">维护</font></strong>';
-}
 ?>
 
 <!DOCTYPE html>
@@ -60,6 +53,7 @@ if ($status === true) {
     <link rel="stylesheet" href="/assets/css/style.css">
     <link rel="stylesheet" href="/assets/css/mark.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mdui/1.0.2/js/mdui.min.js"></script>  
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <script src="/assets/js/app.js"></script>  
     <title><?= $api_name." - ".$web["index_title"]?></title>
 </head>
@@ -95,7 +89,7 @@ if ($status === true) {
     <div id="box">
         <h3><i class="fa fa-star-o fa-fw"></i>&nbsp;API 简介</h3>
         <p><?= $api_profile?></p>
-        <p><div id="badge">版本&nbsp;<?= $version?></div>&nbsp;&nbsp;<div id="badge">作者&nbsp;<?= $author?></div>&nbsp;&nbsp;<span id="badge">状态&nbsp;<?= $status?></span>
+        <p><div id="badge">版本&nbsp;<?= $version?></div>&nbsp;&nbsp;<div id="badge">作者&nbsp;<?= $author?></div>&nbsp;&nbsp;<div id="badge">状态&nbsp;<span class="status">正在获取...</span></div>
     </div>
     <div id="box">
         <h3><i class="fa fa-paper-plane-o fa-fw"></i>&nbsp;API 地址</h3>
@@ -113,5 +107,22 @@ if ($status === true) {
         <p><?= $web['record']?></p>
         <p id="copyright"><?= "&copy;".$web['copyright']?>&nbsp;.&nbsp;Power by <a href="https://github.com/molanp">molanp</a></p>
     </div>
+    <script>
+        var url = window.location.origin + "/api/" + window.location.pathname.match(/\/i\/(.+)/)[1];
+        $.get({
+            url: url,
+            complete: function(jqXHR, textStatus) {
+                var status = jqXHR.status
+                var content = document.getElementsByClassName("status")[0];
+                if(status==200||status==301||status==302) {
+                    content.innerHTML = '<font color=Green><img src="data:image/gif;base64,R0lGODlhEAAQAMQAAE1zRW62cj6XTipfILXZt0OHRs/S0zaBO9He7nGpg0CpYfX19V15WTtmNZucm2V8ZV65dbq6uunv9U+1a1SdXovBj27ChPv7+wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAAAAAAALAAAAAAQABAAAAWW4CVKztMMzeNIYntFTAFZNFUwkRsBUOXTNUDuImH0fkAIhAJAXBwFXwVooVQIBorj8jhSrSwE5XFpWKaBWmWxICQojcuA5pv02BXKZDIoWyASCxEBBgt5ewpxDxQBFSyBBHp7AmRQfwkGRAF7ewdbRRRVAQQRkhMCDCwvABQQExSwk0I6DAcCiAIHOC4jJScpK7zCwyIhADs=" title="正常">正常</font>';
+                } else if(status==406) {
+                    content.innerHTML = '<font color=Red><img src="data:image/gif;base64,R0lGODlhEAAQAOYAAAAAAP////ngvfjXtfjPu/atnvawofezpfSgkvWklvWomvWqnPauoPydj4xNRvd/dfmRiO0YF+4bGu0bGukcHOkdHeUcHOMcHO4eHuMdHdwcHO4gH+kgIO8kI+oiIuokJOckJOEkJOonJ+8rKusqKussLN8qKustLewwMMwqKuAvL+w0NNwyMuw3N9ozM+w4OO06Ou0/P907O+5DQts8PMA1Ne5EROBCQt9CQu9KSuFISO9NTe9OTuBKSvBUVMFERONRUfFZWeRVVfFbW99UVPFdXd9WVudaWthUVPJiYvJjY+lgYPJlZfJmZuljY/NqavNra/NtbfNubvv29vv5+fv7+/X19f///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAAFcALAAAAAAQABAAAAfGgFeCgg6FhoOIV4VIQkA9ODWFiQ5HS05KRT45NC4mDoMORElPUVBKQTszLSUhn4pGTFYCUk1DBlYvJyCfDj+iT1UHSgxVBasfGYU6PkVKEFbQCzErJB4WhTc7PkFDA1NWNjAoIhzXDjI2OTwKVTlWBCMdHxXmLDAxCVUJMQ9UBBscKJhLoWIFAgQtVqBoQECCQA28RJAocaIECREYJkQQ6MoBBw8fQnrgUIGCyWugKFRYabIlBVegHFywQNPCBUmJCBnCOSgQADs=" title="维护">维护</font>'
+                } else {
+                    content.innerHTML = '<font color=#ffbb2f><img src="data:image/gif;base64,R0lGODlhEAAQAKIAAAAAAP///6vANwkJCPvNWvaTA7hoDv///yH5BAEAAAcALAAAAAAQABAAAAM6eLrcRzBKKV65OONKdBmZIVRWBmLi0pnoyKzXWaQvO7sN3Drld5MOHY0HEwGJlyHPYly+cE4F4chIAAA7" title="HTTP-'+status+'">HTTP -'+status+'</font>'
+                }
+            }
+        });
+    </script>
 </body>
 </html>

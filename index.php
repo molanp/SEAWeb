@@ -2,11 +2,12 @@
 define('IN_SYS', TRUE);
 include_once('services/Config.class.php');
 include_once('services/mark.php');
+include_once('services/markExtra.php');
 include_once('services/until.php');
 include_once('__version__.php');
 
 load();
-$Parsedown = new Parsedown();
+$Parsedown = new ParsedownExtra();
 $web = curl_get('http://'.$_SERVER['HTTP_HOST'].'/v2/info',["for"=>"web"]);
 $aside_list = curl_get('http://'.$_SERVER['HTTP_HOST'].'/v2/info');
 $web = ($web["status"] != 200) ? die($web["data"]) : $web["data"];

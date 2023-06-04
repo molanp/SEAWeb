@@ -1,68 +1,6 @@
 <?php
 include_once('Config.class.php');
 
-//http解释
-$httpStatus = [
-    100 => 'Continue',
-    101 => 'Switching Protocols',
-    102 => 'Processing',
-    200 => 'OK',
-    201 => 'Created',
-    202 => 'Accepted',
-    203 => 'Non-Authoritative Information',
-    204 => 'No Content',
-    205 => 'Reset Content',
-    206 => 'Partial Content',
-    207 => 'Multi-Status',
-    208 => 'Already Reported',
-    226 => 'IM Used',
-    300 => 'Multiple Choices',
-    301 => 'Moved Permanently',
-    302 => 'Found',
-    303 => 'See Other',
-    304 => 'Not Modified',
-    305 => 'Use Proxy',
-    307 => 'Temporary Redirect',
-    308 => 'Permanent Redirect',
-    400 => 'Bad Request',
-    401 => 'Unauthorized',
-    402 => 'Payment Required',
-    403 => 'Forbidden',
-    404 => 'Not Found',
-    405 => 'Method Not Allowed',
-    406 => 'Not Acceptable',
-    407 => 'Proxy Authentication Required',
-    408 => 'Request Timeout',
-    409 => 'Conflict',
-    410 => 'Gone',
-    411 => 'Length Required',
-    412 => 'Precondition Failed',
-    413 => 'Payload Too Large',
-    414 => 'URI Too Long',
-    415 => 'Unsupported Media Type',
-    416 => 'Range Not Satisfiable',
-    417 => 'Expectation Failed',
-    418 => 'I\'m a teapot',
-    421 => 'Misdirected Request',
-    422 => 'Unprocessable Entity',
-    423 => 'Locked',
-    424 => 'Failed Dependency',
-    426 => 'Upgrade Required',
-    428 => 'Precondition Required',
-    429 => 'Too Many Requests',
-    431 => 'Request Header Fields Too Large',
-    451 => 'Unavailable For Legal Reasons',
-    500 => 'Internal Server Error',
-    501 => 'Not Implemented',
-    502 => 'Bad Gateway',
-    503 => 'Service Unavailable',
-    504 => 'Gateway Timeout',
-    505 => 'HTTP Version Not Supported',
-    506 => 'Variant Also Negotiates',
-    507 => 'Insufficient Storage',
-    508 => 'Loop Detected',
-    510 => 'Not Extended',
-    511 => 'Network Authentication Required'];
 //随机ip
 function randip(){
     $ip_1 = -1;
@@ -127,21 +65,11 @@ function curl_get($url,$data=[],$code=false){
     $url = $url.'?'.http_build_query($data);
     $ch = curl_init();
     $ip = randip();
-    $user_agents = [
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36',
-        'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:54.0) Gecko/20100101 Firefox/54.0',
-        'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36',
-        'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; AS; rv:11.0) like Gecko',
-        'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:54.0) Gecko/20100101 Firefox/54.0'];
     curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true) ;
     curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
     curl_setopt($ch, CURLOPT_HEADER,0);
-    curl_setopt($ch, CURLOPT_USERAGENT, $user_agents[array_rand($user_agents)]);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, [
-        'Accept-Language: en-US,en;q=0.8',
-        'Upgrade-Insecure-Requests: 1',
-        'Cache-Control: no-cache']);
+    curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.80 Safari/537.36");
     curl_setopt($ch, CURLOPT_HTTPHEADER, [
         'X-Forwarded-For: ' . $ip,
         'Client-Ip: ' . $ip]);
@@ -192,6 +120,7 @@ function handle_check() {
         $DATA = new Config($_SERVER['DOCUMENT_ROOT'].'/db/status');
         $status=$DATA->get($api_name,true);
         if ($status !== true) {
+            header("HTTP/1.1 406");
             _return_("API已关闭",406);
         } else {
             return true;
@@ -234,7 +163,7 @@ function load() {
                 "data"=>"> **这里也支持markdown语法**\n欢迎使用SEAWeb，本模板由[molanp](https://github.com/molanp)开发与维护。目前正在不断完善~\n如果你觉得这个API有什么不完善的地方或者说你有什么更好的想♂法，可以在[issues](https://github.com/molanp/easyapi_wesbite/issues)上提出建议",
                 "latesttime"=>date('Y-m-d')],
             "keywords"=>"API,api",
-            "links"=>"[GitHub](https://github.com/molanp/SEAWeb)\n[Issues](https://github.com/molanp/SEAWeb/issues)\n[开发指南](https://molanp.github.io/SEAWeb)"])->save();
+            "links"=>"[GitHub](https://github.com/molanp/SEAWeb)\n[Issues](https://github.com/molanp/SEAWeb/issues)\n[开发指南](https://molanp.github.io/SEAWeb_docs)"])->save();
     }
 }
 ?>
