@@ -46,60 +46,88 @@ $web = ($web["status"] != 200) ? die($web["data"]) : $web["data"];
     <link rel="stylesheet" href="https://font.sec.miui.com/font/css?family=MiSans:400,500,600,700:Chinese_Simplify,Latin,Chinese_Traditional&amp;display=swap">
     <link rel="Shortcut Icon" href="/favicon.ico">
     <link rel="bookmark" href="/favicon.ico" type="image/x-icon" /> 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mdui/1.0.2/css/mdui.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="/assets/css/aside.css">
     <link rel="stylesheet" href="/assets/css/style.css">
     <link rel="stylesheet" href="/assets/css/mark.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mdui/1.0.2/js/mdui.min.js"></script>  
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mdui/1.0.2/css/mdui.min.css" />
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <script src="/assets/js/app.js"></script>  
     <title><?= $api_name." - ".$web["index_title"]?></title>
 </head>
-<body id="theme">
-    <button onmouseover="goout(this)" onmouseout="goin(this)" id="aside_btn"> </button>
-    <aside class="aside_box" id="aside">
-        <center><h1><?= $web["index_title"]?></h1><v><?= 'Version '.$web["version"]?></v><hr></center>
-        <ul>
-            <a href="<?= 'http://'.$_SERVER['HTTP_HOST']?>"><li><i class="fa fa-home fa-fw"></i>&nbsp;主页</li></a>
-            <a href="javascript:changeTheme()"><li>🌙&nbsp;夜间模式</li></a>
+<body class="mdui-drawer-body-left" style="padding-top: 20px;">
+    <button onmouseover="goout(this)" onmouseout="goin(this)" id="aside_btn"></button>
+    <div class="mdui-drawer" id="drawer">
+        <ul class="mdui-list">
+        <center>
+            <h1 class="mdui-text-color-theme article-title" name="title">正在加载...</h1>
+            <li class='mdui-subheader'><?= 'Version '.$web["version"]?></li>
+        </center>
+            <li class="mdui-list-item mdui-ripple">
+                <div class="mdui-list-item-content" onclick="javascript:window.location.href=window.location.origin">
+                    <i class="fa fa-home fa-fw"></i>&nbsp;主页</a>
+                </div>
+            </li>
+            <li class="mdui-list-item mdui-ripple">
+                <div class="mdui-list-item-content" onclick="javascript:changeTheme()">
+                    🌙&nbsp;夜间模式
+                </div>
+            </li>
             <?php
             foreach(array_keys($types) as $type){
-                echo "<v>$type</v>";
+                echo "<li class='mdui-subheader'>$type</li>";
                 foreach(array_keys($types[$type]) as $plugin){
                     if ($api_name == $plugin) {
-                        echo "<a href='#'><li id='active'>&nbsp;".$Parsedown->setBreaksEnabled(true)->line($plugin)."</li></a>";
+                        echo "<li class='mdui-list-item mdui-ripple'>
+                        <div class='mdui-list-item-content' id='active'>
+                        &nbsp;".$Parsedown->setBreaksEnabled(true)->line($plugin)."</div>
+                        </li>";
                     } else {
-                        echo "<a href='/i/".$types[$type][$plugin]["path"]."'><li>&nbsp;".$Parsedown->setBreaksEnabled(true)->line($plugin)."</li></a>";
+                        echo "<li class='mdui-list-item mdui-ripple'>
+                        <div class='mdui-list-item-content' onclick='javascript:window.location.href=\"".$types[$type][$plugin]["path"]."\"'>&nbsp;".$Parsedown->setBreaksEnabled(true)->line($plugin)."</div>
+                        </li>";
                     }
                 }
             }
             ?>
-            <v>管理入口</v>
-            <a href="<?= 'http://'.$_SERVER['HTTP_HOST'].'/admin'?>"><li><i class="fa fa-sign-in fa-fw"></i>&nbsp;登录</li></a>
+            <li class='mdui-subheader'>管理入口</li>
+            <li class="mdui-list-item mdui-ripple">
+                <div class="mdui-list-item-content" onclick="javascript:window.location.href='/admin'">
+                    <i class="fa fa-sign-in fa-fw"></i>&nbsp;登录
+                </div>
+            </li>
+            <center>
+                <li class="mdui-subheader">&copy;<?= $web['copyright']?></li>
+            </center>
         </ul>
         <hr>
-        <center><v><?= $web['copyright']?></v></center>
 
-    </aside>
-    <div id="title_box">
-        <h1 style="text-shadow: 2px 2px 5px FFB6C1;"><?= $api_name?></h1>
     </div>
+    <h1 style="text-align:center;" class="mdui-text-color-theme article-title"><?= $api_name?></h1>
     <div id="box">
-        <h3><i class="fa fa-star-o fa-fw"></i>&nbsp;API 简介</h3>
+        <h3 class="mdui-text-color-theme article-title"><i class="fa fa-star-o fa-fw"></i>&nbsp;API 简介</h3>
         <p><?= $api_profile?></p>
-        <p><div id="badge">版本&nbsp;<?= $version?></div>&nbsp;&nbsp;<div id="badge">作者&nbsp;<?= $author?></div>&nbsp;&nbsp;<div id="badge">状态&nbsp;<span class="status">正在获取...</span></div>
+        <p>
+        <div class="mdui-chip" mdui-tooltip="{content: 'API Version', position: 'top'}">
+            <span class="mdui-chip-title"><i class="mdui-icon material-icons mdui-text-color-blue">info_outline</i><?= $version?></span>
+        </div>
+        <div class="mdui-chip" mdui-tooltip="{content: 'API Author', position: 'top'}">
+            <span class="mdui-chip-title"><i class="mdui-icon material-icons mdui-text-color-blue">account_circle</i><?= $author?></span>
+        </div>
+        <div class="mdui-chip" mdui-tooltip="{content: 'API Status', position: 'top'}">
+            <span class="mdui-chip-title">
+                <span class="status">正在获取...</span>
+            </span>
+        </div>
     </div>
     <div id="box">
-        <h3><i class="fa fa-paper-plane-o fa-fw"></i>&nbsp;API 地址</h3>
+        <h3 class="mdui-text-color-theme article-title"><i class="fa fa-paper-plane-o fa-fw"></i>&nbsp;API 地址</h3>
         <p><?= $api_address?></p>
     </div>
     <div id="box">
-            <h3><i class="fa fa-key fa-fw"></i>&nbsp;参数列表 (打<?= $Parsedown->setBreaksEnabled(true)->line('`*`')?>是必填项)</h3>
+            <h3 class="mdui-text-color-theme article-title"><i class="fa fa-key fa-fw"></i>&nbsp;参数列表 (打<?= $Parsedown->setBreaksEnabled(true)->line('`*`')?>是必填项)</h3>
             <p><?= $request_parameters?></p>
     </div>
     <div id="box">
-            <h3><i class="fa fa-reply fa-fw"></i>&nbsp;返回的数据</h3>
+            <h3 class="mdui-text-color-theme article-title"><i class="fa fa-reply fa-fw"></i>&nbsp;返回的数据</h3>
             <p><?= $return_parameters?></p>
     </div>
     <div id="footer">
@@ -114,14 +142,15 @@ $web = ($web["status"] != 200) ? die($web["data"]) : $web["data"];
                 var status = jqXHR.status
                 var content = document.getElementsByClassName("status")[0];
                 if(status==200||status==301||status==302) {
-                    content.innerHTML = '<font color=Green><img src="data:image/gif;base64,R0lGODlhEAAQAMQAAE1zRW62cj6XTipfILXZt0OHRs/S0zaBO9He7nGpg0CpYfX19V15WTtmNZucm2V8ZV65dbq6uunv9U+1a1SdXovBj27ChPv7+wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAAAAAAALAAAAAAQABAAAAWW4CVKztMMzeNIYntFTAFZNFUwkRsBUOXTNUDuImH0fkAIhAJAXBwFXwVooVQIBorj8jhSrSwE5XFpWKaBWmWxICQojcuA5pv02BXKZDIoWyASCxEBBgt5ewpxDxQBFSyBBHp7AmRQfwkGRAF7ewdbRRRVAQQRkhMCDCwvABQQExSwk0I6DAcCiAIHOC4jJScpK7zCwyIhADs=" title="正常">正常</font>';
+                    content.innerHTML = '<i class="mdui-icon material-icons mdui-text-color-green">check</i>正常';
                 } else if(status==406) {
-                    content.innerHTML = '<font color=Red><img src="data:image/gif;base64,R0lGODlhEAAQAOYAAAAAAP////ngvfjXtfjPu/atnvawofezpfSgkvWklvWomvWqnPauoPydj4xNRvd/dfmRiO0YF+4bGu0bGukcHOkdHeUcHOMcHO4eHuMdHdwcHO4gH+kgIO8kI+oiIuokJOckJOEkJOonJ+8rKusqKussLN8qKustLewwMMwqKuAvL+w0NNwyMuw3N9ozM+w4OO06Ou0/P907O+5DQts8PMA1Ne5EROBCQt9CQu9KSuFISO9NTe9OTuBKSvBUVMFERONRUfFZWeRVVfFbW99UVPFdXd9WVudaWthUVPJiYvJjY+lgYPJlZfJmZuljY/NqavNra/NtbfNubvv29vv5+fv7+/X19f///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAAFcALAAAAAAQABAAAAfGgFeCgg6FhoOIV4VIQkA9ODWFiQ5HS05KRT45NC4mDoMORElPUVBKQTszLSUhn4pGTFYCUk1DBlYvJyCfDj+iT1UHSgxVBasfGYU6PkVKEFbQCzErJB4WhTc7PkFDA1NWNjAoIhzXDjI2OTwKVTlWBCMdHxXmLDAxCVUJMQ9UBBscKJhLoWIFAgQtVqBoQECCQA28RJAocaIECREYJkQQ6MoBBw8fQnrgUIGCyWugKFRYabIlBVegHFywQNPCBUmJCBnCOSgQADs=" title="维护">维护</font>'
+                    content.innerHTML = '<i class="mdui-icon material-icons mdui-text-color-red">do_not_disturb</i>维护';
                 } else {
-                    content.innerHTML = '<font color=#ffbb2f><img src="data:image/gif;base64,R0lGODlhEAAQAKIAAAAAAP///6vANwkJCPvNWvaTA7hoDv///yH5BAEAAAcALAAAAAAQABAAAAM6eLrcRzBKKV65OONKdBmZIVRWBmLi0pnoyKzXWaQvO7sN3Drld5MOHY0HEwGJlyHPYly+cE4F4chIAAA7" title="HTTP-'+status+'">HTTP -'+status+'</font>'
+                    content.innerHTML = '<i class="mdui-icon material-icons mdui-text-color-yellow">warning</i>HTTP -'+status;
                 }
             }
         });
     </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mdui/1.0.2/js/mdui.min.js"></script>
 </body>
 </html>

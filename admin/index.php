@@ -1,5 +1,7 @@
 <?php
 include_once('../services/Config.class.php');
+define('IN_SYS', TRUE);
+
 $DATA = new Config('../db/db');
 $account = $DATA->get('account');
 // 处理用户登录信息
@@ -87,6 +89,7 @@ if (isset($_COOKIE['token']) && $_COOKIE['token'] == $account['password']) {
     <body>
         <div id="login-box">
             <h1 id="regtitle" style="color: #525252;">登入</h1>
+            <a href="javascript:window.location.href=window.location.origin">返回网站</a>
             <div class="form">
                 <div class="mdui-textfield">
                     <input id="username" class="mdui-textfield-input" type="text" placeholder="用户名" required />

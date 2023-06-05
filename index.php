@@ -27,55 +27,72 @@ $aside_list = ($aside_list["status"] != 200) ? die($aside_list["data"]) : $aside
     <link rel="stylesheet" href="https://font.sec.miui.com/font/css?family=MiSans:400,500,600,700:Chinese_Simplify,Latin,Chinese_Traditional&amp;display=swap">
     <link rel="Shortcut Icon" href="/favicon.ico">
     <link rel="bookmark" href="/favicon.ico" type="image/x-icon" /> 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mdui/1.0.2/css/mdui.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="/assets/css/aside.css">
     <link rel="stylesheet" href="/assets/css/style.css">
     <link rel="stylesheet" href="/assets/css/mark.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mdui/1.0.2/js/mdui.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mdui/1.0.2/css/mdui.min.css" />
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <script src="/assets/js/app.js"></script>  
     <title><?= $web["index_title"]?></title>
 </head>
-<body>
-    <button onmouseover="goout(this)" onmouseout="goin(this)" id="aside_btn"> </button>
-    <aside class="aside_box" id="aside">
-        <center><h1><?= $web["index_title"]?></h1><v><?= 'Version '.$web["version"] ?></v><hr></center>
-        <ul>
-            <a href="#"><li id="active"><i class="fa fa-home fa-fw"></i>&nbsp;主页</li></a>
-            <a href="javascript:changeTheme()"><li>🌙&nbsp;夜间模式</li></a>
+<body class="mdui-drawer-body-left" style="padding-top: 20px;">
+    <button onmouseover="goout(this)" onmouseout="goin(this)" id="aside_btn"></button>
+    <div class="mdui-drawer" id="drawer">
+    <ul class="mdui-list">
+        <center>
+            <h1 class="mdui-text-color-theme article-title" name="title">正在加载...</h1>
+            <li class='mdui-subheader'><?= 'Version '.$web["version"]?></li>
+        </center>
+        <li class="mdui-list-item mdui-ripple">
+                <div class="mdui-list-item-content" onclick="javascript:window.location.href=window.location.origin">
+                    <i class="fa fa-home fa-fw"></i>&nbsp;主页</a>
+                </div>
+            </li>
+            <li class="mdui-list-item mdui-ripple">
+                <div class="mdui-list-item-content" onclick="javascript:changeTheme()">
+                    🌙&nbsp;夜间模式
+                </div>
+            </li>
             <?php
             foreach(array_keys($aside_list) as $type){
-                echo "<v>$type</v>";
+                echo "<li class='mdui-subheader'>$type</li>";
                 foreach(array_keys($aside_list[$type]) as $plugin){
-                    echo "<a href='/i/".$aside_list[$type][$plugin]["path"]."'><li>&nbsp;".$plugin."</li></a>";
+                    echo "<li class='mdui-list-item mdui-ripple'>
+                    <div class='mdui-list-item-content' onclick='javascript:window.location.href=\"/i/".$aside_list[$type][$plugin]["path"]."\"'>&nbsp;".$Parsedown->setBreaksEnabled(true)->line($plugin)."</div>
+                    </li>";
                 }
             }
             ?>
-            <v>管理入口</v>
-            <a href="admin"><li><i class="fa fa-sign-in fa-fw"></i>&nbsp;登录</li></a>
+            <li class='mdui-subheader'>管理入口</li>
+            <li class="mdui-list-item mdui-ripple">
+                <div class="mdui-list-item-content" onclick="javascript:window.location.href='/admin'">
+                    <i class="fa fa-sign-in fa-fw"></i>&nbsp;登录
+                </div>
+            </li>
+            <center>
+                <li class="mdui-subheader">&copy;<?= $web['copyright']?></li>
+            </center>
         </ul>
         <hr>
-        <center><v>&copy;<?= $web['copyright']?></v></center>
 
-    </aside>
-    <div id="title_box">
-        <h1 style="text-shadow: 2px 2px 5px FFB6C1;"><?= $web['index_title']?></h1>
     </div>
+    <h1 style="text-align:center;" class="mdui-text-color-theme article-title" name="title">正在加载...</h1>
     <div id="box">
-        <h3><i class="fa fa-star-o fa-fw"></i>&nbsp;网站简介</h3>
+        <h3 class="mdui-text-color-theme article-title"><i class="fa fa-star-o fa-fw"></i>&nbsp;网站简介</h3>
         <p><?= $Parsedown->setBreaksEnabled(true)->text($web['index_description'])?></p>
     </div>
     <div id="box">
-        <h3><i class="fa fa-paper-plane-o fa-fw"></i>&nbsp;公告<?= $Parsedown->setBreaksEnabled(true)->line('`'.$web['notice']['latesttime'].'`');?></h3>
+        <h3 class="mdui-text-color-theme article-title"><i class="fa fa-paper-plane-o fa-fw"></i>&nbsp;公告<?= $Parsedown->setBreaksEnabled(true)->line('`'.$web['notice']['latesttime'].'`');?></h3>
         <p><?= $Parsedown->setBreaksEnabled(true)->text($web['notice']['data'])?></p>
     </div>
     <div id="box">
-            <h3><i class="fa fa-link fa-fw"></i>&nbsp;友情链接</h3>
+            <h3 class="mdui-text-color-theme article-title"><i class="fa fa-link fa-fw"></i>&nbsp;友情链接</h3>
             <p><?php
             if(!empty($web['links'])){
                 $links = preg_split("/\n/", $Parsedown->setBreaksEnabled(true)->line($web['links']));
                 for($i = 0; $i < count($links); $i++) {
-                    echo '<span id="badge">🤣'.$links[$i].'</span>';
+                    echo '<div class="mdui-chip">
+                    <span class="mdui-chip-title">🤣'.$links[$i].'</span>
+                    </div>';
                 }
             }?></p>
     </div>
@@ -83,5 +100,6 @@ $aside_list = ($aside_list["status"] != 200) ? die($aside_list["data"]) : $aside
         <p><?= $web['record']?></p>
         <p id="copyright"><?= "&copy;".$web['copyright']?>&nbsp;.&nbsp;Power by <a href="https://github.com/molanp">molanp</a></p>
     </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mdui/1.0.2/js/mdui.min.js"></script>
 </body>
 </html>

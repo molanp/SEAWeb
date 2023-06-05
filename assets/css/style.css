@@ -2,78 +2,26 @@
     font-family: MiSans;
 }
 
-body {
-	font-family:PingFang SC,HarmonyOS_Regular,Helvetica Neue,Microsoft YaHei,sans-serif !important;
-	font-weight:400;
-	overflow-x:auto;
-	color:#666666;
-	margin:0 auto !important;
-}
-
-#badge {
-  display:inline-block;
-  min-width:10px;
-  text-align: center;
-  text-decoration:none;
-  vertical-align:middle;
-  padding:6px 10px;
-  font-size:12px;
-  font-weight:bold;
-  color:#000000;
-  line-height:1;
-  vertical-align:middle;
-  white-space:nowrap;
-  text-align:center;
-  background-color:#E0E0E0;
-  border-radius:10px;
-  margin:5px;
-}
-
-.dark #badge {
-  display:inline-block;
-  min-width:10px;
-  text-align: center;
-  text-decoration:none;
-  vertical-align:middle;
-  padding:6px 10px;
-  font-size:12px;
-  font-weight:bold;
-  color:#000000;
-  line-height:1;
-  vertical-align:middle;
-  white-space:nowrap;
-  text-align:center;
-  background-color:#555555;
-  border-radius:10px;
-  margin:5px;
-}
-
-h1 {
-	text-align:center
+#aside_btn {
+    position: fixed;
+    top: 40%;
+    height: 10%;
+    width: auto;
+    min-width: 15px;
+    background: #F08080;
+    border: 0;
+    color: #fff;
+    text-align: right;
+    cursor: pointer;
+    border-radius: 5px;
+    -moz-transition: margin-left 0.5s;
+    transition: margin-left 0.5s;
+    z-index: 9999;
+    display: block;
 }
 
 html {
     margin:0 auto;
-}
-
-h1 {
-    font-family: Roboto, sans-serif;
-    color: black;
-    text-shadow: rgb(241 225 255) 0px 0px 10px;
-}
-
-.dark h1 {
-    font-family: Roboto, sans-serif;
-    color: #FFFFFF;
-    text-shadow: rgb(241 225 255) 0px 0px 10px;
-}
-
-h3 {
-    color: black;
-}
-
-.dark h3 {
-    color: #FFFFFF;
 }
 
 body {
@@ -86,18 +34,6 @@ body {
     margin:0 auto;
     background-color: #FFFFFF;
     color: black;
-}
-
-.dark {
-    background-color: hsl(0, 0%, 11%);
-    /*background: url('api/1/picture?type=pic');*/
-    background-size: cover;
-    background-position: center center;
-    background-attachment: fixed;
-    background-repeat: no-repeat;
-    padding-bottom: 100px;
-    margin:0 auto;
-    color: #c9d1d9;
 }
 
 #box {
@@ -119,7 +55,7 @@ body {
     min-width: 300px;
 }
 
-.dark #box {
+.mdui-theme-layout-dark #box {
     padding: 20px;
     margin: 0 auto;
     margin-top: 1%;
@@ -160,30 +96,6 @@ body {
     backdrop-filter: blur(20px);
 }
 
-p {
-    color: black;
-}
-
-.dark p {
-    color: #FFFFFF;
-}
-
 a {
-    color: #FFC0CB;
-}
-
-hr {
-    height: 1px;
-    background-color: #b5b5b599;
-    border: none;
-}
-
-v {
-    color: #00000099;
-    padding-left: 5px;
-}
-
-.dark v {
-    color:#FFFFFFb2;
-    padding-left: 5px;
+    color: #fdabb8;
 }
