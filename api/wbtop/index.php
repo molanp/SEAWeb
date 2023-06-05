@@ -13,7 +13,7 @@ if (handle_check()) {
     $wbtop = curl_get("https://weibo.com/ajax/side/hotSearch")['data']['realtime'];
     $i = 0;
     for($i;$i<count($wbtop);$i++) {
-        if(!in_array('is_ad',$wbtop[$i])) {
+        if(isset($wbtop[$i]["category"])) {
             $top[$i] = [
                 "rank"=>$i+1,
                 "hot_word_num"=>$wbtop[$i]["num"],
@@ -22,6 +22,6 @@ if (handle_check()) {
                 "url"=>"https://s.weibo.com/weibo?q=%23{$wbtop[$i]["word"]}%23"];
         }
     };
-    _return_($top);
+    _return_(array_values($top));
 }
 ?>

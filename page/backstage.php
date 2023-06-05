@@ -1,12 +1,5 @@
 <?php
-define('IN_SYS', TRUE);
-include_once('../services/Config.class.php');
-//include_once('../services/mark.php');
-include_once('../services/until.php');
-
-if (!isset($_COOKIE['token']) || $_COOKIE['token'] != $account['password']) {
-    die("<script>window.location.href='http://".$_SERVER['HTTP_HOST']."/admin'</script>");
-}
+include_once($_SERVER["DOCUMENT_ROOT"]."/services/lock.php");
 ?>
 <!DOCTYPE html>
 <html lang="zh-cn">
@@ -27,10 +20,10 @@ if (!isset($_COOKIE['token']) || $_COOKIE['token'] != $account['password']) {
 <body>
     <div class="navbar">
     <ul class="nav">
-        <li><a href="#">首页</a></li>
+        <li><a href="javascript:window.location.href=window.location.origin">返回网站</a></li>
         <li><a href="javascript:loginout()">退出登录</a></li>
         <li><a href="javascript:resetpassword()">修改密码</a></li>
-        <li><a href="#">您好,<strong><?= $_COOKIE['user'];?></strong></a></li>
+        <li>您好,<strong><?= $_COOKIE['user'];?></strong></li>
     </ul>
     </div>
 
@@ -42,7 +35,7 @@ if (!isset($_COOKIE['token']) || $_COOKIE['token'] != $account['password']) {
             </ul>
         </div>
         <div class="content">
-        <blockquote>SEAWeb版本:<span name="version"></span>(最新版本:<span name="latest"></span>)</blockquote>
+        <blockquote>SEAWeb版本:<span name="version">114514</span>(最新版本:<span name="latest">正在获取...</span>)</blockquote>
         <h3>修改网页信息</h3>
         <br>
         网站标题：<p><textarea id='editor' name='index_title'>正在加载...</textarea></p>

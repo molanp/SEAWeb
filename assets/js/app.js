@@ -1,21 +1,21 @@
-
 window.onload = function() {
+    var $$ = mdui.$;
+    var inst = new mdui.Drawer('#drawer',overlay=true,swipe=true);
     //夜间模式
     let darkMode = getCookie("theme");
-    let theme = document.querySelector("#theme");
     if (darkMode === "dark") enableDarkMode();
     //侧边栏
-    let box = document.getElementById("aside")
     let btn = document.getElementById("aside_btn")
-    btn.onclick = function() {
-        if (box.offsetLeft == 0) {
-            box.style['margin-left'] = -1*document.body.clientWidth + "px"
-        } else {
-            box.style['margin-left'] = 0 + "px"
-        }
+    btn.style.marginLeft="-5px";
+    inst.close();
+    //sider
+    $$('#aside_btn').on('click', function () {
+        inst.toggle();
+      });
+    load_home_info();
+    mdui.mutation();
     }
-    btn.style.marginLeft="-20px";
-}
+
 //cookies
 function getCookie(cname)
 {
@@ -35,11 +35,13 @@ function setCookie(cname,cvalue)
 }
 
 function enableDarkMode() {
-    theme.classList.add("dark");
+    var $ = mdui.$;
+    $('body').addClass("mdui-theme-layout-dark");
     setCookie("theme", "dark");
 };
 function disableDarkMode() {
-    theme.classList.remove("dark");
+    var $ = mdui.$;
+    $('body').removeClass("mdui-theme-layout-dark");
     setCookie("theme", "light");
 };
 function changeTheme() {
@@ -56,9 +58,34 @@ window
 //aside
 function goout(x) {
     x.style.backgroundColor='#eb6161';
-    x.style.marginLeft="-5px"
 }
 function goin(x) {
     x.style.backgroundColor='#F08080';
-    x.style.marginLeft="-20px"
+}
+
+function load_home_info() {
+    $.get(
+        url=window.location.origin+'/v2/info',
+        data= {"for":"web"},
+        function(data,status) {
+            if (status=='success') {
+                var data = data.data;
+                try {
+                    document.getElementsByName("title")[0].innerHTML = data.index_title;
+                    document.getElementsByName("title")[1].innerHTML = data.index_title;
+                
+                /*
+                document.getElementsByName("index_description")[0].value = data.index_description;
+                document.getElementsByName("notice")[0].innerHTML = data.notice.data;
+                document.getElementsByName("copyright")[0].value = data.copyright;
+                document.getElementsByName("record")[0].value = data.record;
+                document.getElementsByName("links")[0].value = data.links;
+                document.getElementsByName("keywords")[0].value = data.keywords;
+                document.getElementsByName("version")[0].innerHTML = data.version;*/
+                } catch(error) {
+                    console.log(error)
+                }
+            }
+        }
+    );
 }
