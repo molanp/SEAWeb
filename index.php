@@ -44,12 +44,12 @@ $aside_list = ($aside_list["status"] != 200) ? die($aside_list["data"]) : $aside
         </center>
         <li class="mdui-list-item mdui-ripple">
                 <div class="mdui-list-item-content" onclick="javascript:window.location.href=window.location.origin">
-                    <i class="fa fa-home fa-fw"></i>&nbsp;主页</a>
+                <i class="mdui-icon material-icons">home</i>主页</a>
                 </div>
             </li>
             <li class="mdui-list-item mdui-ripple">
                 <div class="mdui-list-item-content" onclick="javascript:changeTheme()">
-                    🌙&nbsp;夜间模式
+                    <i class="mdui-icon material-icons">brightness_medium</i>夜间模式
                 </div>
             </li>
             <?php
@@ -65,7 +65,7 @@ $aside_list = ($aside_list["status"] != 200) ? die($aside_list["data"]) : $aside
             <li class='mdui-subheader'>管理入口</li>
             <li class="mdui-list-item mdui-ripple">
                 <div class="mdui-list-item-content" onclick="javascript:window.location.href='/admin'">
-                    <i class="fa fa-sign-in fa-fw"></i>&nbsp;登录
+                    <i class="mdui-icon material-icons">exit_to_app</i>登录
                 </div>
             </li>
             <center>
@@ -77,15 +77,15 @@ $aside_list = ($aside_list["status"] != 200) ? die($aside_list["data"]) : $aside
     </div>
     <h1 style="text-align:center;" class="mdui-text-color-theme article-title" name="title">正在加载...</h1>
     <div id="box">
-        <h3 class="mdui-text-color-theme article-title"><i class="fa fa-star-o fa-fw"></i>&nbsp;网站简介</h3>
+        <h3 class="mdui-text-color-theme article-title"><i class="mdui-icon material-icons mdui-text-color-blue">star_border</i>网站简介</h3>
         <p><?= $Parsedown->setBreaksEnabled(true)->text($web['index_description'])?></p>
     </div>
     <div id="box">
-        <h3 class="mdui-text-color-theme article-title"><i class="fa fa-paper-plane-o fa-fw"></i>&nbsp;公告<?= $Parsedown->setBreaksEnabled(true)->line('`'.$web['notice']['latesttime'].'`');?></h3>
+        <h3 class="mdui-text-color-theme article-title"><i class="mdui-icon material-icons mdui-text-color-orange">announcement</i>公告<?= $Parsedown->setBreaksEnabled(true)->line('`'.$web['notice']['latesttime'].'`');?></h3>
         <p><?= $Parsedown->setBreaksEnabled(true)->text($web['notice']['data'])?></p>
     </div>
     <div id="box">
-            <h3 class="mdui-text-color-theme article-title"><i class="fa fa-link fa-fw"></i>&nbsp;友情链接</h3>
+            <h3 class="mdui-text-color-theme article-title"><i class="mdui-icon material-icons mdui-text-color-blue">link</i>友情链接</h3>
             <p><?php
             if(!empty($web['links'])){
                 $links = preg_split("/\n/", $Parsedown->setBreaksEnabled(true)->line($web['links']));
