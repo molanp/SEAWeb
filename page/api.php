@@ -63,12 +63,12 @@ $web = ($web["status"] != 200) ? die($web["data"]) : $web["data"];
         </center>
             <li class="mdui-list-item mdui-ripple">
                 <div class="mdui-list-item-content" onclick="javascript:window.location.href=window.location.origin">
-                    <i class="fa fa-home fa-fw"></i>&nbsp;主页</a>
+                <i class="mdui-icon material-icons">home</i>主页</a>
                 </div>
             </li>
             <li class="mdui-list-item mdui-ripple">
                 <div class="mdui-list-item-content" onclick="javascript:changeTheme()">
-                    🌙&nbsp;夜间模式
+                    <i class="mdui-icon material-icons">brightness_medium</i>夜间模式
                 </div>
             </li>
             <?php
@@ -91,7 +91,7 @@ $web = ($web["status"] != 200) ? die($web["data"]) : $web["data"];
             <li class='mdui-subheader'>管理入口</li>
             <li class="mdui-list-item mdui-ripple">
                 <div class="mdui-list-item-content" onclick="javascript:window.location.href='/admin'">
-                    <i class="fa fa-sign-in fa-fw"></i>&nbsp;登录
+                    <i class="mdui-icon material-icons">exit_to_app</i>登录
                 </div>
             </li>
             <center>
@@ -103,7 +103,7 @@ $web = ($web["status"] != 200) ? die($web["data"]) : $web["data"];
     </div>
     <h1 style="text-align:center;" class="mdui-text-color-theme article-title"><?= $api_name?></h1>
     <div id="box">
-        <h3 class="mdui-text-color-theme article-title"><i class="fa fa-star-o fa-fw"></i>&nbsp;API 简介</h3>
+        <h3 class="mdui-text-color-theme article-title"><i class="mdui-icon material-icons mdui-text-color-blue">star_border</i>API 简介</h3>
         <p><?= $api_profile?></p>
         <p>
         <div class="mdui-chip" mdui-tooltip="{content: 'API Version', position: 'top'}">
@@ -119,15 +119,15 @@ $web = ($web["status"] != 200) ? die($web["data"]) : $web["data"];
         </div>
     </div>
     <div id="box">
-        <h3 class="mdui-text-color-theme article-title"><i class="fa fa-paper-plane-o fa-fw"></i>&nbsp;API 地址</h3>
+        <h3 class="mdui-text-color-theme article-title"><i class="mdui-icon material-icons mdui-text-color-orange">view_compact</i>API 地址</h3>
         <p><?= $api_address?></p>
     </div>
     <div id="box">
-            <h3 class="mdui-text-color-theme article-title"><i class="fa fa-key fa-fw"></i>&nbsp;参数列表 (打<?= $Parsedown->setBreaksEnabled(true)->line('`*`')?>是必填项)</h3>
+            <h3 class="mdui-text-color-theme article-title"><i class="mdui-icon material-icons mdui-text-color-purple">vpn_key</i>参数列表 (打<?= $Parsedown->setBreaksEnabled(true)->line('`*`')?>是必填项)</h3>
             <p><?= $request_parameters?></p>
     </div>
     <div id="box">
-            <h3 class="mdui-text-color-theme article-title"><i class="fa fa-reply fa-fw"></i>&nbsp;返回的数据</h3>
+            <h3 class="mdui-text-color-theme article-title"><i class="mdui-icon material-icons mdui-text-color-gray">reply</i>返回的数据</h3>
             <p><?= $return_parameters?></p>
     </div>
     <div id="footer">
@@ -146,7 +146,7 @@ $web = ($web["status"] != 200) ? die($web["data"]) : $web["data"];
                 } else if(status==406) {
                     content.innerHTML = '<i class="mdui-icon material-icons mdui-text-color-red">do_not_disturb</i>维护';
                 } else {
-                    content.innerHTML = '<i class="mdui-icon material-icons mdui-text-color-yellow">warning</i>HTTP -'+status;
+                    content.innerHTML = '<i class="mdui-icon material-icons mdui-text-color-orange">warning</i>HTTP -'+status;
                 }
             }
         });
