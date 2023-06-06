@@ -1,6 +1,7 @@
 <?php
 include_once($_SERVER['DOCUMENT_ROOT'].'/services/Config.class.php');
 include_once($_SERVER['DOCUMENT_ROOT'].'/services/until.php');
+include_once($_SERVER['DOCUMENT_ROOT'].'/services/__version__.php');
 if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 
     load();
@@ -22,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
                 "notice"=>$WEB['notice'],
                 "keywords"=>$WEB['keywords'],
                 "links"=>$WEB['links'],
-                "version"=>$WEB['version']
+                "version"=>$__version__
             ];
             break;
         case 'status':

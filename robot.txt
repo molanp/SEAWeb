@@ -1,7 +1,3 @@
 User-agent: *
 Crawl-delay: 120
 Disallow: /admin
-Disallow: /assets
-Disallow: /db
-Disallow: /services
-Disallow: /page

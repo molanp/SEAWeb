@@ -35,16 +35,16 @@ include_once($_SERVER["DOCUMENT_ROOT"]."/services/lock.php");
             </ul>
         </div>
         <div class="content">
-        <blockquote>SEAWeb版本:<span name="version">114514</span>(最新版本:<span name="latest">正在获取...</span>)</blockquote>
+        <blockquote>SEAWeb版本:<span name="version">114514</span>(最新版本:<span name="latest">Loading...</span>)</blockquote>
         <h3>修改网页信息</h3>
         <br>
-        网站标题：<p><textarea id='editor' name='index_title'>正在加载...</textarea></p>
-        网站简介信息：<p><textarea id='editor' name='index_description'>正在加载...</textarea></p>
-        网站公告：<p><textarea id='editor' name='notice'>正在加载...</textarea></p>
-        网站底部版权信息：<p><textarea id='editor' name='copyright'>正在加载...</textarea></p>
-        网页备案号：<p><textarea id='editor' name='record'>正在加载...</textarea></p>
-        友情链接(一行一个)：示例： [链接1](http://xxx)<p><textarea id='editor' name='links'>正在加载...</textarea></p>
-        网站keywords(逗号分隔)：<p><textarea id='editor' name='keywords'>正在加载...</textarea></p>
+        网站标题：<p><textarea id='editor' name='index_title'>Loading...</textarea></p>
+        网站简介信息：<p><textarea id='editor' name='index_description'>Loading...</textarea></p>
+        网站公告：<p><textarea id='editor' name='notice'>Loading...</textarea></p>
+        网站底部版权信息：<p><textarea id='editor' name='copyright'>Loading...</textarea></p>
+        网页备案号：<p><textarea id='editor' name='record'>Loading...</textarea></p>
+        友情链接(一行一个)：示例： [链接1](http://xxx)<p><textarea id='editor' name='links'>Loading...</textarea></p>
+        网站keywords(逗号分隔)：<p><textarea id='editor' name='keywords'>Loading...</textarea></p>
         <button onclick='save()'
         class='login-button mdui-btn mdui-btn-raised mdui-ripple'>保存</button>"
         </div>

@@ -1,11 +1,9 @@
 <?php
 define('IN_SYS', TRUE);
-include_once('../services/mark.php');
-include_once('../services/markExtra.php');
+
 include_once('../services/until.php');
 
 load();
-$Parsedown = new ParsedownExtra();
 $types = curl_get('http://'.$_SERVER['HTTP_HOST'].'/v2/info');
 $types = ($types["status"] != 200) ? die($types["data"]) : $types["data"];
 $goto = preg_replace('/\/i\//', '', $_SERVER["REQUEST_URI"]);
@@ -21,13 +19,6 @@ foreach(array_keys($types) as $type) {
 if (!isset($data)) {
     die(header("location: http://".$_SERVER['HTTP_HOST']));
 }
-$status = $data['status'];
-$api_profile = $Parsedown->setBreaksEnabled(true)->line($data['api_profile']);
-$version = $data['version'];
-$author = $data['author'];
-$api_address = $Parsedown->setBreaksEnabled(true)->text($data['api_address']);
-$request_parameters = $Parsedown->setBreaksEnabled(true)->text($data['request_parameters']);
-$return_parameters = $Parsedown->setBreaksEnabled(true)->text($data['return_parameters']);
 $web = curl_get('http://'.$_SERVER['HTTP_HOST'].'/v2/info',["for"=>"web"]);
 $web = ($web["status"] != 200) ? die($web["data"]) : $web["data"];
 ?>
@@ -42,14 +33,16 @@ $web = ($web["status"] != 200) ? die($web["data"]) : $web["data"];
     <meta name="force-rendering" content="webkit" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="keywords" content="<?=$web["keywords"]?>">
-    <meta name="description" content="<?= str_replace("\n", "", strip_tags($api_profile))?>">
+    <meta name="description" content="<?= str_replace("\n", "", strip_tags($data['api_profile']))?>">
     <link rel="stylesheet" href="https://font.sec.miui.com/font/css?family=MiSans:400,500,600,700:Chinese_Simplify,Latin,Chinese_Traditional&amp;display=swap">
     <link rel="Shortcut Icon" href="/favicon.ico">
     <link rel="bookmark" href="/favicon.ico" type="image/x-icon" /> 
     <link rel="stylesheet" href="/assets/css/style.css">
     <link rel="stylesheet" href="/assets/css/mark.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mdui/1.0.2/css/mdui.min.css" />
+    <script src="https://cdn.bootcss.com/marked/5.0.4/marked.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="/assets/js/purify.min.js"></script>
     <script src="/assets/js/app.js"></script>  
     <title><?= $api_name." - ".$web["index_title"]?></title>
 </head>
@@ -58,8 +51,8 @@ $web = ($web["status"] != 200) ? die($web["data"]) : $web["data"];
     <div class="mdui-drawer" id="drawer">
         <ul class="mdui-list">
         <center>
-            <h1 class="mdui-text-color-theme article-title" name="title">正在加载...</h1>
-            <li class='mdui-subheader'><?= 'Version '.$web["version"]?></li>
+            <h1 class="mdui-text-color-theme article-title" name="title">Loading...</h1>
+            <li class='mdui-subheader'>Version&nbsp;<span name="version">Loading...</span></li>
         </center>
             <li class="mdui-list-item mdui-ripple">
                 <div class="mdui-list-item-content" onclick="javascript:window.location.href=window.location.origin">
@@ -71,23 +64,7 @@ $web = ($web["status"] != 200) ? die($web["data"]) : $web["data"];
                     <i class="mdui-icon material-icons">brightness_medium</i>夜间模式
                 </div>
             </li>
-            <?php
-            foreach(array_keys($types) as $type){
-                echo "<li class='mdui-subheader'>$type</li>";
-                foreach(array_keys($types[$type]) as $plugin){
-                    if ($api_name == $plugin) {
-                        echo "<li class='mdui-list-item mdui-ripple'>
-                        <div class='mdui-list-item-content' id='active'>
-                        &nbsp;".$Parsedown->setBreaksEnabled(true)->line($plugin)."</div>
-                        </li>";
-                    } else {
-                        echo "<li class='mdui-list-item mdui-ripple'>
-                        <div class='mdui-list-item-content' onclick='javascript:window.location.href=\"".$types[$type][$plugin]["path"]."\"'>&nbsp;".$Parsedown->setBreaksEnabled(true)->line($plugin)."</div>
-                        </li>";
-                    }
-                }
-            }
-            ?>
+            <span name="sider_list">Loading...</span>
             <li class='mdui-subheader'>管理入口</li>
             <li class="mdui-list-item mdui-ripple">
                 <div class="mdui-list-item-content" onclick="javascript:window.location.href='/admin'">
@@ -95,44 +72,43 @@ $web = ($web["status"] != 200) ? die($web["data"]) : $web["data"];
                 </div>
             </li>
             <center>
-                <li class="mdui-subheader">&copy;<?= $web['copyright']?></li>
+                <li class="mdui-subheader" name="copyright"></li>
             </center>
         </ul>
         <hr>
 
     </div>
-    <h1 style="text-align:center;" class="mdui-text-color-theme article-title"><?= $api_name?></h1>
+    <h1 style="text-align:center;" class="mdui-text-color-theme article-title"><span name="api_name">Loading...</span></h1>
     <div id="box">
         <h3 class="mdui-text-color-theme article-title"><i class="mdui-icon material-icons mdui-text-color-blue">star_border</i>API 简介</h3>
-        <p><?= $api_profile?></p>
-        <p>
+        <span name="api_profile">Loading...</span>
         <div class="mdui-chip" mdui-tooltip="{content: 'API Version', position: 'top'}">
-            <span class="mdui-chip-title"><i class="mdui-icon material-icons mdui-text-color-blue">info_outline</i><?= $version?></span>
+            <span class="mdui-chip-title"><i class="mdui-icon material-icons mdui-text-color-blue">info_outline</i><span name="api_version">Loading...</span></span>
         </div>
         <div class="mdui-chip" mdui-tooltip="{content: 'API Author', position: 'top'}">
-            <span class="mdui-chip-title"><i class="mdui-icon material-icons mdui-text-color-blue">account_circle</i><?= $author?></span>
+            <span class="mdui-chip-title"><i class="mdui-icon material-icons mdui-text-color-blue">account_circle</i><span name="author">Loading...</span></span>
         </div>
         <div class="mdui-chip" mdui-tooltip="{content: 'API Status', position: 'top'}">
             <span class="mdui-chip-title">
-                <span class="status">正在获取...</span>
+                <span class="status">Loading...</span>
             </span>
         </div>
     </div>
     <div id="box">
         <h3 class="mdui-text-color-theme article-title"><i class="mdui-icon material-icons mdui-text-color-orange">view_compact</i>API 地址</h3>
-        <p><?= $api_address?></p>
+        <span name="api_address">Loading...</span>
     </div>
     <div id="box">
-            <h3 class="mdui-text-color-theme article-title"><i class="mdui-icon material-icons mdui-text-color-purple">vpn_key</i>参数列表 (打<?= $Parsedown->setBreaksEnabled(true)->line('`*`')?>是必填项)</h3>
-            <p><?= $request_parameters?></p>
+        <h3 class="mdui-text-color-theme article-title"><i class="mdui-icon material-icons mdui-text-color-purple">vpn_key</i>参数列表 (打<code>*</code>是必填项)</h3>
+        <span name="request_parameters">Loading...</span>
     </div>
     <div id="box">
-            <h3 class="mdui-text-color-theme article-title"><i class="mdui-icon material-icons mdui-text-color-gray">reply</i>返回的数据</h3>
-            <p><?= $return_parameters?></p>
+        <h3 class="mdui-text-color-theme article-title"><i class="mdui-icon material-icons mdui-text-color-gray">reply</i>返回的数据</h3>
+        <span name="return_parameters">Loading...</span>
     </div>
     <div id="footer">
-        <p><?= $web['record']?></p>
-        <p id="copyright"><?= "&copy;".$web['copyright']?>&nbsp;.&nbsp;Power by <a href="https://github.com/molanp">molanp</a></p>
+        <p name="record">Loading...</p>
+        <p id="copyright"><span name="copyright">Loading...</span>&nbsp;.&nbsp;Power by <a href="https://github.com/molanp">molanp</a></p>
     </div>
     <script>
         var url = window.location.origin + "/api/" + window.location.pathname.match(/\/i\/(.+)/)[1];
