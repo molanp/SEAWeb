@@ -13,7 +13,3 @@
 ## 备注
 
 本模板内大部分内容均可在`http://{your_website}/admin`中修改
-
-# 感谢
-
-[parsedown](https://github.com/erusev/parsedown):一个开源的php解析markdown方法
