@@ -27,17 +27,16 @@ function login() {
         };
         sendData("/v2/login", send, function(data, status) {
             if (status === 'success') {
-                // 请求成功，处理响应数据
-                //console.log(data.data);
                 document.cookie=`user=${data.data.user};`;
                 document.cookie=`token=${data.data.token};`;
                 location.reload();
             } else {
-                // 请求失败，处理错误信息
                 console.error(data);
                 regFail(JSON.stringify(data.data));
             }
-          });
+          }).fail(function(status){
+            regFail(JSON.stringify(status));
+          })
 
     }
 }
@@ -98,11 +97,9 @@ function resetpassword() {
                     regFail(data.data)
                 }
             } else {
-                // 请求失败，处理错误信息
-                //console.error(data);
-                regFail('连接服务器超时，请重试');
+                regFail(data.data);
             }
-        });
+        }).fail(function(){regFail('连接服务器超时，请重试');})
     }
   });
 }

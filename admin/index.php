@@ -4,7 +4,6 @@ define('IN_SYS', TRUE);
 
 $DATA = new Config('../db/db');
 $account = $DATA->get('account');
-// 处理用户登录信息
 if (isset($_COOKIE['token']) && $_COOKIE['token'] == $account['password']) {
     die(include_once('../page/backstage.php'));
 } else {
