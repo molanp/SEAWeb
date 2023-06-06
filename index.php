@@ -5,9 +5,7 @@ include_once('services/until.php');
 
 load();
 $web = curl_get('http://'.$_SERVER['HTTP_HOST'].'/v2/info',["for"=>"web"]);
-//$aside_list = curl_get('http://'.$_SERVER['HTTP_HOST'].'/v2/info');
 $web = ($web["status"] != 200) ? die($web["data"]) : $web["data"];
-//$aside_list = ($aside_list["status"] != 200) ? die($aside_list["data"]) : $aside_list["data"];
 ?>
 
 <!DOCTYPE html>

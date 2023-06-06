@@ -7,9 +7,9 @@
 
 - 要求：PHP>=5.0
 - 1. 上传文件至服务器
-- 2. 访问`http://{your_website}`进行初次配置
+- 2. 访问`http://{your_website_url}`进行初次配置
 - 3. Run!
 
 ## 备注
 
-本模板内大部分内容均可在`http://{your_website}/admin`中修改
+本模板内大部分内容均可在`http://{your_website_url}/admin`中修改
