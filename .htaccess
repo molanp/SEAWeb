@@ -1,7 +1,7 @@
 <IfModule mod_rewrite.c>
 php_value date.timezone Asia/Shanghai
 Options -Indexes
-ErrorDocument 404 /404.php
+ErrorDocument 404 /404.html
 RewriteEngine On  
 RewriteBase /
 RewriteCond %{REQUEST_FILENAME} !-f
