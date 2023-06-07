@@ -1,5 +1,4 @@
 window.onload = function() {
-    var $$ = mdui.$;
     var inst = new mdui.Drawer('#drawer',overlay=true,swipe=true);
     //夜间模式
     let darkMode = getCookie("theme");
@@ -9,7 +8,7 @@ window.onload = function() {
     btn.style.marginLeft="-5px";
     inst.close();
     //sider
-    $$('#aside_btn').on('click', function () {
+    mdui.$('#aside_btn').on('click', function () {
         inst.toggle();
       });
       marked.setOptions({
@@ -121,17 +120,17 @@ function load_info() {
                 for (var plugin in data[type]) {
                     if (window.location.pathname!='/'&&window.location.pathname.match(/\/([^\/]+)\/?$/)[1]==data[type][plugin]["path"]) {
                         list += `<li class='mdui-list-item mdui-ripple' id='active'>
-                        <div class='mdui-list-item-content'>
+                        <a class='mdui-list-item-content' href='#'>
                         ${DOMPurify.sanitize(plugin)}
-                        </div>
+                        </a>
                         </li>`;
                         var api_name = plugin;
                         var api_data = data[type][plugin];
                     } else {
                         list += `<li class='mdui-list-item mdui-ripple'>
-                        <div class='mdui-list-item-content' onclick="javascript:window.location.href='/i/${data[type][plugin]["path"]}'">
+                        <a class='mdui-list-item-content' href='/i/${data[type][plugin]["path"]}'">
                         ${DOMPurify.sanitize(plugin)}
-                        </div>
+                        </a>
                         </li>`;
                     }
                 }
