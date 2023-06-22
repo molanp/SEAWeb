@@ -1,12 +1,12 @@
 <?php
 define('IN_SYS', TRUE);
 
-include_once('../services/until.php');
+include_once($_SERVER['DOCUMENT_ROOT'].'/services/until.php');
 
 load();
 $types = curl_get('http://'.$_SERVER['HTTP_HOST'].'/v2/info');
 $types = ($types["status"] != 200) ? die($types["data"]) : $types["data"];
-$goto = preg_replace('/\/i\//', '', $_SERVER["REQUEST_URI"]);
+$goto = preg_replace('/\//', '', $_SERVER["REQUEST_URI"]);
 
 foreach(array_keys($types) as $type) {
     foreach(array_keys($types[$type]) as $p_name) {

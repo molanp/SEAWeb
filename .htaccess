@@ -6,6 +6,12 @@ RewriteEngine On
 RewriteBase /
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^i/(.*)$ page/api.php/$1 [L]
+RewriteCond %{REQUEST_URI} !^/v2
+RewriteRule ^(.*)$ page/v2/api.php/$1 [L]
 RewriteRule ^v2/([^/]+)$ page/v2/$1.php [QSA,L]
+RewriteRule ^cache(/.*)?$ - [F]
+RewriteRule ^services(/.*)?$ - [F]
+RewriteRule ^page/v2(/.*)?$ - [L]
+RewriteRule ^page(/.*)?$ - [F]
+RewriteRule ^db(/.*)?$ - [F]
 </IfModule>
