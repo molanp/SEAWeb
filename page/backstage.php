@@ -1,6 +1,3 @@
-<?php
-include_once($_SERVER["DOCUMENT_ROOT"]."/services/lock.php");
-?>
 <!DOCTYPE html>
 <html lang="zh-cn">
 <head>

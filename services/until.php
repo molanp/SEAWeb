@@ -121,4 +121,44 @@ function load() {
             "links"=>"[GitHub](https://github.com/molanp/SEAWeb)\n[Issues](https://github.com/molanp/SEAWeb/issues)\n[开发指南](https://molanp.github.io/SEAWeb_docs)"])->save();
     }
 }
+/**
+ * 缓存函数
+ *
+ * @param string $name 缓存文件名，包含目录路径和文件名，例如：cache/cc/test
+ * @param mixed $data 缓存数据
+ * @return mixed 返回缓存数据（如果存在且未过期），否则返回 null
+ */
+function cache($name, $data) {
+    // 定义缓存文件名和有效期
+    $filename = 'cache/'.$name;
+    $expiration = 60 * 60 * 3; // 3小时
+    
+    // 如果缓存文件存在且未过期，则读取缓存数据并返回
+    if (file_exists($filename) && time() - filemtime($filename) < $expiration) {
+        touch($filename);
+        return file_get_contents($filename);
+    }
+    
+    // 否则，如果目录不存在，则创建目录
+    if (!is_dir('cache')) {
+        mkdir('cache', 0755, true);
+    }
+    
+    // 创建新的缓存文件并写入数据
+    file_put_contents($filename, $data);
+    
+    // 设置缓存文件的删除时间
+    touch($filename, time() + $expiration);
+    
+    // 删除过期的缓存文件
+    $files = array_diff(scandir('cache'), array('.', '..'));
+    foreach ($files as $file) {
+        $filePath = 'cache/'.$file;
+        if (is_dir($filePath) && count(glob($filePath . '/*')) === 0) {
+            rmdir($filePath);
+        } elseif (is_file($filePath) && time() - filemtime($filePath) >= $expiration) {
+            unlink($filePath);
+        }
+    }
+}
 ?>

@@ -115,7 +115,7 @@
 
  
 
-define('CONFIG_EXIT', '<?php include_once($_SERVER["DOCUMENT_ROOT"]."/services/lock.php");?>'); 
+define('CONFIG_EXIT', '<?php exit;?>'); 
 
 class Config { 
 

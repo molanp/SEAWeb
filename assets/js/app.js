@@ -1,17 +1,12 @@
 window.onload = function() {
-    var inst = new mdui.Drawer('#drawer',overlay=true,swipe=true);
     //夜间模式
     let darkMode = getCookie("theme");
     if (darkMode === "dark") enableDarkMode();
     //侧边栏
     let btn = document.getElementById("aside_btn")
     btn.style.marginLeft="-5px";
-    inst.close();
-    //sider
-    mdui.$('#aside_btn').on('click', function () {
-        inst.toggle();
-      });
-      marked.setOptions({
+
+    marked.setOptions({
         gfm: true,//默认为true。 允许 Git Hub标准的markdown.
         tables: true,//默认为true。 允许支持表格语法。该选项要求 gfm 为true。
         breaks: false,//默认为false。 允许回车换行。该选项要求 gfm 为true。
@@ -24,6 +19,12 @@ window.onload = function() {
     });
     load_info();
     mdui.mutation();
+    var inst = new mdui.Drawer('#drawer',overlay=true,swipe=true);
+    inst.close();
+    //sider
+    mdui.$('#aside_btn').on('click', function () {
+        inst.toggle();
+      });
     }
 
 //cookies
@@ -90,7 +91,8 @@ function load_info() {
                 links = data.links.split(/[\r\n]+/);
                 for (var link in links) {
                     link_list += `<div class="mdui-chip">
-                    <span class="mdui-chip-title">🤣${marked.parse(links[link]).match(/<p>(.*?)<\/p>/)[1]}</span>
+                    <img class="mdui-chip-icon" src="/favicon.ico">
+                    <span class="mdui-chip-title">${marked.parse(links[link]).match(/<p>(.*?)<\/p>/)[1]}</span>
                     </div>`;
                 }
                 document.getElementsByName("links")[0].innerHTML = link_list;
@@ -128,7 +130,7 @@ function load_info() {
                         var api_data = data[type][plugin];
                     } else {
                         list += `<li class='mdui-list-item mdui-ripple'>
-                        <a class='mdui-list-item-content' href='/i/${data[type][plugin]["path"]}'">
+                        <a class='mdui-list-item-content' href='/${data[type][plugin]["path"]}'">
                         ${DOMPurify.sanitize(plugin)}
                         </a>
                         </li>`;
@@ -154,3 +156,36 @@ function load_info() {
         alert(`信息加载失败 code:${status}`)
     });
 }
+// 获取favicon链接
+function getFavicon(url) {
+    let favicon = '🚫';
+    
+    // 构造完整的favicon链接
+    const faviconUrl = url.replace(/\/$/, '') + '/favicon.ico';
+  
+    // 检查favicon文件是否存在
+    // 这里使用了异步请求来检查文件是否存在
+    const xhr = new XMLHttpRequest();
+    xhr.open('HEAD', faviconUrl, false);
+    xhr.send();
+  
+    if (xhr.status === 200) {
+      favicon = faviconUrl;
+    } else {
+      // 获取网站主页的HTML内容
+      const html = fetch(url).then(response => response.text());
+  
+      // 在HTML内容中查找favicon链接
+      const pattern = /<link.*?rel=["'].*?icon.*?["'].*?href=["'](.*?)["'].*?>/i;
+      const matches = html.match(pattern);
+  
+      // 如果找到favicon链接，则构造完整的链接
+      if (matches && matches.length > 1) {
+        const faviconLink = matches[1];
+        favicon = faviconLink.startsWith('http') ? faviconLink : url.replace(/\/$/, '') + '/' + faviconLink.replace(/^\//, '');
+      }
+    }
+  
+    return favicon;
+  }
+  
