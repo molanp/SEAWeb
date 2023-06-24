@@ -72,7 +72,7 @@ set_error_handler("Error");
 function handle_check() {
     if (strpos($_SERVER['REQUEST_URI'], 'api/') !== false) {
         global $api_name;
-        $DATA = new Config($_SERVER['DOCUMENT_ROOT'].'/db/status');
+        $DATA = new Config($_SERVER['DOCUMENT_ROOT'].'/data/status');
         $status=$DATA->get($api_name,true);
         if ($status !== true) {
             header("HTTP/1.1 406");
@@ -105,9 +105,9 @@ function find_files($dir, $prefix = '') {
 }
 //初始化
 function load() {
-    $DATA = new Config($_SERVER['DOCUMENT_ROOT'].'/db/db');
-    if(!file_exists($_SERVER['DOCUMENT_ROOT'].'/db')) {
-        mkdir($_SERVER['DOCUMENT_ROOT'].'/db');
+    $DATA = new Config($_SERVER['DOCUMENT_ROOT'].'/data/web');
+    if(!file_exists($_SERVER['DOCUMENT_ROOT'].'/data')) {
+        mkdir($_SERVER['DOCUMENT_ROOT'].'/data');
         $DATA->set("account",["username"=>"admin","password"=>hash('sha256', 'password')])->save();
         $DATA->set("web",[
             "record"=>"",
@@ -131,7 +131,7 @@ function load() {
 function cache($name, $data) {
     // 定义缓存文件名和有效期
     $filename = 'cache/'.$name;
-    $expiration = 60 * 60 * 3; // 3小时
+    $expiration = 60 * 20; // 20分钟
     
     // 如果缓存文件存在且未过期，则读取缓存数据并返回
     if (file_exists($filename) && time() - filemtime($filename) < $expiration) {

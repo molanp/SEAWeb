@@ -5,8 +5,8 @@ include_once($_SERVER['DOCUMENT_ROOT'].'/services/__version__.php');
 if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 
     load();
-    $DATA = new Config($_SERVER['DOCUMENT_ROOT'].'/db/status');
-    $WEB= new Config($_SERVER['DOCUMENT_ROOT'].'/db/db');
+    $DATA = new Config($_SERVER['DOCUMENT_ROOT'].'/data/status');
+    $WEB= new Config($_SERVER['DOCUMENT_ROOT'].'/data/web');
 
     $dir = $_SERVER['DOCUMENT_ROOT'].'/api'; // 文件夹路径
     $relative_paths = find_files($dir);
@@ -58,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 } elseif ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     load();
-    $WEB= new Config($_SERVER['DOCUMENT_ROOT'].'/db/db');
+    $WEB= new Config($_SERVER['DOCUMENT_ROOT'].'/data/web');
 
     $for = $_POST['for'] ?? NULL;
     switch($for) {
@@ -81,7 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
             break;
         case 'edit_status':
             if (isset($_POST['token']) && $_POST['token'] == $WEB->get('account')['password']) {
-                $STATUS= new Config($_SERVER['DOCUMENT_ROOT'].'/db/status');
+                $STATUS= new Config($_SERVER['DOCUMENT_ROOT'].'/data/status');
                 $keys = array_keys($_POST["data"]);
                 $data = array_values($_POST["data"]);
                 $i = 0;

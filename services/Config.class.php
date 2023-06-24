@@ -115,7 +115,7 @@
 
  
 
-define('CONFIG_EXIT', '<?php exit;?>'); 
+define('CONFIG_EXIT', ''); 
 
 class Config { 
 

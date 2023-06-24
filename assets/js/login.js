@@ -26,18 +26,19 @@ function login() {
             'password':password
         };
         sendData("/v2/login", send, function(data, status) {
-            if (status === 'success') {
-                document.cookie=`user=${data.data.user};`;
-                document.cookie=`token=${data.data.token};`;
-                location.reload();
-            } else {
-                console.error(data);
-                regFail(JSON.stringify(data.data));
-            }
-          }).fail(function(status){
-            regFail(JSON.stringify(status));
-          })
-
+            try {
+                if (status === 'success') {
+                    document.cookie=`user=${data.data.user};`;
+                    document.cookie=`token=${data.data.token};`;
+                    location.reload();
+                } else {
+                    console.error(data);
+                    regFail(JSON.stringify(data.data));
+                }
+            } catch {
+                regFail(JSON.stringify(data));
+              }
+        })
     }
 }
 
@@ -99,7 +100,7 @@ function resetpassword() {
             } else {
                 regFail(data.data);
             }
-        }).fail(function(){regFail('连接服务器超时，请重试');})
+        })
     }
   });
 }

@@ -1,6 +1,4 @@
 <?php
-define('IN_SYS', TRUE);
-
 include_once('services/until.php');
 
 load();
