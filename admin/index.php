@@ -1,13 +1,12 @@
 <?php
 include_once('../services/Config.class.php');
-define('IN_SYS', TRUE);
 
-$DATA = new Config('../db/db');
+$DATA = new Config('../data/web');
 $account = $DATA->get('account');
 if (isset($_COOKIE['token']) && $_COOKIE['token'] == $account['password']) {
-    die(include_once('../page/backstage.php'));
-} else {
-    echo '<!DOCTYPE html>
+    die(include_once('../page/backstage.html'));
+} else {?>
+    <!DOCTYPE html>
     <html lang="zh-CN">
     
     <head>
@@ -104,5 +103,5 @@ if (isset($_COOKIE['token']) && $_COOKIE['token'] == $account['password']) {
                 class="login-button mdui-btn mdui-btn-raised mdui-ripple">登入</button>
         </div>
     </body>
-    </html>';}
-?>
+    </html>
+    <?php }?>

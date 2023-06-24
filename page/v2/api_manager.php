@@ -1,6 +1,4 @@
 <?php
-define('IN_SYS', TRUE);
-
 include_once($_SERVER['DOCUMENT_ROOT'].'/services/until.php');
 
 load();

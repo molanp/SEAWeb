@@ -1,7 +1,7 @@
 <?php
 include_once($_SERVER['DOCUMENT_ROOT'].'/services/Config.class.php');
 include_once($_SERVER['DOCUMENT_ROOT'].'/services/until.php');
-$DATA = new Config($_SERVER['DOCUMENT_ROOT'].'/db/db');
+$DATA = new Config($_SERVER['DOCUMENT_ROOT'].'/data/web');
 $account = $DATA->get('account');
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $data = $_POST;
@@ -16,7 +16,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     $DATA->set('account',["username"=>$account["username"],"password"=>hash('sha256', $_POST["new"])])->save();
                     _return_('密码已修改，请重新登录');
                 }
-                //_return_($data);
             } else {
                 _return_('身份验证失败',403);
             }
