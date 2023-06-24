@@ -14,7 +14,7 @@ if (handle_check()) {
     $i = 0;
     for($i;$i<count($wbtop);$i++) {
         if(isset($wbtop[$i]["category"])) {
-            $top[$i] = [
+            $top[] = [
                 "rank"=>$i+1,
                 "hot_word_num"=>$wbtop[$i]["num"],
                 "category"=>$wbtop[$i]["category"],
@@ -22,6 +22,6 @@ if (handle_check()) {
                 "url"=>"https://s.weibo.com/weibo?q=%23{$wbtop[$i]["word"]}%23"];
         }
     };
-    _return_(array_values($top));
+    _return_($top);
 }
 ?>
