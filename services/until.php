@@ -17,33 +17,33 @@ function re_par($key=[],$info=[]) {
     return $table;
 }
 //curl_get获取数据
-function curl_get($url,$data=[],$code=false){
-    if($url == "" ){
+function curl_get($url, $data = [], $code = false)
+{
+    if ($url == "") {
         return false;
     }
-    $url = $url.'?'.http_build_query($data);
+    $url = $url . '?' . http_build_query($data);
     $ch = curl_init();
-    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true) ;
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
     curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($ch, CURLOPT_HEADER,0);
+    curl_setopt($ch, CURLOPT_HEADER, 0);
     curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.80 Safari/537.36");
-    curl_setopt($ch,CURLOPT_TIMEOUT,5);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 5);
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
     curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
     $output = curl_exec($ch);
     curl_close($ch);
-    if(curl_exec($ch) === false){
+    if (curl_exec($ch) === false) {
         return curl_error($ch);
     }
-    if($code === true){
+    if ($code === true) {
         return curl_getinfo($ch, CURLINFO_HTTP_CODE);
     }
-    try {
-        return json_decode($output,true);
-    } catch (\Exception $error) {
-        return (string) $output;
-    } catch (\Error $error) {
+    $json = json_decode($output, true);
+    if (json_last_error() === JSON_ERROR_NONE) {
+        return $json;
+    } else {
         return (string) $output;
     }
 }
