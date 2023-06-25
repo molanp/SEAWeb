@@ -18,6 +18,7 @@ window.onload = function() {
         headerIds: false//因warning禁用
     });
     load_info();
+    load_links();
     mdui.mutation();
     var inst = new mdui.Drawer('#drawer',overlay=true,swipe=true);
     inst.close();
@@ -28,8 +29,7 @@ window.onload = function() {
     }
 
 //cookies
-function getCookie(cname)
-{
+function getCookie(cname) {
     var name = cname + "=";
     var ca = document.cookie.split(';');
     for(var i=0; i<ca.length; i++) 
@@ -40,8 +40,7 @@ function getCookie(cname)
     return "";
 }
 
-function setCookie(cname,cvalue)
-{
+function setCookie(cname,cvalue) {
     document.cookie = cname + "=" + cvalue + "; " + "path=/";
 }
 
@@ -156,36 +155,25 @@ function load_info() {
         alert(`信息加载失败 code:${status}`)
     });
 }
-// 获取favicon链接
-function getFavicon(url) {
-    let favicon = '🚫';
-    
-    // 构造完整的favicon链接
-    const faviconUrl = url.replace(/\/$/, '') + '/favicon.ico';
-  
-    // 检查favicon文件是否存在
-    // 这里使用了异步请求来检查文件是否存在
-    const xhr = new XMLHttpRequest();
-    xhr.open('HEAD', faviconUrl, false);
-    xhr.send();
-  
-    if (xhr.status === 200) {
-      favicon = faviconUrl;
-    } else {
-      // 获取网站主页的HTML内容
-      const html = fetch(url).then(response => response.text());
-  
-      // 在HTML内容中查找favicon链接
-      const pattern = /<link.*?rel=["'].*?icon.*?["'].*?href=["'](.*?)["'].*?>/i;
-      const matches = html.match(pattern);
-  
-      // 如果找到favicon链接，则构造完整的链接
-      if (matches && matches.length > 1) {
-        const faviconLink = matches[1];
-        favicon = faviconLink.startsWith('http') ? faviconLink : url.replace(/\/$/, '') + '/' + faviconLink.replace(/^\//, '');
-      }
+//goto links
+function load_links() {
+    var links = document.links;
+    for (var i = 0; i < links.length; i++) {
+        var link = links[i];
+        if (link.hostname !== window.location.hostname) {
+            link.addEventListener('click', function(e) {
+                e.preventDefault(); // 阻止链接的默认行为
+                var currentLink = this; // 当前点击的链接
+                swal.fire({
+                    title: '安全提醒',
+                    text: `你即将离开本站,前往${currentLink.href}，是否继续?`,
+                    showCancelButton: true,
+                    confirmButtonText: 'OK',
+                    preConfirm: () => {
+                        window.open(currentLink.href, '_blank');
+                    }
+                });
+            });
+        }
     }
-  
-    return favicon;
-  }
-  
+}

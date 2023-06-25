@@ -124,40 +124,84 @@ function load() {
 /**
  * 缓存函数
  *
- * @param string $name 缓存文件名，包含目录路径和文件名，例如：cache/cc/test
+ * @param string $name 缓存文件名，包含目录路径和文件名，例如：cc/test
  * @param mixed $data 缓存数据
  * @return mixed 返回缓存数据（如果存在且未过期），否则返回 null
  */
-function cache($name, $data) {
+function cache($name, $data=null) {
+    $path = $_SERVER['DOCUMENT_ROOT'].'/cache';
     // 定义缓存文件名和有效期
-    $filename = 'cache/'.$name;
+    $filename = $_SERVER['DOCUMENT_ROOT'].'/cache/'.$name;
     $expiration = 60 * 20; // 20分钟
     
     // 如果缓存文件存在且未过期，则读取缓存数据并返回
     if (file_exists($filename) && time() - filemtime($filename) < $expiration) {
-        touch($filename);
-        return file_get_contents($filename);
+        return json(file_get_contents($filename));
+    }
+
+    if ($data===null && !file_exists($filename)) {
+        return null;
     }
     
     // 否则，如果目录不存在，则创建目录
-    if (!is_dir('cache')) {
-        mkdir('cache', 0755, true);
+    if (!is_dir($path)) {
+        mkdir($path, 0755, true);
     }
     
     // 创建新的缓存文件并写入数据
-    file_put_contents($filename, $data);
-    
-    // 设置缓存文件的删除时间
-    touch($filename, time() + $expiration);
+    file_put_contents($filename, json($data));
     
     // 删除过期的缓存文件
-    $files = array_diff(scandir('cache'), array('.', '..'));
+    $files = array_diff(scandir($path), array('.', '..'));
     foreach ($files as $file) {
-        $filePath = 'cache/'.$file;
+        $filePath = "$path/$file";
         if (is_dir($filePath) && count(glob($filePath . '/*')) === 0) {
             rmdir($filePath);
         } elseif (is_file($filePath) && time() - filemtime($filePath) >= $expiration) {
             unlink($filePath);
+        }
+    }
+}
+/**
+ * 删除指定的缓存文件或文件夹
+ *
+ * @param string $name 要删除的缓存文件或文件夹的名称
+ * @return bool 删除成功返回 true，删除失败返回 false
+ */
+function del_cache($name) {
+    $cachePath = $_SERVER['DOCUMENT_ROOT'].'/cache/' . $name;
+    if (is_dir($cachePath)) {
+        $files = array_diff(scandir($cachePath), array('.', '..'));
+        foreach ($files as $file) {
+            del_cache($name . '/' . $file);
+        }
+        return rmdir($cachePath);
+    } elseif (file_exists($cachePath)) {
+        return unlink($cachePath);
+    } else {
+        return false;
+    }
+}
+/**
+ * 尝试将 JSON 字符串解析为数组，或将数组转换为 JSON 字符串
+ *
+ * @param string|array $json 要解析的 JSON 字符串或要转换的数组
+ * @return array|string 返回解析后的数组或数组转换后的 JSON 字符串，如果解码和编码都失败则返回原始字符串
+ */
+function json($json) {
+    if (is_array($json)) {
+        $encoded = json_encode($json,JSON_PRETTY_PRINT);
+        if ($encoded !== false) {
+            return $encoded;
+        } else {
+            return $json;
+        }
+    } else {
+        $decoded = json_decode($json, true);
+        if ($decoded !== null) {
+            return $decoded;
+        } else {
+            return $json;
         }
     }
 }

@@ -24,6 +24,7 @@ $web = ($web["status"] != 200) ? die($web["data"]) : $web["data"];
     <link rel="stylesheet" href="/assets/css/mark.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mdui/1.0.2/css/mdui.min.css" />
     <script src="https://cdn.bootcss.com/marked/5.0.4/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.4.17/sweetalert2.all.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <script src="/assets/js/purify.min.js"></script>
     <script src="/assets/js/app.js"></script>  

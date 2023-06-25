@@ -39,6 +39,7 @@ $web = ($web["status"] != 200) ? die($web["data"]) : $web["data"];
     <link rel="stylesheet" href="/assets/css/mark.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mdui/1.0.2/css/mdui.min.css" />
     <script src="https://cdn.bootcss.com/marked/5.0.4/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.4.17/sweetalert2.all.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <script src="/assets/js/purify.min.js"></script>
     <script src="/assets/js/app.js"></script>  
@@ -109,7 +110,7 @@ $web = ($web["status"] != 200) ? die($web["data"]) : $web["data"];
         <p id="copyright"><span name="copyright">Loading...</span>&nbsp;.&nbsp;Power by <a href="https://github.com/molanp">molanp</a></p>
     </div>
     <script>
-        var url = window.location.origin + "/api/" + window.location.pathname.match(/\/i\/(.+)/)[1];
+        var url = window.location.origin + "/api/" + window.location.pathname.match(/(.+)/)[1];
         $.get({
             url: url,
             complete: function(jqXHR, textStatus) {
