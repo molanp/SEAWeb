@@ -21,15 +21,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             }
             break;
         default:
-            $username = trim($data['username']) ?? NULL;
-            $password = trim($data['password']) ?? NULL;
-            if ($username == $account['username'] && hash('sha256',$password) == $account['password']) {
-                _return_(["user"=>$data["username"],"token"=>hash('sha256',(trim($data['password'])))]);
-                }
-            else {
-                _return_(["user"=>$data["username"],"token"=>hash('sha256',(trim($data['password'])))]);
-            }
-            break;
-}
+            _return_([
+                "user"=>$data["username"],
+                "token"=>hash('sha256',($data['password']))
+            ]);
+    }
 }
 ?>

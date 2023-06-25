@@ -15,7 +15,6 @@ if (isset($_COOKIE['token']) && $_COOKIE['token'] == $account['password']) {
         <meta name="renderer" content="webkit" />
         <meta name="force-rendering" content="webkit" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-    
         <link rel="Shortcut Icon" href="../favicon.ico">
         <link rel="bookmark" href="../favicon.ico" type="image/x-icon" />   
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mdui/1.0.2/css/mdui.min.css" />
