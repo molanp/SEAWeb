@@ -110,7 +110,7 @@ $web = ($web["status"] != 200) ? die($web["data"]) : $web["data"];
         <p id="copyright"><span name="copyright">Loading...</span>&nbsp;.&nbsp;Power by <a href="https://github.com/molanp">molanp</a></p>
     </div>
     <script>
-        var url = window.location.origin + "/api/" + window.location.pathname.match(/(.+)/)[1];
+        var url = `${window.location.origin}/api${window.location.pathname}/`;
         $.get({
             url: url,
             complete: function(jqXHR, textStatus) {
