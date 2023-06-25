@@ -26,6 +26,6 @@ if (handle_check()) {
             $default[] = $link;
         }
     }
-    _return_(['count'=>count($default),'default'=>array_unique($default)]);
+    _return_(['count'=>count($default),'default'=>array_values(array_unique($default))]);
 }
 ?>

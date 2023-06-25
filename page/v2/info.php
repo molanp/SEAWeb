@@ -3,7 +3,6 @@ include_once($_SERVER['DOCUMENT_ROOT'].'/services/Config.class.php');
 include_once($_SERVER['DOCUMENT_ROOT'].'/services/until.php');
 include_once($_SERVER['DOCUMENT_ROOT'].'/services/__version__.php');
 if ($_SERVER['REQUEST_METHOD'] == 'GET') {
-
     load();
     $DATA = new Config($_SERVER['DOCUMENT_ROOT'].'/data/status');
     $WEB= new Config($_SERVER['DOCUMENT_ROOT'].'/data/web');
@@ -71,7 +70,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     }
     _return_($conname);
 } elseif ($_SERVER['REQUEST_METHOD'] == 'POST') {
-
     load();
     $WEB= new Config($_SERVER['DOCUMENT_ROOT'].'/data/web');
 

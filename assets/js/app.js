@@ -74,6 +74,7 @@ function goin(x) {
 }
 
 function load_info() {
+    $.get(url=window.location.origin+'/v2/sitemap');
     $.get(
         url=window.location.origin+'/v2/info',
         data={"for":"web"},
