@@ -2,9 +2,7 @@
 include_once($_SERVER['DOCUMENT_ROOT'].'/services/until.php');
 
 $api_name = 'AI回复';
-$api_profile='搭载青云客ai与本地词库，相对智能的ai.与ai普普通通的对话吧！
-
-_~~或许词库有点二次元?~~_';
+$api_profile='搭载青云客ai与本地词库，相对智能的ai.与ai普普通通的对话吧！\n_~~或许词库有点二次元?~~_';
 $version='1.0';
 $author='molanp';
 $type='一些工具';

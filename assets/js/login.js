@@ -28,9 +28,11 @@ function login() {
         sendData("/v2/login", send, function(data, status) {
             try {
                 if (status === 'success') {
-                    document.cookie=`user=${data.data.user};`;
-                    document.cookie=`token=${data.data.token};`;
-                    location.reload();
+                    if (data.data.login == 'success') {
+                        document.cookie=`user=${data.data.user};`;
+                        document.cookie=`token=${data.data.token};`;
+                        location.reload();
+                    }
                 } else {
                     console.error(data);
                     regFail(JSON.stringify(data.data));

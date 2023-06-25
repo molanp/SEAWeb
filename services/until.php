@@ -98,12 +98,16 @@ function _return_($context,$status=200,$location=false) {
  * @param int $errline 发生错误的行号
  * @return void
  */
-function Error($errno, $errstr, $errfile, $errline) {
+function Error($errno, $errstr=null, $errfile=null, $errline=null) {
     header("HTTP/1.1 500");
+    if (!isset($errstr, $errfile, $errline)) {
+        _return_((string)$errno,500);
+    }
     //error_log(date(Y-m-d H:i:s)."[$errno] $errstr in $errfile line $errline.", 1,"logs/log.log");
-    _return_("Error:[$errno] $errstr in $errfile line $errline.",500);//";)
+    _return_("Error:[$errno] $errstr in $errfile line $errline.",500);
 }
 set_error_handler("Error");
+set_exception_handler("Error");
 /**
  * 检查 API 状态
  *
@@ -116,7 +120,7 @@ function handle_check() {
         $status=$DATA->get($api_name,true);
         if ($status !== true) {
             header("HTTP/1.1 406");
-            _return_("API已关闭",406);
+            _return_("API already closed",406);
         } else {
             return true;
         }
@@ -133,20 +137,16 @@ function handle_check() {
  * @return array 返回文件的相对路径数组
  */
 function find_files($dir, $prefix = '', $file='index.php') {
-    $files = glob("$dir/*/$file"); // 查找所有名称为index.php的文件
-    $relative_paths = array(); // 存储相对路径的数组
-
+    $files = glob("$dir/*/$file");
+    $relative_paths = array();
     foreach ($files as $file) {
         $relative_path = $prefix.trim(str_replace($dir, '', $file), "/"); // 获取相对路径
         $relative_paths[] = $relative_path;
     }
-
-    // 递归查找子文件夹
     $subdirs = glob("$dir/*", GLOB_ONLYDIR);
     foreach ($subdirs as $subdir) {
         $relative_paths = array_merge($relative_paths, find_files($subdir, $prefix . basename($subdir) . '/'));
     }
-
     return $relative_paths;
 }
 /**
@@ -180,28 +180,18 @@ function load() {
  */
 function cache($name, $data=null) {
     $path = $_SERVER['DOCUMENT_ROOT'].'/cache';
-    // 定义缓存文件名和有效期
     $filename = $_SERVER['DOCUMENT_ROOT'].'/cache/'.$name;
     $expiration = 60 * 20; // 20分钟
-    
-    // 如果缓存文件存在且未过期，则读取缓存数据并返回
     if (file_exists($filename) && time() - filemtime($filename) < $expiration) {
         return json(file_get_contents($filename));
     }
-
     if ($data===null && !file_exists($filename)) {
         return null;
     }
-    
-    // 否则，如果目录不存在，则创建目录
     if (!is_dir($path)) {
         mkdir($path, 0755, true);
     }
-    
-    // 创建新的缓存文件并写入数据
     file_put_contents($filename, json($data));
-    
-    // 删除过期的缓存文件
     $files = array_diff(scandir($path), array('.', '..'));
     foreach ($files as $file) {
         $filePath = "$path/$file";
@@ -253,6 +243,58 @@ function json($json) {
         } else {
             return $json;
         }
+    }
+}
+/**
+ * 检查请求次数是否超过限制
+ * 此函数应在 handle_check() 后执行
+ *
+ * @param string $limit 最大请求次数和时间单位，例如 '3/s' '10/min', '5/hour', '100/day'
+ * @param string $name 如果引用文件中没有$api_name变量，请在此处自定义标识符
+ * @return void
+ */
+function RequestLimit($limit,$name=null) {
+    global $api_name;
+    $api_name = $api_name ?? $name;
+    $DATA = new Config($_SERVER['DOCUMENT_ROOT'].'/data/limit');
+    $requests = $DATA->get('requests',[]);
+    $lastRequestTime = $DATA->get('lastRequestTime',[]);
+    $ip = $_SERVER['REMOTE_ADDR'];
+    $currentTime = time();
+    preg_match('/(\d+)\s*\/\s*(\w+)/', $limit, $matches);
+    $quantity = intval($matches[1]);
+    $unit = strtolower($matches[2]);
+    switch ($unit) {
+        case 's':
+            $interval = $quantity;
+            break;
+        case 'min':
+            $interval = $quantity * 60;
+            break;
+        case 'hour':
+            $interval = $quantity * 60 * 60;
+            break;
+        case 'day':
+            $interval = $quantity * 60 * 60 * 24;
+            break;
+        default:
+            throw new Exception("Time units are only supported as s, min, hour, day");
+    }
+    if(isset($requests[$api_name][$ip]) && isset($lastRequestTime[$api_name][$ip])) {
+        if($currentTime - $lastRequestTime[$api_name][$ip] > $interval) {
+            $requests[$api_name][$ip] = 1;
+            $lastRequestTime[$api_name][$ip] = $currentTime;
+        } else {
+            $requests[$api_name][$ip]++;
+        }
+    } else {
+        $requests[$api_name][$ip] = 1;
+        $lastRequestTime[$api_name][$ip] = $currentTime;
+    }
+    $DATA->set('requests',$requests)->save();
+    $DATA->set('lastRequestTime',$lastRequestTime)->save();
+    if($requests[$api_name][$ip] > $quantity) {
+        _return_('请求次数超过限制(Too Many Requests)',429);
     }
 }
 ?>
