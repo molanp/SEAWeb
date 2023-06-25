@@ -1,7 +1,14 @@
 <?php
 include_once('Config.class.php');
 
-//组合table
+/**
+ * 重新格式化参数为 Markdown 表格
+ *
+ * @param array $type 请求方法数组
+ * @param array $url 请求 URL 数组
+ * @param array $info 请求信息数组
+ * @return string 返回格式化后的 Markdown 表格
+ */
 function re_add($type=[],$url=[],$info=[]) {
     $table = "|Method|URL|Info|\n|---|---|---|";
     for($i=0; $i<count($type); $i++) {
@@ -9,6 +16,13 @@ function re_add($type=[],$url=[],$info=[]) {
     };
     return $table;
 }
+/**
+ * 重新格式化参数为 Markdown 表格
+ *
+ * @param array $key 参数键数组
+ * @param array $info 参数值数组
+ * @return string 返回格式化后的 Markdown 表格
+ */
 function re_par($key=[],$info=[]) {
     $table = "|Key|Info|\n|---|---|";
     for($i=0; $i<count($key); $i++) {
@@ -16,7 +30,14 @@ function re_par($key=[],$info=[]) {
     };
     return $table;
 }
-//curl_get获取数据
+/**
+ * 使用 CURL 发起 GET 请求获取数据
+ *
+ * @param string $url 请求的 URL
+ * @param array $data 请求参数，可选，默认为空数组
+ * @param bool $code 是否返回 HTTP 状态码，可选，默认为 false
+ * @return mixed 返回请求结果，如果发生错误，则返回错误信息
+ */
 function curl_get($url, $data = [], $code = false)
 {
     if ($url == "") {
@@ -47,7 +68,14 @@ function curl_get($url, $data = [], $code = false)
         return (string) $output;
     }
 }
-//return
+/**
+ * 返回结果
+ *
+ * @param mixed $context 返回的数据内容
+ * @param int $status 状态码，默认为 200
+ * @param bool|string $location 是否重定向，如果为字符串，则表示重定向的 URL
+ * @return void
+ */
 function _return_($context,$status=200,$location=false) {
     header('Access-Control-Allow-Origin: *'); // 允许跨域请求
     header('Access-Control-Allow-Methods: POST,GET,OPTIONS,DELETE,PUT'); // 允许全部请求类型
@@ -58,17 +86,29 @@ function _return_($context,$status=200,$location=false) {
         header('Content-type:text/json;charset=utf-8');
         die(json_encode(['status'=>$status,'data'=>$context,'time'=>time()],JSON_UNESCAPED_UNICODE|JSON_PRETTY_PRINT));
     } else {
-        die(header("Location: $context"));
+        die(header("Location: $location"));
     }
 }
-//Error http
+/**
+ * 自定义错误处理函数
+ *
+ * @param int $errno 错误级别
+ * @param string $errstr 错误信息
+ * @param string $errfile 发生错误的文件名
+ * @param int $errline 发生错误的行号
+ * @return void
+ */
 function Error($errno, $errstr, $errfile, $errline) {
     header("HTTP/1.1 500");
     //error_log(date(Y-m-d H:i:s)."[$errno] $errstr in $errfile line $errline.", 1,"logs/log.log");
     _return_("Error:[$errno] $errstr in $errfile line $errline.",500);//";)
 }
 set_error_handler("Error");
-//check status
+/**
+ * 检查 API 状态
+ *
+ * @return bool 返回是否需要处理 API 请求
+ */
 function handle_check() {
     if (strpos($_SERVER['REQUEST_URI'], 'api/') !== false) {
         global $api_name;
@@ -84,14 +124,20 @@ function handle_check() {
         return false;
     }
 }
-
-//递归查询
-function find_files($dir, $prefix = '') {
-    $files = glob("$dir/*/index.php"); // 查找所有名称为index.php的文件
+/**
+ * 递归查询文件
+ *
+ * @param string $dir 目录路径
+ * @param string $prefix 前缀，可选，默认为空字符串
+ * @param string $file 需要查询的文件名，可选，默认为index.php
+ * @return array 返回文件的相对路径数组
+ */
+function find_files($dir, $prefix = '', $file='index.php') {
+    $files = glob("$dir/*/$file"); // 查找所有名称为index.php的文件
     $relative_paths = array(); // 存储相对路径的数组
 
     foreach ($files as $file) {
-        $relative_path = $prefix . trim(str_replace($dir, '', $file), "/"); // 获取相对路径
+        $relative_path = $prefix.trim(str_replace($dir, '', $file), "/"); // 获取相对路径
         $relative_paths[] = $relative_path;
     }
 
@@ -103,7 +149,11 @@ function find_files($dir, $prefix = '') {
 
     return $relative_paths;
 }
-//初始化
+/**
+ * 初始化函数
+ *
+ * @return void
+ */
 function load() {
     $DATA = new Config($_SERVER['DOCUMENT_ROOT'].'/data/web');
     if(!file_exists($_SERVER['DOCUMENT_ROOT'].'/data')) {
