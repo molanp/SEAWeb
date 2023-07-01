@@ -1,4 +1,5 @@
 # SEAWeb
+# 正在进行插件系统升级，请勿code源码！！！
 一个简单的api模板网页
 
 ## <a href="https://molanp.github.io/SEAWeb_docs/" target="_blank">帮助文档</a>
