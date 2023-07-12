@@ -1,15 +1,12 @@
 <?php
 include_once($_SERVER['DOCUMENT_ROOT'].'/services/Config.class.php');
 include_once($_SERVER['DOCUMENT_ROOT'].'/services/until.php');
+include_once($_SERVER['DOCUMENT_ROOT'].'/services/path.php');
 include_once($_SERVER['DOCUMENT_ROOT'].'/services/__version__.php');
 if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     load();
     $DATA = new Config($_SERVER['DOCUMENT_ROOT'].'/data/status');
     $WEB= new Config($_SERVER['DOCUMENT_ROOT'].'/data/web');
-
-    $dir = $_SERVER['DOCUMENT_ROOT'].'/api'; // 文件夹路径
-    $relative_paths = find_files($dir);
-
     $for = $_GET['for'] ?? NULL;
     switch($for) {
         case 'web':
@@ -31,40 +28,123 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
             }
             break;
         case 'status':
-            if (cache('status')) {
-                $conname = cache('status');
-            } else {
-                foreach($relative_paths as $v){
-                    include_once($_SERVER['DOCUMENT_ROOT']."/api/".$v);
-                    $conname[$api_name] = $DATA->get($api_name,true);
+            $conname = [];
+            // 检查缓存是否存在，若不存在则重新搜索目录
+            if (!cache('status')) {
+                include_once($_SERVER['DOCUMENT_ROOT'].'/services/path.php');
+                $paths = getPath(PLUGIN_FOLDERS);
+                $paths = array_map(function($path) {
+                    return str_replace('/', DIRECTORY_SEPARATOR, $path);
+                }, $paths);
+    
+                $pattern = "~(".implode('|', $paths).")[/\\\\](.*)~";
+                if (!cache('api')) {
+                    $conname = [];
+                    $pluginFiles = str_replace(['/','\\'], [DIRECTORY_SEPARATOR,DIRECTORY_SEPARATOR], find_files(PLUGIN_FOLDERS,'.php'));
+                    if (count($pluginFiles) > 0) {
+                        foreach ($pluginFiles as $pluginFilePath) {
+                            // 加载插件
+                            include_once $pluginFilePath;
+                            
+                            // 获取插件文件的绝对路径
+                            $absolutePath = realpath($pluginFilePath);
+                    
+                            // 获取文件名和目录名
+                            $file = basename($absolutePath);
+                            $dir = dirname($absolutePath);
+                    
+                            // 构建类名
+                            $pluginClassName = pathinfo($file, PATHINFO_FILENAME);
+                    
+                            // 检查类是否存在
+                            if (!class_exists($pluginClassName) && is_file($dir . DIRECTORY_SEPARATOR . $pluginClassName . '.php')) {
+                                $pluginClassName = basename($dir);
+                            }
+                            // 检查类是否存在
+                            if (class_exists($pluginClassName)) {
+                                // 实例化插件类
+                                $plugin = new $pluginClassName();
+                                // 检查插件类是否有 getInfo() 方法
+                                if (method_exists($plugin, 'getInfo')&&method_exists($plugin, 'run')) {
+                                    // 调用插件方法并获取插件信息
+                                    $info = $plugin->getInfo();
+                                    $conname[$info['name']] = $DATA->get($info['name'],true);
+                                }
+                            } else {
+                                //error_log("插件类缺少 getInfo() 方法，文件路径：$pluginFilePath ，文件名：$file",3,LOGGER);
+                            }
+                        }
+                    }
+                    cache('status', $conname);
                 }
-                cache('status', $conname);
+            } else {
+                $conname = cache('status');
             }
             break;
         default:
-            if (cache('api')) {
-                $conname = cache('api');
-            } else {
-                foreach($relative_paths as $v){
-                    include_once($_SERVER['DOCUMENT_ROOT']."/api/".$v);
-                    preg_match('/^(.*)\/index\.php$/', $v, $v);
-                    $type = $type ?? '一些工具';
-                    $conname[$type][$api_name] = [
-                        'path'=>$v[1],
-                        'api_profile'=>trim($api_profile),
-                        'api_address'=>$api_address,
-                        'version'=>$version,
-                        'author'=>$author,
-                        'request_parameters'=>trim($request_par),
-                        'return_parameters'=>trim($return_par),
-                        'status'=>$DATA->get($api_name,true)
-                    ];
-                    if ($DATA->get($api_name) === '' || $DATA->get($api_name) === null) {
-                        $DATA->set($api_name,true)->save();
+            include_once($_SERVER['DOCUMENT_ROOT'].'/services/path.php');
+            $paths = getPath(PLUGIN_FOLDERS);
+            $paths = array_map(function($path) {
+                return str_replace('/', DIRECTORY_SEPARATOR, $path);
+            }, $paths);
+
+            $pattern = "~(".implode('|', $paths).")[/\\\\](.*)~";
+            if (!cache('api')) {
+                $conname = [];
+                $pluginFiles = str_replace(['/','\\'], [DIRECTORY_SEPARATOR,DIRECTORY_SEPARATOR], find_files(PLUGIN_FOLDERS,'.php'));
+                if (count($pluginFiles) > 0) {
+                    foreach ($pluginFiles as $pluginFilePath) {
+                        // 加载插件
+                        include_once $pluginFilePath;
+                        
+                        // 获取插件文件的绝对路径
+                        $absolutePath = realpath($pluginFilePath);
+                
+                        // 获取文件名和目录名
+                        $file = basename($absolutePath);
+                        $dir = dirname($absolutePath);
+                
+                        // 构建类名
+                        $pluginClassName = pathinfo($file, PATHINFO_FILENAME);
+                
+                        // 检查类是否存在
+                        if (!class_exists($pluginClassName) && is_file($dir . DIRECTORY_SEPARATOR . $pluginClassName . '.php')) {
+                            $pluginClassName = basename($dir);
+                        }
+                        // 检查类是否存在
+                        if (class_exists($pluginClassName)) {
+                            // 实例化插件类
+                            $plugin = new $pluginClassName();
+                            // 检查插件类是否有 getInfo() 方法
+                            if (method_exists($plugin, 'getInfo')&&method_exists($plugin, 'run')) {
+                                // 调用插件方法并获取插件信息
+                                $info = $plugin->getInfo();
+                                $type = $info['type'] ?? '一些工具';
+                                preg_match($pattern, $pluginFilePath, $path);
+                                $path = str_replace("\\","/",str_replace(".php","",str_replace("index.php","",$path[2])));
+
+                                $conname[$type][$info['name']] = [
+                                    'path'=>$path,
+                                    'api_profile'=>$info['profile'],
+                                    'api_address'=>re_add([$info['method']],["/api/".$path=>'-']),
+                                    'version'=>$info['version'],
+                                    'author'=>$info['author'],
+                                    'request_parameters'=>$info['request_par'],
+                                    'return_parameters'=>$info['return_par'],
+                                    'status'=>$DATA->get($info['name'],true)
+                                ];
+                                if ($DATA->get($info['name']) === '' || $DATA->get($info['name']) === null) {
+                                    $DATA->set($info['name'],true)->save();
+                                }
+                            }
+                        } else {
+                            //error_log("插件类缺少 getInfo() 方法，文件路径：$pluginFilePath ，文件名：$file",3,LOGGER);
+                        }
                     }
                 }
-                $api_name = $api_profile = $api_address = $version = $author = $request_parameters = $return_parameters = $type = $status = 'None';
-                cache('api',$conname);
+                cache('api', $conname);
+            } else {
+                $conname = cache('api');
             }
             break;
     }

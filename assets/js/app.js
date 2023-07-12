@@ -18,16 +18,14 @@ window.onload = function() {
         headerIds: false//因warning禁用
     });
     load_info();
-    load_links();
-    mdui.mutation();
     var inst = new mdui.Drawer('#drawer',overlay=true,swipe=true);
     inst.close();
     //sider
     mdui.$('#aside_btn').on('click', function () {
         inst.toggle();
       });
+    mdui.mutation();
     }
-
 //cookies
 function getCookie(cname) {
     var name = cname + "=";
@@ -120,8 +118,8 @@ function load_info() {
             for (var type in data) {
                 list += `<li class='mdui-subheader'>${type}</li>`;
                 for (var plugin in data[type]) {
-                    if (window.location.pathname!='/'&&window.location.pathname.match(/\/([^\/]+)\/?$/)[1]==data[type][plugin]["path"]) {
-                        list += `<li class='mdui-list-item mdui-ripple' id='active'>
+                    if (window.location.pathname!='/'&&window.location.pathname.match(/\/(.*)$/)[1]==data[type][plugin]["path"]) {
+                        list += `<li class='mdui-list-item mdui-ripple mdui-list-item-active'>
                         <a class='mdui-list-item-content' href='#'>
                         ${DOMPurify.sanitize(plugin)}
                         </a>
@@ -155,26 +153,4 @@ function load_info() {
     .fail(function(data,status){
         alert(`信息加载失败 code:${status}`)
     });
-}
-//goto links
-function load_links() {
-    var links = document.links;
-    for (var i = 0; i < links.length; i++) {
-        var link = links[i];
-        if (link.hostname !== window.location.hostname) {
-            link.addEventListener('click', function(e) {
-                e.preventDefault(); // 阻止链接的默认行为
-                var currentLink = this; // 当前点击的链接
-                swal.fire({
-                    title: '安全提醒',
-                    text: `你即将离开本站,前往${currentLink.href}，是否继续?`,
-                    showCancelButton: true,
-                    confirmButtonText: 'OK',
-                    preConfirm: () => {
-                        window.open(currentLink.href, '_blank');
-                    }
-                });
-            });
-        }
-    }
 }

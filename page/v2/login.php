@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             break;
         default:
             if (isset($data['password']) && isset($data['username'])) {
-                if ($data['password'] === $account['password'] && $data['username'] === $account['username']) {
+                if (hash('sha256', $data['password']) === $account['password'] && $data['username'] === $account['username']) {
                     _return_([
                         "login"=>"success",
                         "user"=>$data["username"],
