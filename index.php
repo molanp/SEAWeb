@@ -37,7 +37,7 @@ $web = ($web["status"] != 200) ? die($web["data"]) : $web["data"];
         <li class="mdui-text-color-theme mdui-text-center mdui-typo-display-1" name="title">Loading...</li>
         <li class='mdui-subheader mdui-text-center'>Version&nbsp;<span name="version">Loading...</span></li>
         <li class="mdui-list-item mdui-ripple">
-                <a class="mdui-list-item-content" href="window.location.origin">
+                <a class="mdui-list-item-content" href="/">
                     <i class="mdui-icon material-icons">home</i>主页
                 </a>
             </li>
