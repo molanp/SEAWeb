@@ -3,7 +3,7 @@ class name_generator {
     public function getInfo() {
         return [
             'name' => '亚文化取名机',
-            'version' => '在线解析蓝奏云下载链接，获取文件直链',
+            'version' => '1.0',
             'profile'=> '一键生成最潮的亚文化网名',
             'method'=>'GET',
             'author'=>'molanp',
