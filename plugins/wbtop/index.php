@@ -3,8 +3,8 @@ class wbtop {
     public function getInfo() {
         return [
             'name' => '微博热搜',
-            'version' => '一键获取微博热搜',
-            'profile'=> '一键获取最新可用的gpt镜像网站',
+            'version' => '1.0',
+            'profile'=> '一键获取微博热搜',
             'method'=>'GET',
             'author'=>'molanp',
             'request_par'=> re_par(['-' => '-']),
