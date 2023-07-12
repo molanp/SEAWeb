@@ -74,16 +74,6 @@ body {
     min-width: 300px;
 }
 
-#title_box {
-    margin-top: 5%;
-    margin-left: 25%;
-    width: 50%;
-    border: 0;
-    padding: 5px;
-    border-radius: 10px;
-    text-align: center;
-}
-
 #footer {
     position: fixed;
     bottom: 0;
@@ -98,8 +88,4 @@ body {
 
 a {
     color: #fdabb8;
-}
-
-#active{
-    background: #c6c6c6;
 }

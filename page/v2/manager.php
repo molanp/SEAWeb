@@ -4,7 +4,8 @@ include_once($_SERVER['DOCUMENT_ROOT'].'/services/until.php');
 load();
 $types = curl_get('http://'.$_SERVER['HTTP_HOST'].'/v2/info');
 $types = ($types["status"] != 200) ? die($types["data"]) : $types["data"];
-$goto = preg_replace('/\//', '', $_SERVER["REQUEST_URI"]);
+preg_match('/\/(.*)/', $_SERVER["REQUEST_URI"], $goto);
+$goto = $goto[1];
 
 foreach(array_keys($types) as $type) {
     foreach(array_keys($types[$type]) as $p_name) {
@@ -49,35 +50,33 @@ $web = ($web["status"] != 200) ? die($web["data"]) : $web["data"];
     <button onmouseover="goout(this)" onmouseout="goin(this)" id="aside_btn"></button>
     <div class="mdui-drawer" id="drawer">
         <ul class="mdui-list">
-        <center>
-            <h1 class="mdui-text-color-theme article-title" name="title">Loading...</h1>
-            <li class='mdui-subheader'>Version&nbsp;<span name="version">Loading...</span></li>
-        </center>
+            <li class="mdui-text-color-theme mdui-text-center mdui-typo-display-1" name="title">Loading...</li>
+            <li class='mdui-subheader mdui-text-center'>Version&nbsp;<span name="version">Loading...</span></li>
             <li class="mdui-list-item mdui-ripple">
-                <div class="mdui-list-item-content" onclick="javascript:window.location.href=window.location.origin">
-                <i class="mdui-icon material-icons">home</i>主页</a>
-                </div>
+                <a class="mdui-list-item-content" href="/">
+                    <i class="mdui-icon material-icons">home</i>主页
+                </a>
             </li>
             <li class="mdui-list-item mdui-ripple">
-                <div class="mdui-list-item-content" onclick="javascript:changeTheme()">
+                <a class="mdui-list-item-content" href="javascript:changeTheme()">
                     <i class="mdui-icon material-icons">brightness_medium</i>夜间模式
-                </div>
+                </a>
             </li>
-            <span name="sider_list">Loading...</span>
             <li class='mdui-subheader'>管理入口</li>
             <li class="mdui-list-item mdui-ripple">
-                <div class="mdui-list-item-content" onclick="javascript:window.location.href='/admin'">
+                <a class="mdui-list-item-content" href="/admin">
                     <i class="mdui-icon material-icons">exit_to_app</i>登录
-                </div>
+                </a>
             </li>
-            <center>
-                <li class="mdui-subheader" name="copyright"></li>
-            </center>
+            <span name="sider_list">Loading...</span>
+            <li class="mdui-subheader mdui-text-center" name="copyright"></li>
         </ul>
         <hr>
 
     </div>
-    <h1 style="text-align:center;" class="mdui-text-color-theme article-title"><span name="api_name">Loading...</span></h1>
+    <div class="mdui-text-color-theme mdui-typo-display-1 mdui-text-center">
+        <span name="api_name">Loading...</span>
+    </div>
     <div id="box">
         <h3 class="mdui-text-color-theme article-title"><i class="mdui-icon material-icons mdui-text-color-blue">star_border</i>API 简介</h3>
         <span name="api_profile">Loading...</span>

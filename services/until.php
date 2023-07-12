@@ -2,15 +2,35 @@
 include_once('Config.class.php');
 
 /**
+ * 检查给定文件夹中是否存在指定的文件
+ *
+ * @param array $folders 文件夹路径的数组
+ * @param string $file 要检查的文件名
+ * @return array|bool 如果文件存在，则返回包含文件路径的数组；如果文件不存在，则返回false
+ */
+function check_files($floders,$file) {
+    $files = [];
+    foreach ($floders as $floder) {
+        if(file_exists($floder.$file)) {
+            $files[] = $floder.$file;
+        }
+    }
+    if(count($files) > 0) {
+        return $files;
+    }
+    return False;
+}
+/**
  * 重新格式化参数为 Markdown 表格
  *
  * @param array $type 请求方法数组
- * @param array $url 请求 URL 数组
- * @param array $info 请求信息数组
+ * @param array $url 请求 URL 及信息数组
  * @return string 返回格式化后的 Markdown 表格
  */
-function re_add($type=[],$url=[],$info=[]) {
+function re_add($type=[],$url=[]) {
     $table = "|Method|URL|Info|\n|---|---|---|";
+    $info = array_values($url);
+    $url = array_keys($url);
     for($i=0; $i<count($type); $i++) {
         $table .= "\n|{$type[$i]}|[{$url[$i]}]({$url[$i]})|{$info[$i]}|";
     };
@@ -19,12 +39,13 @@ function re_add($type=[],$url=[],$info=[]) {
 /**
  * 重新格式化参数为 Markdown 表格
  *
- * @param array $key 参数键数组
- * @param array $info 参数值数组
+ * @param array $key 参数键和参数值数组
  * @return string 返回格式化后的 Markdown 表格
  */
-function re_par($key=[],$info=[]) {
+function re_par($key=[]) {
     $table = "|Key|Info|\n|---|---|";
+    $info = array_values($key);
+    $key = array_keys($key);
     for($i=0; $i<count($key); $i++) {
         $table .= "\n|`{$key[$i]}`|{$info[$i]}|";
     };
@@ -98,57 +119,64 @@ function _return_($context,$status=200,$location=false) {
  * @param int $errline 发生错误的行号
  * @return void
  */
-function Error($errno, $errstr=null, $errfile=null, $errline=null) {
+function watchdog($errno,$errstr=NULL, $errfile=NULL, $errline=NULL) {
     header("HTTP/1.1 500");
-    if (!isset($errstr, $errfile, $errline)) {
-        _return_((string)$errno,500);
-    }
     //error_log(date(Y-m-d H:i:s)."[$errno] $errstr in $errfile line $errline.", 1,"logs/log.log");
-    _return_("Error:[$errno] $errstr in $errfile line $errline.",500);
+    if (isset($errfile,$errline)) {
+        $message = "Error[$errno]: $errstr in $errfile line $errline.";
+    } elseif(isset($errstr)) {
+        $message = "Error[$errno]: $errstr";
+    } else {
+        $message = "Error: $errno";
+    }
+    _return_($message,500);
 }
-set_error_handler("Error");
-set_exception_handler("Error");
+set_error_handler("watchdog");
+set_exception_handler("watchdog");
 /**
  * 检查 API 状态
  *
  * @return bool 返回是否需要处理 API 请求
  */
-function handle_check() {
-    if (strpos($_SERVER['REQUEST_URI'], 'api/') !== false) {
-        global $api_name;
-        $DATA = new Config($_SERVER['DOCUMENT_ROOT'].'/data/status');
-        $status=$DATA->get($api_name,true);
-        if ($status !== true) {
-            header("HTTP/1.1 406");
-            _return_("API already closed",406);
-        } else {
-            return true;
-        }
+function handle_check($api_name) {
+    $DATA = new Config($_SERVER['DOCUMENT_ROOT'].'/data/status');
+    $status=$DATA->get($api_name,true);
+    if ($status !== true) {
+        header("HTTP/1.1 406");
+        _return_("API already closed",406);
     } else {
-        return false;
+        return true;
     }
 }
 /**
  * 递归查询文件
  *
- * @param string $dir 目录路径
+ * @param array $dirs 目录路径数组
+ * @param string $file 需要查询的文件名，可选，默认为.php文件，支持末尾字查询
  * @param string $prefix 前缀，可选，默认为空字符串
- * @param string $file 需要查询的文件名，可选，默认为index.php
  * @return array 返回文件的相对路径数组
  */
-function find_files($dir, $prefix = '', $file='index.php') {
-    $files = glob("$dir/*/$file");
-    $relative_paths = array();
-    foreach ($files as $file) {
-        $relative_path = $prefix.trim(str_replace($dir, '', $file), "/"); // 获取相对路径
-        $relative_paths[] = $relative_path;
+function find_files($dirs, $file = '.php', $prefix = '') {
+    $absolute_paths = [];
+    foreach ($dirs as $dir) {
+        if (is_dir($dir)) {
+            // 处理文件夹结果
+            $subdirs = glob("$dir/*", GLOB_ONLYDIR);
+            // 处理文件结果
+            $files = glob("$dir/*$file");
+            $absolute_paths = array_merge($absolute_paths, $files);
+            
+            $subfiles = find_files($subdirs, $file, $prefix . basename($dir) . '/');
+            $absolute_paths = array_merge($absolute_paths, $subfiles);
+        } elseif (is_file($dir)) {
+            if (fnmatch("*$file", $dir)) {
+                $absolute_paths[] = realpath($dir);
+            }
+        }
     }
-    $subdirs = glob("$dir/*", GLOB_ONLYDIR);
-    foreach ($subdirs as $subdir) {
-        $relative_paths = array_merge($relative_paths, find_files($subdir, $prefix . basename($subdir) . '/'));
-    }
-    return $relative_paths;
+    return $absolute_paths;
 }
+
 /**
  * 初始化函数
  *
@@ -176,14 +204,14 @@ function load() {
  *
  * @param string $name 缓存文件名，包含目录路径和文件名，例如：cc/test
  * @param mixed $data 缓存数据
- * @return mixed 返回缓存数据（如果存在且未过期），否则返回 null
+ * @return mixed 返回缓存数据（如果存在且未过期），否则返回 NULL
  */
 function cache($name, $data=null) {
     $path = $_SERVER['DOCUMENT_ROOT'].'/cache';
     $filename = $_SERVER['DOCUMENT_ROOT'].'/cache/'.$name;
     $expiration = 60 * 20; // 20分钟
-    if (file_exists($filename) && time() - filemtime($filename) < $expiration) {
-        return json(file_get_contents($filename));
+    if (file_exists($filename) && (time() - filemtime($filename)) < $expiration) {
+        return json_decode(file_get_contents($filename));
     }
     if ($data===null && !file_exists($filename)) {
         return null;
@@ -191,16 +219,17 @@ function cache($name, $data=null) {
     if (!is_dir($path)) {
         mkdir($path, 0755, true);
     }
-    file_put_contents($filename, json($data));
+    file_put_contents($filename, json_encode($data,JSON_PRETTY_PRINT));
     $files = array_diff(scandir($path), array('.', '..'));
     foreach ($files as $file) {
         $filePath = "$path/$file";
         if (is_dir($filePath) && count(glob($filePath . '/*')) === 0) {
             rmdir($filePath);
-        } elseif (is_file($filePath) && time() - filemtime($filePath) >= $expiration) {
+        } elseif (is_file($filePath) && (time() - filemtime($filePath)) >= $expiration) {
             unlink($filePath);
         }
     }
+    return null;
 }
 /**
  * 删除指定的缓存文件或文件夹
@@ -297,4 +326,40 @@ function RequestLimit($limit,$name=null) {
         _return_('请求次数超过限制(Too Many Requests)',429);
     }
 }
+/**
+ * 获取路径数组相对于根路径的路径
+ * @param array $paths 路径数组
+ * @param string $root 根路径，默认为根目录
+ * @return array 相对路径数组
+ */
+function getPath($paths, $root=NULL) {
+    $DIRECTORY_SEPARATOR = DIRECTORY_SEPARATOR;
+    if (empty($root)) {
+        $root = $_SERVER['DOCUMENT_ROOT'];
+    }
+
+    // 如果根路径不以斜杠结尾，则添加斜杠
+    if (substr($root, -1) != $DIRECTORY_SEPARATOR) {
+        $root .= $DIRECTORY_SEPARATOR;
+    }
+    
+    // 将根路径中的斜杠转换为系统默认类型
+    $root = str_replace('/', $DIRECTORY_SEPARATOR, $root);
+
+    // 将路径数组中的斜杠转换为系统默认类型并转义反斜杠
+    $paths = array_map(function($path) use ($DIRECTORY_SEPARATOR) {
+        $path = str_replace('/', $DIRECTORY_SEPARATOR, $path);
+        if ($DIRECTORY_SEPARATOR === '\\') {
+            $path = str_replace('\\', '\\\\', $path);
+        }
+        return $path;
+    }, $paths);
+    
+    // 计算相对路径并返回结果
+    return array_map(function($path) use ($root) {
+        $result = str_replace($root, '', $path);
+        return ($result == '') ? '/' : $result;
+    }, $paths);
+}
+
 ?>
