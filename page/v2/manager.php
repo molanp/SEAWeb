@@ -4,7 +4,7 @@ include_once($_SERVER['DOCUMENT_ROOT'].'/services/until.php');
 load();
 $types = curl_get('http://'.$_SERVER['HTTP_HOST'].'/v2/info');
 $types = ($types["status"] != 200) ? die($types["data"]) : $types["data"];
-preg_match('/\/(.*)/', $_SERVER["REQUEST_URI"], $goto);
+preg_match('/(.*)/', $_SERVER["REQUEST_URI"], $goto);
 $goto = $goto[1];
 
 foreach(array_keys($types) as $type) {
@@ -20,6 +20,9 @@ if (!isset($data)) {
 }
 $web = curl_get('http://'.$_SERVER['HTTP_HOST'].'/v2/info',["for"=>"web"]);
 $web = ($web["status"] != 200) ? die($web["data"]) : $web["data"];
+if ($web["__system__"]===true) {
+    die(include_once('../maintenance.html'));
+}
 ?>
 
 <!DOCTYPE html>

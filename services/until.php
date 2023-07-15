@@ -140,8 +140,9 @@ set_exception_handler("watchdog");
  */
 function handle_check($api_name) {
     $DATA = new Config($_SERVER['DOCUMENT_ROOT'].'/data/status');
+    $WEB= new Config($_SERVER['DOCUMENT_ROOT'].'/data/web');
     $status=$DATA->get($api_name,true);
-    if ($status !== true) {
+    if ($status !== true || $WEB->get('__system__',false)===true) {
         header("HTTP/1.1 406");
         _return_("API already closed",406);
     } else {
@@ -157,25 +158,31 @@ function handle_check($api_name) {
  * @return array 返回文件的相对路径数组
  */
 function find_files($dirs, $file = '.php', $prefix = '') {
-    $absolute_paths = [];
+    $relative_paths = [];
+    
     foreach ($dirs as $dir) {
         if (is_dir($dir)) {
             // 处理文件夹结果
             $subdirs = glob("$dir/*", GLOB_ONLYDIR);
             // 处理文件结果
             $files = glob("$dir/*$file");
-            $absolute_paths = array_merge($absolute_paths, $files);
-            
-            $subfiles = find_files($subdirs, $file, $prefix . basename($dir) . '/');
-            $absolute_paths = array_merge($absolute_paths, $subfiles);
-        } elseif (is_file($dir)) {
-            if (fnmatch("*$file", $dir)) {
-                $absolute_paths[] = realpath($dir);
+
+            foreach ($files as $filePath) {
+                if (is_file($filePath)) {
+                    $relativePath = str_replace($_SERVER['DOCUMENT_ROOT'], '', $filePath);
+                    $relativePath = ltrim($relativePath, '\\/');
+                    $relative_paths[] = $prefix . $relativePath;
+                }
             }
+
+            $subfiles = find_files($subdirs, $file, $prefix);
+            $relative_paths = array_merge($relative_paths, $subfiles);
         }
     }
-    return $absolute_paths;
+    
+    return $relative_paths;
 }
+
 
 /**
  * 初始化函数
@@ -197,6 +204,7 @@ function load() {
                 "latesttime"=>date('Y-m-d')],
             "keywords"=>"API,api",
             "links"=>"[GitHub](https://github.com/molanp/SEAWeb)\n[Issues](https://github.com/molanp/SEAWeb/issues)\n[开发指南](https://molanp.github.io/SEAWeb_docs)"])->save();
+        $DATA->set("__system__",false)->save();
     }
 }
 /**

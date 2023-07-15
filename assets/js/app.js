@@ -118,7 +118,7 @@ function load_info() {
             for (var type in data) {
                 list += `<li class='mdui-subheader'>${type}</li>`;
                 for (var plugin in data[type]) {
-                    if (window.location.pathname!='/'&&window.location.pathname.match(/\/(.*)$/)[1]==data[type][plugin]["path"]) {
+                    if (window.location.pathname!='/'&&window.location.pathname.match(/(.*)$/)[1]==data[type][plugin]["path"]) {
                         list += `<li class='mdui-list-item mdui-ripple mdui-list-item-active'>
                         <a class='mdui-list-item-content' href='#'>
                         ${DOMPurify.sanitize(plugin)}
@@ -128,7 +128,7 @@ function load_info() {
                         var api_data = data[type][plugin];
                     } else {
                         list += `<li class='mdui-list-item mdui-ripple'>
-                        <a class='mdui-list-item-content' href='/${data[type][plugin]["path"]}'">
+                        <a class='mdui-list-item-content' href='${data[type][plugin]["path"]}'">
                         ${DOMPurify.sanitize(plugin)}
                         </a>
                         </li>`;

@@ -13,7 +13,7 @@
     <title>后台管理</title>
 </head>
 <body class="mdui-appbar-with-toolbar mdui-drawer-body-left">
-<div class="mdui-drawer mdui-drawer-close mdui-drawer-open" id="sider">
+<div class="mdui-drawer mdui-drawer-close" id="sider">
         <ul class="mdui-list">
         <li class="mdui-list-item mdui-ripple">
             <div class="mdui-list-item-content">
@@ -22,13 +22,18 @@
         </li>
         <li class="mdui-list-item mdui-ripple">
             <div class="mdui-list-item-content">
-                <a href="#status">api控制</a>
+                <a href="#api_control">api控制</a>
+            </div>
+        </li>
+        <li class="mdui-list-item mdui-ripple">
+            <div class="mdui-list-item-content">
+                <a href="#setting">网站设置</a>
             </div>
         </li>
         </ul>
     </div>
     <div class="mdui-appbar mdui-appbar-fixed mdui-toolbar mdui-color-blue mdui-appbar-inset">
-        <a href="javascript:window.location.href=window.location.origin" class="mdui-btn mdui-btn-icon" mdui-tooltip="{content: 'Back Home', position: 'auto'}">
+        <a href="/" class="mdui-btn mdui-btn-icon" mdui-tooltip="{content: 'Back Home', position: 'auto'}">
             <i class="mdui-icon material-icons">home</i>
         </a>
         <span class="mdui-typo-title">后台管理</span>
@@ -37,26 +42,68 @@
             <i class="mdui-icon material-icons">menu</i>
         </a>
         <ul class="mdui-menu" id="menu">
-        <li class="mdui-menu-item">
-            <a href="#" class="mdui-ripple">
-            <i class="mdui-menu-item-icon mdui-icon material-icons">account_circle</i><?=$_COOKIE['user']?>
-            </a>
-        </li>
-        <li class="mdui-menu-item">
-            <a href="javascript:resetpassword()" class="mdui-ripple">
-            <i class="mdui-menu-item-icon mdui-icon material-icons">lock</i>Reset Password
-            </a>
-        </li>
-        <li class="mdui-divider"></li>
-        <li class="mdui-menu-item">
-            <a href="javascript:loginout()" class="mdui-ripple">
-            <i class="mdui-menu-item-icon mdui-icon material-icons">exit_to_app</i>Logout
-            </a>
-        </li>
+            <li class="mdui-menu-item">
+                <a href="#" class="mdui-ripple">
+                <i class="mdui-menu-item-icon mdui-icon material-icons">account_circle</i><?=$_COOKIE['user']?>
+                </a>
+            </li>
+            <li class="mdui-menu-item">
+                <a href="javascript:resetpassword()" class="mdui-ripple">
+                <i class="mdui-menu-item-icon mdui-icon material-icons">lock</i>Reset Password
+                </a>
+            </li>
+            <li class="mdui-divider"></li>
+            <li class="mdui-menu-item">
+                <a href="javascript:loginout()" class="mdui-ripple">
+                <i class="mdui-menu-item-icon mdui-icon material-icons">exit_to_app</i>Logout
+                </a>
+            </li>
         </ul>
     </div>
-    <div class="container mdui-container-fluid">
-        <span class="content" style="width: 75%;padding: 20px;background-color: #fff;">Loading...</span>
+    <div class="mdui-container mdui-container-fluid">
+        <div class="tabs">
+            <div id="home">
+                <div class="mdui-panel" mdui-panel>
+                    <div class="mdui-panel-item">
+                        <div class="mdui-panel-item-header">网站设置</div>
+                            <div class="mdui-panel-item-body" id="setting">Loading...</div>
+                    </div>
+                </div>
+                <div class="mdui-panel" mdui-panel>
+                    <div class="mdui-panel-item">
+                        <div class="mdui-panel-item-header">SEAWeb版本: <span id="version">${data.version}</span></div>
+                            <div class="mdui-panel-item-body">
+                                最新版本:<span id="latest_version"><a href="javascript:check_update()">Check Update</a></span>
+                            </div>
+                    </div>
+                </div>
+                <div class="mdui-panel" mdui-panel>
+                    <div class="mdui-panel-item mdui-panel-item-open">
+                        <div class="mdui-panel-item-header">修改网页信息</div>
+                            <div class="mdui-panel-item-body">
+                                网站标题：<p><textarea style='width:75%;height: 200px;' id='index_title'>${data.index_title}</textarea></p>
+                                网站简介信息：<p><textarea style='width:75%;height: 200px;' id='index_description'>${data.index_description}</textarea></p>
+                                网站公告：<p><textarea style='width:75%;height: 200px;' id='notice'>${data.notice.data}</textarea></p>
+                                网站底部版权信息：<p><textarea style='width:75%;height: 200px;' id='copyright'>${data.copyright}</textarea></p>
+                                网页备案号：<p><textarea style='width:75%;height: 200px;' id='record'>${data.record}</textarea></p>
+                                友情链接(一行一个)：示例： [链接1](http://xxx)<p><textarea style='width:75%;height: 200px;' id='links'>${data.links}</textarea></p>
+                                网站keywords(逗号分隔)：<p><textarea style='width:75%;height: 200px;' id='keywords'>${data.keywords}</textarea></p>
+
+                            </div>
+                    </div>
+                </div>
+                <button onclick='save()'
+                class='login-button mdui-btn mdui-btn-raised mdui-ripple'>Save</button>
+            </div>
+            <div id="api_control">
+                <h3>Edit API Status</h3>
+                <br>
+                <span id="api_list">${api_list}</span>
+                <br>
+                <button onclick='save_api()'
+                class='login-button mdui-btn mdui-btn-raised mdui-ripple'>Save</button>
+            </div>
+        </div>
     </div>
     <button class="mdui-fab mdui-fab-fixed  mdui-color-pink" onclick="sider()"><i class="mdui-icon material-icons">add</i></button>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mdui/1.0.2/js/mdui.min.js"></script>

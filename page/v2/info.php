@@ -6,24 +6,20 @@ include_once($_SERVER['DOCUMENT_ROOT'].'/services/__version__.php');
 if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     load();
     $DATA = new Config($_SERVER['DOCUMENT_ROOT'].'/data/status');
-    $WEB= new Config($_SERVER['DOCUMENT_ROOT'].'/data/web');
+    $WEB_= new Config($_SERVER['DOCUMENT_ROOT'].'/data/web');
     $for = $_GET['for'] ?? NULL;
     switch($for) {
         case 'web':
             if (cache('web')){
                 $conname = cache('web');
             } else {
-                $WEB = $WEB->get('web');
-                $conname = [
-                    "record"=>$WEB['record'],
-                    "index_title"=>$WEB['index_title'],
-                    "copyright"=>$WEB['copyright'],
-                    "index_description"=>$WEB['index_description'],
-                    "notice"=>$WEB['notice'],
-                    "keywords"=>$WEB['keywords'],
-                    "links"=>$WEB['links'],
-                    "version"=>$__version__
-                ];
+                $WEB = $WEB_->get('web');
+                $keys = array_keys($WEB);
+                foreach ($keys as $key) {
+                    $conname[$key] = $WEB[$key];
+                }
+                $conname["version"] = $__version__;
+                $conname["__system__"] = $WEB_->get('__system__');
                 cache('web',$conname);
             }
             break;
@@ -44,10 +40,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
                     if (count($pluginFiles) > 0) {
                         foreach ($pluginFiles as $pluginFilePath) {
                             // 加载插件
-                            include_once $pluginFilePath;
+                            include_once $_SERVER['DOCUMENT_ROOT'].DIRECTORY_SEPARATOR.$pluginFilePath;
                             
                             // 获取插件文件的绝对路径
-                            $absolutePath = realpath($pluginFilePath);
+                            $absolutePath = realpath($_SERVER['DOCUMENT_ROOT'].DIRECTORY_SEPARATOR.$pluginFilePath);
                     
                             // 获取文件名和目录名
                             $file = basename($absolutePath);
@@ -95,18 +91,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
                 if (count($pluginFiles) > 0) {
                     foreach ($pluginFiles as $pluginFilePath) {
                         // 加载插件
-                        include_once $pluginFilePath;
+                        include_once $_SERVER['DOCUMENT_ROOT'].DIRECTORY_SEPARATOR.$pluginFilePath;
                         
                         // 获取插件文件的绝对路径
-                        $absolutePath = realpath($pluginFilePath);
-                
+                        $absolutePath = realpath($_SERVER['DOCUMENT_ROOT'].DIRECTORY_SEPARATOR.$pluginFilePath);
+                    
                         // 获取文件名和目录名
                         $file = basename($absolutePath);
                         $dir = dirname($absolutePath);
-                
+                    
                         // 构建类名
                         $pluginClassName = pathinfo($file, PATHINFO_FILENAME);
-                
+                    
                         // 检查类是否存在
                         if (!class_exists($pluginClassName) && is_file($dir . DIRECTORY_SEPARATOR . $pluginClassName . '.php')) {
                             $pluginClassName = basename($dir);
@@ -120,27 +116,43 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
                                 // 调用插件方法并获取插件信息
                                 $info = $plugin->getInfo();
                                 $type = $info['type'] ?? '一些工具';
-                                preg_match($pattern, $pluginFilePath, $path);
-                                $path = str_replace("\\","/",str_replace(".php","",str_replace("index.php","",$path[2])));
-
+                                $path = str_replace(
+                                    PLUGIN_FOLDERS,
+                                    "",
+                                    str_replace(
+                                        "\\",
+                                        "/",
+                                        str_replace(
+                                            ".php",
+                                            "",
+                                             str_replace(
+                                                "index.php",
+                                                "",
+                                                $absolutePath
+                                            )
+                                        )
+                                    )
+                                );
+                    
                                 $conname[$type][$info['name']] = [
-                                    'path'=>$path,
-                                    'api_profile'=>$info['profile'],
-                                    'api_address'=>re_add([$info['method']],["/api/".$path=>'-']),
-                                    'version'=>$info['version'],
-                                    'author'=>$info['author'],
-                                    'request_parameters'=>$info['request_par'],
-                                    'return_parameters'=>$info['return_par'],
-                                    'status'=>$DATA->get($info['name'],true)
+                                    'path' => $path,
+                                    'api_profile' => $info['profile'],
+                                    'api_address' => re_add([$info['method']], ["/api" . $path => '-']),
+                                    'version' => $info['version'],
+                                    'author' => $info['author'],
+                                    'request_parameters' => $info['request_par'],
+                                    'return_parameters' => $info['return_par'],
+                                    'status' => $DATA->get($info['name'], true)
                                 ];
                                 if ($DATA->get($info['name']) === '' || $DATA->get($info['name']) === null) {
-                                    $DATA->set($info['name'],true)->save();
+                                    $DATA->set($info['name'], true)->save();
                                 }
                             }
                         } else {
                             //error_log("插件类缺少 getInfo() 方法，文件路径：$pluginFilePath ，文件名：$file",3,LOGGER);
                         }
                     }
+                    
                 }
                 cache('api', $conname);
             } else {
@@ -152,6 +164,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 } elseif ($_SERVER['REQUEST_METHOD'] == 'POST') {
     load();
     $WEB= new Config($_SERVER['DOCUMENT_ROOT'].'/data/web');
+    $STATUS= new Config($_SERVER['DOCUMENT_ROOT'].'/data/status');
 
     $for = $_POST['for'] ?? NULL;
     switch($for) {
@@ -167,7 +180,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
                         "latesttime"=>date('Y-m-d')],
                     "keywords"=>$_POST["keywords"],
                     "links"=>$_POST["links"]])->save();
-                    del_cache('web');
+                $WEB->set("__system__",filter_var($_POST["__system__"], FILTER_VALIDATE_BOOLEAN))->save();
+                del_cache('web');
                 _return_("修改成功");
             } else {
                 _return_("身份验证失败",403);
@@ -175,14 +189,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
             break;
         case 'edit_status':
             if (isset($_POST['token']) && $_POST['token'] == $WEB->get('account')['password']) {
-                $STATUS= new Config($_SERVER['DOCUMENT_ROOT'].'/data/status');
                 $keys = array_keys($_POST["data"]);
                 $data = array_values($_POST["data"]);
                 $i = 0;
                 for ($i;$i<count($data);$i++) {
                     $STATUS->set($keys[$i],filter_var($data[$i], FILTER_VALIDATE_BOOLEAN))->save();
                 }
-                del_cache('api');
+                del_cache('status');
                 _return_("修改成功");
             } else {
                 _return_("身份验证失败",403);
