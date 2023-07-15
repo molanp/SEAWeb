@@ -1,9 +1,13 @@
 <?php
 include_once('services/until.php');
+include_once('services/Config.class.php');
 
 load();
 $web = curl_get('http://'.$_SERVER['HTTP_HOST'].'/v2/info',["for"=>"web"]);
 $web = ($web["status"] != 200) ? die($web["data"]) : $web["data"];
+if ($web["__system__"]===true) {
+    die(include_once('page/maintenance.html'));
+}
 ?>
 
 <!DOCTYPE html>
