@@ -1,0 +1,162 @@
+<?php
+class zhihu_yx {
+    function getInfo() {
+        return [
+            'name' => '知乎盐选',
+            'version' => '1.0',
+            'profile' => '一键获取知乎盐选文章，响应速度会随着查找次数增多而增快<br>内容来自第三方接口，本站仅负责显示内容，不对内容负任何责任<br>文章版权归原作者所有<br>__仅供学习交流，严禁违法用途__',
+            'method' => 'GET',
+            'type' => '第三方接口',
+            'author' => 'molanp',
+            'request_par' => re_par(['*url' => '知乎盐选文章地址,若未查询到文章，再次请求即可']),
+            'return_par' => re_par([
+                'id' => '文章id',
+                'title' => '文章标题',
+                'content' => '文章内容',
+                'createTime' => '文章保存时间',
+            ])
+        ];
+    }
+    private function fetchArticle($url) {     
+        RequestLimit("20/min","zhihu");
+        $database = __DIR__.'/zhihu.db';
+        $api = 'http://36.134.102.174:8087/article/link';
+        $parsedUrl = parse_url($url);
+        $url = $parsedUrl['scheme'] . '://' . $parsedUrl['host'] . $parsedUrl['path'];
+        if (!preg_match('/^(https?:\/\/)?(www\.)?zhihu\.com\/market\/paid_column\/\d+\/section\/\d+$/', $url)) {
+            return [
+                'code' => 400,
+                'data' => 'Invalid URL format.Only support http(s)://(www.)zhihu.com/market/paid_column/d+/section/d+ but '.$url.' given.'
+            ];
+        }
+        if (!file_exists($database)) {
+            // 创建数据库文件和表
+            $db = new SQLite3($database);
+            $db->exec('CREATE TABLE IF NOT EXISTS articles (id INTEGER, title TEXT, content TEXT, createTime TEXT, url TEXT)');
+            $db->close();
+        }
+        // 打开数据库连接
+        $db = new SQLite3($database);
+        // 检查数据是否已存在于数据库
+        $stmt = $db->prepare('SELECT id, title, content, createTime FROM articles WHERE url = :url');
+        $stmt->bindValue(':url', $url);
+        $result = $stmt->execute()->fetchArray(SQLITE3_ASSOC);
+        if ($result) {
+            $db->close();
+            return [
+                'code' => 304,
+                'data' => [
+                    'id' => $result['id'],
+                    'title' => $result['title'],
+                    'content' => $result['content'],
+                    'createTime' => $result['createTime']
+                ]
+            ];
+        }
+        $token = curl_post("http://36.134.102.174:8087/user/login",["userName"=>"seaweb","password"=>"123456"],$header=[
+            "Host"=>"36.134.102.174:8087",
+            "Origin"=>"http://119.91.35.62",
+            "Referer"=>"http://119.91.35.62/"
+        ]);
+        if ($token && isset($token["code"]) && $token["code"] === 200) {
+            $token = $token["data"]["zltoken"];
+        } else {
+            return [
+                "code" => 503,
+                "data" => "Failed to get token."
+            ];
+        }
+        // 发起请求获取文章内容
+        $data = curl_get($api,['url'=>$url], $header=[
+            "Host"=>"36.134.102.174:8087",
+            "Origin"=>"http://119.91.35.62",
+            "Referer"=>"http://119.91.35.62/",
+            "zltoken"=>$token
+        ]);
+
+        if ($data && isset($data['code']) && $data['code'] === 200 && $data['data']['title'] !== "无此文章") {
+            $title = trim(preg_replace('/(\s+)?(第)?(\s+)?\d+\s+节\s+/u','',$data['data']['title']));
+            $content = $data['data']['content'];
+
+            $content = str_ireplace("　　","",$content);
+            $content = preg_replace("/(\s*)?第\s*\d+\s*节\s*$title/", '', $content);
+
+            // 清除html标签并将</p>替换为换行符
+            $content = str_replace('</p>', "\n", strip_tags($content));
+            $content = preg_replace("/\n\s*\n\n\n(\s*)?/",'',$content);
+
+            if ($content=="") {
+                return [
+                    'code' => 400,
+                    'data' => 'Failed to fetch article.'
+                ];
+            }
+
+            // 获取当前最大的ID值
+            $maxIdResult = $db->querySingle('SELECT MAX(id) FROM articles');
+            $maxId = $maxIdResult !== false ? (int) $maxIdResult : 0;
+
+            // 生成新的自增ID
+            $newId = $maxId + 1;
+
+            // 获取当前时间作为发布时间
+            $createTime = date('Y-m-d H:i:s');
+
+            // 保存到SQLite数据库
+            $stmt = $db->prepare('INSERT INTO articles (id, title, content, createTime, url) VALUES (:id, :title, :content, :createTime, :url)');
+            $stmt->bindValue(':id', $newId);
+            $stmt->bindValue(':title', $title);
+            $stmt->bindValue(':content', $content);
+            $stmt->bindValue(':createTime', $createTime);
+            $stmt->bindValue(':url', $url);
+            $stmt->execute();
+
+            // 关闭数据库连接
+            $db->close();
+
+            return [
+                'code' => 200,
+                'data' => [
+                    'id' => $newId,
+                    'title' => $title,
+                    'content' => $content,
+                    'createTime' => $createTime
+                ]
+            ];
+        } else {
+            if (isset($data['data'])) {
+                return [
+                    'code' => $data['code'],
+                    'data' => $data['data']['title']
+                ];
+            } elseif(isset($data['msg'])) {
+                return [
+                    'code' => $data['code'],
+                    'data' => $data['msg']
+                ];
+            } else {
+                return [
+                    'code' => 500,
+                    'data' => $data
+                ];
+            }
+        }
+    }
+
+    function run($get) {
+        $url = $get['url'] ?? "http://NO URL/";
+        $result = $this->fetchArticle($url);
+        _return_($result['data'],$result['code']);
+    }
+    
+    /* 示例用法
+    $url = 'https://www.zhihu.com/market/paid_column/xxxxxx/section/xxxx';
+    $result = $this->fetchArticle($url);
+    if ($result['code'] === 200) {
+        echo 'ID: ' . $result['data']['id'] . '<br>';
+        echo '标题: ' . $result['data']['title'] . '<br>';
+        echo '文章内容: ' . $result['data']['content'];
+    } else {
+        echo $result['data'];
+    }*/
+}

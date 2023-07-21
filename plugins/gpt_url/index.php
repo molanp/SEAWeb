@@ -12,7 +12,6 @@ class gpt_url {
                 'count' => 'gpt镜像url数量',
                 'default' => '可用gpt镜像url列表'
             ]),
-            //...more
         ];
     }
 
