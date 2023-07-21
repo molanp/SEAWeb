@@ -3,6 +3,7 @@ include_once($_SERVER['DOCUMENT_ROOT'].'/services/Config.class.php');
 include_once($_SERVER['DOCUMENT_ROOT'].'/services/until.php');
 include_once($_SERVER['DOCUMENT_ROOT'].'/services/path.php');
 include_once($_SERVER['DOCUMENT_ROOT'].'/services/__version__.php');
+
 if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     load();
     $DATA = new Config($_SERVER['DOCUMENT_ROOT'].'/data/status');
@@ -25,7 +26,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
             break;
         case 'status':
             $conname = [];
-            // 检查缓存是否存在，若不存在则重新搜索目录
             if (!cache('status')) {
                 include_once($_SERVER['DOCUMENT_ROOT'].'/services/path.php');
                 $paths = getPath(PLUGIN_FOLDERS);
@@ -39,30 +39,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
                     $pluginFiles = str_replace(['/','\\'], [DIRECTORY_SEPARATOR,DIRECTORY_SEPARATOR], find_files(PLUGIN_FOLDERS,'.php'));
                     if (count($pluginFiles) > 0) {
                         foreach ($pluginFiles as $pluginFilePath) {
-                            // 加载插件
                             include_once $_SERVER['DOCUMENT_ROOT'].DIRECTORY_SEPARATOR.$pluginFilePath;
-                            
-                            // 获取插件文件的绝对路径
                             $absolutePath = realpath($_SERVER['DOCUMENT_ROOT'].DIRECTORY_SEPARATOR.$pluginFilePath);
-                    
-                            // 获取文件名和目录名
                             $file = basename($absolutePath);
                             $dir = dirname($absolutePath);
-                    
-                            // 构建类名
                             $pluginClassName = pathinfo($file, PATHINFO_FILENAME);
-                    
-                            // 检查类是否存在
                             if (!class_exists($pluginClassName) && is_file($dir . DIRECTORY_SEPARATOR . $pluginClassName . '.php')) {
                                 $pluginClassName = basename($dir);
                             }
-                            // 检查类是否存在
                             if (class_exists($pluginClassName)) {
-                                // 实例化插件类
                                 $plugin = new $pluginClassName();
-                                // 检查插件类是否有 getInfo() 方法
                                 if (method_exists($plugin, 'getInfo')&&method_exists($plugin, 'run')) {
-                                    // 调用插件方法并获取插件信息
                                     $info = $plugin->getInfo();
                                     $conname[$info['name']] = $DATA->get($info['name'],true);
                                 }
@@ -90,30 +77,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
                 $pluginFiles = str_replace(['/','\\'], [DIRECTORY_SEPARATOR,DIRECTORY_SEPARATOR], find_files(PLUGIN_FOLDERS,'.php'));
                 if (count($pluginFiles) > 0) {
                     foreach ($pluginFiles as $pluginFilePath) {
-                        // 加载插件
                         include_once $_SERVER['DOCUMENT_ROOT'].DIRECTORY_SEPARATOR.$pluginFilePath;
-                        
-                        // 获取插件文件的绝对路径
                         $absolutePath = realpath($_SERVER['DOCUMENT_ROOT'].DIRECTORY_SEPARATOR.$pluginFilePath);
-                    
-                        // 获取文件名和目录名
                         $file = basename($absolutePath);
                         $dir = dirname($absolutePath);
-                    
-                        // 构建类名
                         $pluginClassName = pathinfo($file, PATHINFO_FILENAME);
-                    
-                        // 检查类是否存在
                         if (!class_exists($pluginClassName) && is_file($dir . DIRECTORY_SEPARATOR . $pluginClassName . '.php')) {
                             $pluginClassName = basename($dir);
                         }
-                        // 检查类是否存在
                         if (class_exists($pluginClassName)) {
-                            // 实例化插件类
                             $plugin = new $pluginClassName();
-                            // 检查插件类是否有 getInfo() 方法
                             if (method_exists($plugin, 'getInfo')&&method_exists($plugin, 'run')) {
-                                // 调用插件方法并获取插件信息
                                 $info = $plugin->getInfo();
                                 $type = $info['type'] ?? '一些工具';
                                 $path = str_replace(

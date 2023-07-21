@@ -24,7 +24,6 @@ if ($web["__system__"]===true) {
     die(include_once('../maintenance.html'));
 }
 ?>
-
 <!DOCTYPE html>
 <html>
 <html lang="zh-CN">
