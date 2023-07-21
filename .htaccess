@@ -18,5 +18,7 @@ RewriteRule ^services(/.*)?$ - [F]
 RewriteRule ^page/v2(/.*)?$ - [L]
 RewriteRule ^page(/.*)?$ - [F]
 RewriteRule ^data(/.*)?$ - [F]
+RewriteRule ^plugins(/.*)?$ - [F]
+RewriteRule ^extensive_plugin(/.*)?$ - [F]
 </IfModule>
 

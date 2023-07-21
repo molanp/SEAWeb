@@ -9,7 +9,6 @@ class ai {
             'author'=>'molanp',
             'request_par'=> re_par(['*msg'=>'你要对ai说的话']),
             'return_par'=> re_par(['data'=>'ai给你的回复']),
-            //...more
         ];
     }
     private function findMostSimilarWord($input, $dictionary) {

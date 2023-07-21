@@ -56,10 +56,11 @@ function re_par($key=[]) {
  *
  * @param string $url 请求的 URL
  * @param array $data 请求参数，可选，默认为空数组
- * @param bool $code 是否返回 HTTP 状态码，可选，默认为 false
+ * @param array $cookie 提交的cookie，key->value形式
+ * @param array $header 请求头部信息
  * @return mixed 返回请求结果，如果发生错误，则返回错误信息
  */
-function curl_get($url, $data = [], $code = false)
+function curl_get($url, $data = [], $cookie = [], $headers = [])
 {
     if ($url == "") {
         return false;
@@ -70,34 +71,89 @@ function curl_get($url, $data = [], $code = false)
     curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
     curl_setopt($ch, CURLOPT_HEADER, 0);
-    curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.80 Safari/537.36");
+    curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36 Edg/114.0.1823.82");
     curl_setopt($ch, CURLOPT_TIMEOUT, 5);
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
     curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+    if (!empty($cookie)) {
+        $cookieString = "";
+        foreach ($cookie as $key => $value) {
+            $cookieString .= $key . "=" . $value . "; ";
+        }
+        curl_setopt($ch, CURLOPT_COOKIE, rtrim($cookieString, "; "));
+    }
+    if (!empty($headers)) {
+        $headerString = [];
+        foreach ($headers as $key => $value) {
+            $headerString[] = $key . ": " . $value;
+        }
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headerString);
+    }
+    curl_setopt($ch, CURLOPT_ENCODING, 'gzip');
     $output = curl_exec($ch);
     curl_close($ch);
-    if (curl_exec($ch) === false) {
+    if ($output === false) {
         return curl_error($ch);
     }
-    if ($code === true) {
-        return curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    return json($output);
+}
+/**
+ * 使用 CURL 发起 POST 请求获取数据(仅提交json数据)
+ *
+ * @param string $url 请求的 URL
+ * @param array $data 请求参数，可选，默认为空数组
+ * @param array $cookie 提交的cookie，key->value形式
+ * @param array $header 请求头部信息
+ * @return mixed 返回请求结果，如果发生错误，则返回错误信息
+ */
+function curl_post($url, $data = [], $cookie = [], $headers = [])
+{
+    if ($url == "") {
+        return false;
     }
-    $json = json_decode($output, true);
-    if (json_last_error() === JSON_ERROR_NONE) {
-        return $json;
-    } else {
-        return (string) $output;
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_HEADER, 0);
+    curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36 Edg/114.0.1823.82");
+    curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+    curl_setopt($ch, CURLOPT_POST, 1);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+    if (!empty($cookie)) {
+        $cookieString = "";
+        foreach ($cookie as $key => $value) {
+            $cookieString .= $key . "=" . $value . "; ";
+        }
+        curl_setopt($ch, CURLOPT_COOKIE, rtrim($cookieString, "; "));
     }
+    if (!empty($headers)) {
+        $headerString = [];
+        foreach ($headers as $key => $value) {
+            $headerString[] = $key . ": " . $value;
+        }
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headerString);
+    }
+    curl_setopt($ch, CURLOPT_ENCODING, 'gzip');
+    $output = curl_exec($ch);
+    curl_close($ch);
+    if ($output === false) {
+        return curl_error($ch);
+    }
+    return json_decode($output, true);
 }
 /**
  * 返回结果
  *
- * @param mixed $context 返回的数据内容
+ * @param mixed $content 返回的数据内容
  * @param int $status 状态码，默认为 200
  * @param bool|string $location 是否重定向，如果为字符串，则表示重定向的 URL
  * @return void
  */
-function _return_($context,$status=200,$location=false) {
+function _return_($content,$status=200,$location=false) {
     header('Access-Control-Allow-Origin: *'); // 允许跨域请求
     header('Access-Control-Allow-Methods: POST,GET,OPTIONS,DELETE,PUT'); // 允许全部请求类型
     header('Access-Control-Allow-Credentials: true'); // 允许发送 cookies
@@ -105,7 +161,7 @@ function _return_($context,$status=200,$location=false) {
     //header("HTTP/1.1 $status");
     if ($location == false) {
         header('Content-type:text/json;charset=utf-8');
-        die(json_encode(['status'=>$status,'data'=>$context,'time'=>time()],JSON_UNESCAPED_UNICODE|JSON_PRETTY_PRINT));
+        die(json_encode(['status'=>$status,'data'=>$content,'time'=>time()],JSON_UNESCAPED_UNICODE|JSON_PRETTY_PRINT));
     } else {
         die(header("Location: $location"));
     }
@@ -138,10 +194,10 @@ set_exception_handler("watchdog");
  *
  * @return bool 返回是否需要处理 API 请求
  */
-function handle_check($api_name) {
+function handle_check($name) {
     $DATA = new Config($_SERVER['DOCUMENT_ROOT'].'/data/status');
     $WEB= new Config($_SERVER['DOCUMENT_ROOT'].'/data/web');
-    $status=$DATA->get($api_name,true);
+    $status=$DATA->get($name,true);
     if ($status !== true || $WEB->get('__system__',false)===true) {
         header("HTTP/1.1 406");
         _return_("API already closed",406);
@@ -287,12 +343,10 @@ function json($json) {
  * 此函数应在 handle_check() 后执行
  *
  * @param string $limit 最大请求次数和时间单位，例如 '3/s' '10/min', '5/hour', '100/day'
- * @param string $name 如果引用文件中没有$api_name变量，请在此处自定义标识符
+ * @param string $name 如果引用文件中没有$name变量，请在此处自定义标识符
  * @return void
  */
 function RequestLimit($limit,$name=null) {
-    global $api_name;
-    $api_name = $api_name ?? $name;
     $DATA = new Config($_SERVER['DOCUMENT_ROOT'].'/data/limit');
     $requests = $DATA->get('requests',[]);
     $lastRequestTime = $DATA->get('lastRequestTime',[]);
@@ -317,20 +371,20 @@ function RequestLimit($limit,$name=null) {
         default:
             throw new Exception("Time units are only supported as s, min, hour, day");
     }
-    if(isset($requests[$api_name][$ip]) && isset($lastRequestTime[$api_name][$ip])) {
-        if($currentTime - $lastRequestTime[$api_name][$ip] > $interval) {
-            $requests[$api_name][$ip] = 1;
-            $lastRequestTime[$api_name][$ip] = $currentTime;
+    if(isset($requests[$name][$ip]) && isset($lastRequestTime[$name][$ip])) {
+        if($currentTime - $lastRequestTime[$name][$ip] > $interval) {
+            $requests[$name][$ip] = 1;
+            $lastRequestTime[$name][$ip] = $currentTime;
         } else {
-            $requests[$api_name][$ip]++;
+            $requests[$name][$ip]++;
         }
     } else {
-        $requests[$api_name][$ip] = 1;
-        $lastRequestTime[$api_name][$ip] = $currentTime;
+        $requests[$name][$ip] = 1;
+        $lastRequestTime[$name][$ip] = $currentTime;
     }
     $DATA->set('requests',$requests)->save();
     $DATA->set('lastRequestTime',$lastRequestTime)->save();
-    if($requests[$api_name][$ip] > $quantity) {
+    if($ip !== "127.0.0.1" && $ip !== "::1" && $requests[$name][$ip] > $quantity) {
         _return_('请求次数超过限制(Too Many Requests)',429);
     }
 }
