@@ -9,7 +9,6 @@ if ($web["__system__"]===true) {
     die(include_once('page/maintenance.html'));
 }
 ?>
-
 <!DOCTYPE html>
 <html>
 <html lang="zh-CN">

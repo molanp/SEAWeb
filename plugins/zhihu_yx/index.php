@@ -30,14 +30,11 @@ class zhihu_yx {
             ];
         }
         if (!file_exists($database)) {
-            // 创建数据库文件和表
             $db = new SQLite3($database);
             $db->exec('CREATE TABLE IF NOT EXISTS articles (id INTEGER, title TEXT, content TEXT, createTime TEXT, url TEXT)');
             $db->close();
         }
-        // 打开数据库连接
         $db = new SQLite3($database);
-        // 检查数据是否已存在于数据库
         $stmt = $db->prepare('SELECT id, title, content, createTime FROM articles WHERE url = :url');
         $stmt->bindValue(':url', $url);
         $result = $stmt->execute()->fetchArray(SQLITE3_ASSOC);
@@ -66,43 +63,29 @@ class zhihu_yx {
                 "data" => "Failed to get token."
             ];
         }
-        // 发起请求获取文章内容
         $data = curl_get($api,['url'=>$url], $header=[
             "Host"=>"36.134.102.174:8087",
             "Origin"=>"http://119.91.35.62",
             "Referer"=>"http://119.91.35.62/",
             "zltoken"=>$token
         ]);
-
         if ($data && isset($data['code']) && $data['code'] === 200 && $data['data']['title'] !== "无此文章") {
             $title = trim(preg_replace('/(\s+)?(第)?(\s+)?\d+\s+节\s+/u','',$data['data']['title']));
             $content = $data['data']['content'];
-
             $content = str_ireplace("　　","",$content);
             $content = preg_replace("/(\s*)?第\s*\d+\s*节\s*$title/", '', $content);
-
-            // 清除html标签并将</p>替换为换行符
             $content = str_replace('</p>', "\n", strip_tags($content));
             $content = preg_replace("/\n\s*\n\n\n(\s*)?/",'',$content);
-
             if ($content=="") {
                 return [
                     'code' => 400,
                     'data' => 'Failed to fetch article.'
                 ];
             }
-
-            // 获取当前最大的ID值
             $maxIdResult = $db->querySingle('SELECT MAX(id) FROM articles');
             $maxId = $maxIdResult !== false ? (int) $maxIdResult : 0;
-
-            // 生成新的自增ID
             $newId = $maxId + 1;
-
-            // 获取当前时间作为发布时间
             $createTime = date('Y-m-d H:i:s');
-
-            // 保存到SQLite数据库
             $stmt = $db->prepare('INSERT INTO articles (id, title, content, createTime, url) VALUES (:id, :title, :content, :createTime, :url)');
             $stmt->bindValue(':id', $newId);
             $stmt->bindValue(':title', $title);
@@ -110,10 +93,7 @@ class zhihu_yx {
             $stmt->bindValue(':createTime', $createTime);
             $stmt->bindValue(':url', $url);
             $stmt->execute();
-
-            // 关闭数据库连接
             $db->close();
-
             return [
                 'code' => 200,
                 'data' => [
@@ -142,21 +122,9 @@ class zhihu_yx {
             }
         }
     }
-
     function run($get) {
         $url = $get['url'] ?? "http://NO URL/";
         $result = $this->fetchArticle($url);
         _return_($result['data'],$result['code']);
     }
-    
-    /* 示例用法
-    $url = 'https://www.zhihu.com/market/paid_column/xxxxxx/section/xxxx';
-    $result = $this->fetchArticle($url);
-    if ($result['code'] === 200) {
-        echo 'ID: ' . $result['data']['id'] . '<br>';
-        echo '标题: ' . $result['data']['title'] . '<br>';
-        echo '文章内容: ' . $result['data']['content'];
-    } else {
-        echo $result['data'];
-    }*/
 }

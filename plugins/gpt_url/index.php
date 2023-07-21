@@ -21,7 +21,7 @@ class gpt_url {
         preg_match_all('/<td><a\s+href="([^"]+)"\s+target="_blank">([^<]+)<\/a><\/td>/', $html, $matches);
         if (count($matches[1]) > 0) {
             foreach ($matches[1] as $index => $link) {
-                $default[] = $link; // 将满足条件的链接加入数组
+                $default[] = $link;
             }
         }
         $html = curl_get('http://doc.wuguokai.cn/s/xPq1iNw_v');

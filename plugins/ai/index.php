@@ -68,7 +68,6 @@ class ai {
                 if(strpos($data,"公众号")!==false){$data=NULL;}
                 if(strpos($data,"taobao.com")!==false){$data=NULL;}
                 if(strpos($data,"淘宝")!==false){$data=NULL;}
-                #$data = preg_replace('/{face:(\d+)}/','', $data);
             }
         }
         if (empty($data)) {
