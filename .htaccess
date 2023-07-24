@@ -4,21 +4,9 @@ Options -Indexes
 ErrorDocument 404 /404.html
 RewriteEngine On  
 RewriteBase /
-RewriteCond %{REQUEST_URI} ^/api/(.*)
-RewriteRule ^(.*)$ page/v2/loader.php/%1 [QSA,L]
-RewriteCond %{REQUEST_URI} ^/v2/(.*)
-RewriteRule ^v2/([^/]+)$ page/v2/$1.php [QSA,L]
-RewriteCond %{REQUEST_URI} ^/(v2|api)
-RewriteRule ^ - [L]
+RewriteRule ^api/(.*)$ page/v2/loader.php/%1 [QSA,L]
+RewriteRule ^v2/(.*)$ page/v2/$1.php [QSA,L]
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*)$ page/v2/manager.php/$1 [L]
-RewriteRule ^cache(/.*)?$ - [F]
-RewriteRule ^services(/.*)?$ - [F]
-RewriteRule ^page/v2(/.*)?$ - [L]
-RewriteRule ^page(/.*)?$ - [F]
-RewriteRule ^data(/.*)?$ - [F]
-RewriteRule ^plugins(/.*)?$ - [F]
-RewriteRule ^extensive_plugin(/.*)?$ - [F]
+RewriteRule ^(.*)$ page/manager.php/$1 [QSA,L]
 </IfModule>
-

@@ -53,7 +53,7 @@ class zhihu_yx {
         $token = curl_post("http://36.134.102.174:8087/user/login",["userName"=>"seaweb","password"=>"123456"],$header=[
             "Host"=>"36.134.102.174:8087",
             "Origin"=>"http://119.91.35.62",
-            "Referer"=>"http://119.91.35.62/"
+            "Referer"=>"http://119.91.35.62/"//请勿高频请求接口，爱护接口。增加使用寿命
         ]);
         if ($token && isset($token["code"]) && $token["code"] === 200) {
             $token = $token["data"]["zltoken"];
