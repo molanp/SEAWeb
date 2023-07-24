@@ -30,15 +30,23 @@ if ($web["__system__"]===true) {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.4.17/sweetalert2.all.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <script src="/assets/js/purify.min.js"></script>
-    <script src="/assets/js/app.js"></script>  
+    <script src="/assets/js/app.js"></script>
     <title><?= $web["index_title"]?></title>
 </head>
-<body class="mdui-drawer-body-left" style="padding-top: 20px;">
+<body class="mdui-drawer-body-left mdui-theme-layout-auto" style="padding-top: 20px;">
     <button onmouseover="goout(this)" onmouseout="goin(this)" id="aside_btn"></button>
     <div class="mdui-drawer" id="drawer">
     <ul class="mdui-list">
         <li class="mdui-text-color-theme mdui-text-center mdui-typo-display-1" name="title">Loading...</li>
         <li class='mdui-subheader mdui-text-center'>Version&nbsp;<span name="version">Loading...</span></li>
+        <li class="mdui-list-item mdui-ripple">
+            <input class="mdui-textfield mdui-textfield-input mdui-list-item-content" id="search" placeholder="搜索...">
+            <i class="mdui-list-item-icon mdui-icon material-icons">search</i>
+        </li>
+        <div class="mdui-panel mdui-panel-scrollable">
+            <ul class="mdui-list" id="search_result">
+            </ul>
+        </div>
         <li class="mdui-list-item mdui-ripple">
                 <a class="mdui-list-item-content" href="/">
                     <i class="mdui-icon material-icons">home</i>主页
