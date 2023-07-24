@@ -47,7 +47,13 @@ function re_par($key=[]) {
     $info = array_values($key);
     $key = array_keys($key);
     for($i=0; $i<count($key); $i++) {
-        $table .= "\n|`{$key[$i]}`|{$info[$i]}|";
+        // 判断key是否为*xxx格式
+        if (preg_match('/^\*(\w+)$/', $key[$i], $matches)) {
+            $key[$i] = "<font color='red'>*</font>`{$matches[1]}`";
+        } else {
+            $key[$i] = "`$key[$i]`";
+        }
+        $table .= "\n|{$key[$i]}|{$info[$i]}|";
     };
     return $table;
 }
