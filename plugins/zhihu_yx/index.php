@@ -60,7 +60,7 @@ class zhihu_yx {
         } else {
             return [
                 "code" => 503,
-                "data" => "Failed to get token."
+                "data" => ["msg"=>"Failed to get token.","reason"=>$token]
             ];
         }
         $data = curl_get($api,['url'=>$url], $header=[
@@ -69,14 +69,20 @@ class zhihu_yx {
             "Referer"=>"http://119.91.35.62/",
             "zltoken"=>$token
         ]);
-        if ($data && isset($data['code']) && $data['code'] === 200 && $data['data']['title'] !== "无此文章") {
+        if ($data && isset($data['code']) && $data['code'] == 200 && $data['data']['title'] != "无此文章") {
             $title = trim(preg_replace('/(\s+)?(第)?(\s+)?\d+\s+节\s+/u','',$data['data']['title']));
             $content = $data['data']['content'];
             $content = str_ireplace("　　","",$content);
+            $content = str_ireplace('\n ','\n',$content);
             $content = preg_replace("/(\s*)?第\s*\d+\s*节\s*$title/", '', $content);
             $content = str_replace('</p>', "\n", strip_tags($content));
             $content = preg_replace("/\n\s*\n\n\n(\s*)?/",'',$content);
             if ($content=="") {
+                return [
+                    'code' => 400,
+                    'data' => 'Failed to fetch article.'
+                ];
+            } elseif (stripos($content, "\n \n \n \n ") !== false) {
                 return [
                     'code' => 400,
                     'data' => 'Failed to fetch article.'
