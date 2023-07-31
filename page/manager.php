@@ -20,9 +20,10 @@ if (!isset($data)) {
 }
 $web = curl_get('http://'.$_SERVER['HTTP_HOST'].'/v2/info',["for"=>"web"]);
 $web = ($web["status"] != 200) ? die($web["data"]) : $web["data"];
-if ($web["__system__"]===true) {
+if ($web["setting"]["maintenance_mode"]===true) {
     die(include_once('../maintenance.html'));
 }
+$web = $web["web"];
 ?>
 <!DOCTYPE html>
 <html>

@@ -42,31 +42,35 @@ function load() {
             if (status=='success') {
                 var data = data.data;
                 document.getElementById('version').innerHTML = data.version
-                document.getElementById('index_title').value = data.index_title;
-                document.getElementById('index_description').value = data.index_description;
-                document.getElementById('notice').value = data.notice.data;
-                document.getElementById('copyright').value = data.copyright;
-                document.getElementById('record').value = data.record;
-                document.getElementById('links').value = data.links;
-                document.getElementById('keywords').value = data.keywords;
-                if (data["__system__"]==true) {
-                    __system__ = `
-                    <div class="mdui-col">维护模式
-                    <label class="mdui-switch">
-                      <input type="checkbox" id="__system__" name="checkbox" checked>
-                      <i class="mdui-switch-icon"></i>
-                      </label>
-                    </div>`;
-                } else {
-                    __system__ = `
-                    <div class="mdui-col">维护模式
-                    <label class="mdui-switch">
-                      <input type="checkbox" id="__system__" name="checkbox">
-                      <i class="mdui-switch-icon"></i>
-                      </label>
-                    </div>`;
+                document.getElementById('index_title').value = data.web.index_title;
+                document.getElementById('index_description').value = data.web.index_description;
+                document.getElementById('notice').value = data.web.notice.data;
+                document.getElementById('copyright').value = data.web.copyright;
+                document.getElementById('record').value = data.web.record;
+                document.getElementById('links').value = data.web.links;
+                document.getElementById('keywords').value = data.web.keywords;
+                var setting = "";
+                for (var key in data["setting"]) {
+                    var value = data["setting"][key];
+                    if (value == true) {
+                        setting += `
+                        <div class="mdui-col">${key}
+                        <label class="mdui-switch">
+                        <input type="checkbox" id="${key}" name="checkbox" checked>
+                        <i class="mdui-switch-icon"></i>
+                        </label>
+                        </div>`;
+                    } else {
+                        setting += `
+                        <div class="mdui-col">${key}
+                        <label class="mdui-switch">
+                        <input type="checkbox" id="${key}" name="checkbox">
+                        <i class="mdui-switch-icon"></i>
+                        </label>
+                        </div>`;
+                    }
                 }
-                document.getElementById('setting').innerHTML = __system__;
+                document.getElementById('setting').innerHTML = setting;
                 mdui.mutation();
             }
         }
@@ -110,6 +114,16 @@ function load() {
 }
 
 function save() {
+    var setting = document.querySelectorAll('#setting [id]');
+    var setting_list = [];
+
+    for (var i = 0; i < setting.length; i++) {
+        var id = setting[i].getAttribute("id");
+        var status = setting[i].checked;
+        var settingObj = {};
+        settingObj[id] = status;
+        setting_list.push(settingObj);
+    }
     var send = {
         'for':'edit_web',
         'token':getCookie('token'),
@@ -120,7 +134,7 @@ function save() {
         'notice':document.getElementById("notice").value,
         'keywords':document.getElementById("keywords").value,
         'links':document.getElementById("links").value,
-        '__system__':document.getElementById("__system__").checked
+        'setting':setting_list
     };
     sendData("/v2/info", send, function(data, status) {
         if (status === 'success') {
