@@ -204,7 +204,7 @@ function handle_check($name) {
     $DATA = new Config($_SERVER['DOCUMENT_ROOT'].'/data/status');
     $WEB= new Config($_SERVER['DOCUMENT_ROOT'].'/data/web');
     $status=$DATA->get($name,true);
-    if ($status !== true || $WEB->get('__system__',false)===true) {
+    if ($status !== true || $WEB->get('setting',["maintenance_mode"=>false])["maintenance_mode"]===true) {
         header("HTTP/1.1 406");
         _return_("API already closed",406);
     } else {
@@ -266,7 +266,7 @@ function load() {
                 "latesttime"=>date('Y-m-d')],
             "keywords"=>"API,api",
             "links"=>"[GitHub](https://github.com/molanp/SEAWeb)\n[Issues](https://github.com/molanp/SEAWeb/issues)\n[开发指南](https://molanp.github.io/SEAWeb_docs)"])->save();
-        $DATA->set("__system__",false)->save();
+        $DATA->set("setting",["maintenance_mode"=>false])->save();
     }
 }
 /**

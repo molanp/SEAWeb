@@ -4,6 +4,8 @@ include_once($_SERVER['DOCUMENT_ROOT'].'/services/until.php');
 include_once($_SERVER['DOCUMENT_ROOT'].'/services/path.php');
 include_once($_SERVER['DOCUMENT_ROOT'].'/services/__version__.php');
 
+RequestLimit("10/min");
+
 if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     load();
     $DATA = new Config($_SERVER['DOCUMENT_ROOT'].'/data/status');
@@ -17,10 +19,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
                 $WEB = $WEB_->get('web');
                 $keys = array_keys($WEB);
                 foreach ($keys as $key) {
-                    $conname[$key] = $WEB[$key];
+                    $conname["web"][$key] = $WEB[$key];
                 }
                 $conname["version"] = $__version__;
-                $conname["__system__"] = $WEB_->get('__system__');
+                $conname["setting"] = $WEB_->get('setting');
                 cache('web',$conname);
             }
             break;
@@ -154,7 +156,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
                         "latesttime"=>date('Y-m-d')],
                     "keywords"=>$_POST["keywords"],
                     "links"=>$_POST["links"]])->save();
-                $WEB->set("__system__",filter_var($_POST["__system__"], FILTER_VALIDATE_BOOLEAN))->save();
+
+                $SETTING = $WEB->get("setting");
+
+                foreach ($_POST["setting"] as $key => $value) {
+                    foreach($value as $key => $value) {
+                        if (array_key_exists($key, $SETTING)) {
+                            $SETTING[$key] = filter_var($value, FILTER_VALIDATE_BOOLEAN);
+                        }
+                    }
+                }
+                $WEB->set("setting", $SETTING)->save();
                 del_cache('web');
                 _return_("修改成功");
             } else {

@@ -151,7 +151,7 @@ function load_info() {
         )
         .done(function(data,status) {
             if (status=='success') {
-                var data = data.data;
+                var data = data.data.web;
                 cookie_web(data);
                 setCookie('web',JSON.stringify(data));
             } else {
