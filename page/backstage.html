@@ -25,11 +25,6 @@
                 <a href="#api_control">api控制</a>
             </div>
         </li>
-        <li class="mdui-list-item mdui-ripple">
-            <div class="mdui-list-item-content">
-                <a href="#setting">网站设置</a>
-            </div>
-        </li>
         </ul>
     </div>
     <div class="mdui-appbar mdui-appbar-fixed mdui-toolbar mdui-color-blue mdui-appbar-inset">
@@ -81,14 +76,7 @@
                     <div class="mdui-panel-item mdui-panel-item-open">
                         <div class="mdui-panel-item-header">修改网页信息</div>
                             <div class="mdui-panel-item-body">
-                                网站标题：<p><textarea style='width:75%;height: 200px;' id='index_title'>${data.index_title}</textarea></p>
-                                网站简介信息：<p><textarea style='width:75%;height: 200px;' id='index_description'>${data.index_description}</textarea></p>
-                                网站公告：<p><textarea style='width:75%;height: 200px;' id='notice'>${data.notice.data}</textarea></p>
-                                网站底部版权信息：<p><textarea style='width:75%;height: 200px;' id='copyright'>${data.copyright}</textarea></p>
-                                网页备案号：<p><textarea style='width:75%;height: 200px;' id='record'>${data.record}</textarea></p>
-                                友情链接(一行一个)：示例： [链接1](http://xxx)<p><textarea style='width:75%;height: 200px;' id='links'>${data.links}</textarea></p>
-                                网站keywords(逗号分隔)：<p><textarea style='width:75%;height: 200px;' id='keywords'>${data.keywords}</textarea></p>
-
+                                <span id="web_info">Loading...</span>
                             </div>
                     </div>
                 </div>

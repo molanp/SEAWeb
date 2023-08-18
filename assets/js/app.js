@@ -2,9 +2,6 @@ window.onload = function() {
     let darkMode = getCookie("theme");
     if (darkMode === "dark") enableDarkMode();
 
-    let btn = document.getElementById("aside_btn")
-    btn.style.marginLeft="-5px";
-
     marked.setOptions({
         gfm: true,//默认为true。 允许 Git Hub标准的markdown.
         tables: true,//默认为true。 允许支持表格语法。该选项要求 gfm 为true。
@@ -18,20 +15,14 @@ window.onload = function() {
     });
     load_info();
 
-    document.getElementById('search').addEventListener('input', Search);
+    //document.getElementById('search').addEventListener('input', Search);
     window.search_data = {};
-    var sider = JSON.parse(getCookie('sider'));
-    for (var type in sider) {
-        for (var plugin_name in sider[type]) {
-            search_data[plugin_name] = [sider[type][plugin_name]['api_profile'], sider[type][plugin_name]['path']];
+    var search = JSON.parse(getCookie('search'));
+    for (var type in search) {
+        for (var plugin_name in search[type]) {
+            search_data[plugin_name] = [search[type][plugin_name]['api_profile'], search[type][plugin_name]['path']];
         }
     }
-
-    var inst = new mdui.Drawer('#drawer',overlay=true,swipe=true);
-    inst.close();
-    mdui.$('#aside_btn').on('click', function () {
-        inst.toggle();
-    });
     mdui.mutation();
 }
 
@@ -83,104 +74,88 @@ function goin(x) {
     x.style.backgroundColor='#F08080';
 }
 
-function cookie_sider(data) {
-    var list = '';
-    for (var type in data) {
-        list += `<li class='mdui-subheader'>${type}</li>`;
-        for (var plugin in data[type]) {
-            if (window.location.pathname!='/'&&window.location.pathname.match(/(.*)$/)[1]==data[type][plugin]["path"]) {
-                list += `<li class='mdui-list-item mdui-ripple mdui-list-item-active'>
-                <a class='mdui-list-item-content' href='#'>
-                ${DOMPurify.sanitize(plugin)}
-                </a>
-                </li>`;
-                var api_name = plugin;
-                var api_data = data[type][plugin];
-            } else {
-                list += `<li class='mdui-list-item mdui-ripple'>
-                <a class='mdui-list-item-content' href='${data[type][plugin]["path"]}'">
-                ${DOMPurify.sanitize(plugin)}
-                </a>
-                </li>`;
-            }
-        }
-    };
-    document.getElementsByName("sider_list")[0].innerHTML = list;
-    if (window.location.pathname!='/') {
-        document.getElementsByName("api_name")[0].innerHTML = DOMPurify.sanitize(api_name);
-        document.getElementsByName("return_parameters")[0].innerHTML = DOMPurify.sanitize(marked.parse(api_data.return_parameters));
-        document.getElementsByName("request_parameters")[0].innerHTML = DOMPurify.sanitize(marked.parse(api_data.request_parameters));
-        document.getElementsByName("api_address")[0].innerHTML = DOMPurify.sanitize(marked.parse(api_data.api_address));
-        document.getElementsByName("author")[0].innerHTML = DOMPurify.sanitize(api_data.author);
-        document.getElementsByName("api_version")[0].innerHTML = DOMPurify.sanitize(api_data.version);
-        document.getElementsByName("api_profile")[0].innerHTML = DOMPurify.sanitize(marked.parse(api_data.api_profile));
+function cookie_web(data) {
+    document.getElementsByName("title")[0].innerHTML = data.web.index_title;
+    document.getElementsByName("title")[1].innerHTML = data.web.index_title;
+    document.getElementsByName("index_description")[0].innerHTML = DOMPurify.sanitize(marked.parse(data.web.index_description));
+    var link_list = '';
+    links = data.web.links.split(/[\r\n]+/);
+    for (var link in links) {
+        link_list += `<div class="mdui-chip">
+        <img class="mdui-chip-icon" src="/favicon.ico">
+        <span class="mdui-chip-title">${marked.parse(links[link]).match(/<p>(.*?)<\/p>/)[1]}</span>
+        </div>`;
     }
+    document.getElementsByName("links")[0].innerHTML = link_list;
+    document.getElementsByName("version")[0].innerHTML = "Version "+data.version+"<br/>";
+    document.getElementsByName("copyright")[0].innerHTML = "&copy;" +data.web.copyright;
+    document.getElementsByName("record")[0].innerHTML = data.web.record;
 }
 
-function cookie_web(data) {
-    if (window.location.pathname=='/') {
-        document.getElementsByName("title")[1].innerHTML = data.index_title;
-        document.getElementsByName("index_description")[0].innerHTML = DOMPurify.sanitize(marked.parse(data.index_description));
-        document.getElementsByName("notice")[0].innerHTML = DOMPurify.sanitize(marked.parse(data.notice.data));
-        document.getElementsByName("latesttime")[0].innerHTML = data.notice.latesttime;
-        var link_list = '';
-        links = data.links.split(/[\r\n]+/);
-        for (var link in links) {
-            link_list += `<div class="mdui-chip">
-            <img class="mdui-chip-icon" src="/favicon.ico">
-            <span class="mdui-chip-title">${marked.parse(links[link]).match(/<p>(.*?)<\/p>/)[1]}</span>
-            </div>`;
+function cookie_api(data) {
+    item = '';
+    for (var type in data) {
+        for (var name in data[type]) {
+            if (data[type][name].status == false) {
+                status = `<div class="mdui-badge mdui-color-red-400 mdui-text-color-white">维护</div>`
+            } else {
+                status = `<div class="mdui-badge mdui-color-green-400 mdui-text-color-white">正常</div>`
+            }
+            item += `<div class="mdui-col-sm-6 mdui-col-md-4" v-if="api">
+            <div class="mdui-card mdui-hoverable mdui-m-y-2">
+                <div class="mdui-card-primary">
+                    <div class="mdui-card-primary-title">
+                        ${name}${status}
+                        <div class="mdui-card-primary-subtitle" style="font-size:12px;">
+                        <i class="mdui-icon material-icons" style="font-size:12px;">equalizer</i>累计调用：N/A次
+                            <br/>
+                        <i class="mdui-icon material-icons" style="font-size:12px;">folder</i>分类：${type}</div>
+                    </div>
+                </div>
+                <div class="mdui-card-content">${marked.parse(data[type][name].api_profile)}</div>
+                <div class="mdui-card-actions">
+                    <a class="mdui-btn mdui-ripple mdui-text-color-theme-accent mdui-float-right"
+                        target="_blank" href="${data[type][name].path}">More</a>
+                </div>
+            </div>
+        </div>`
         }
-        document.getElementsByName("links")[0].innerHTML = link_list;
     }
-    document.getElementsByName("title")[0].innerHTML = data.index_title;
-    document.getElementsByName("copyright")[0].innerHTML = "&copy;" +data.copyright;
-    document.getElementsByName("copyright")[1].innerHTML = "&copy;" +data.copyright;
-    document.getElementsByName("version")[0].innerHTML = data.version;
-    document.getElementsByName("record")[0].innerHTML = data.record;
+    document.getElementById("app_api").innerHTML = item;
 }
 
 function load_info() {
     $.get(url=window.location.origin+'/v2/sitemap');
-    if (getCookie('web')) {
-        cookie_web(JSON.parse(getCookie('web')));
-    } else {
-        $.get(
-            url=window.location.origin+'/v2/info',
-            data={"for":"web"},
-        )
-        .done(function(data,status) {
-            if (status=='success') {
-                var data = data.data.web;
-                cookie_web(data);
-                setCookie('web',JSON.stringify(data));
-            } else {
-                console.error("Loading Info Error!");
-            }
-        })
-        .fail(function(data,status){
-            alert(`信息加载失败 code:${status}`)
-        });
-    };
-    if (getCookie('sider')) {
-        cookie_sider(JSON.parse(getCookie('sider')));
-    } else {
-        $.get(
-            url=window.location.origin+'/v2/info',
-        )
-        .done(function(data,status) {
-            if(status=='success') {
-                var data = data.data;
-                cookie_sider(data);
-                setCookie('sider',JSON.stringify(data));
-            } else {
-                console.error("Loading Info Error!");
-            }
-        })
-        .fail(function(data,status){
-            alert(`信息加载失败 code:${status}`)
-        });
-    }
+    $.get(
+        url=window.location.origin+'/v2/info',
+        data={"for":"web"},
+    )
+    .done(function(data,status) {
+        if (data.status==200) {
+            var data = data.data;
+            cookie_web(data);
+        } else {
+            alert(JSON.stringify(data.data));
+        }
+    })
+    .fail(function(data,status){
+        alert(`信息加载失败 code:${status}`)
+    });
+    $.get(
+        url=window.location.origin+'/v2/info'
+    )
+    .done(function(data,status) {
+        if (data.status==200) {
+            var data = data.data;
+            cookie_api(data);
+            setCookie('search',JSON.stringify(data))
+        } else {
+            alert(JSON.stringify(data.data));
+        }
+    })
+    .fail(function(data,status){
+        alert(`信息加载失败 code:${status}`)
+    });
 }
 
 function Search() {

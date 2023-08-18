@@ -41,14 +41,15 @@ function load() {
         function(data,status) {
             if (status=='success') {
                 var data = data.data;
+                document.getElementById('web_info').innerHTML = `
+                网站标题：<p><textarea style='width:75%;height: 200px;' id='index_title'>${data.web.index_title}</textarea></p>
+                网站简介信息：<p><textarea style='width:75%;height: 200px;' id='index_description'>${data.web.index_description}</textarea></p>
+                网站公告：<p><textarea style='width:75%;height: 200px;' id='notice'>${data.web.notice.data}</textarea></p>
+                网站底部版权信息：<p><textarea style='width:75%;height: 200px;' id='copyright'>${data.web.copyright}</textarea></p>
+                网页备案号：<p><textarea style='width:75%;height: 200px;' id='record'>${data.web.record}</textarea></p>
+                友情链接(一行一个)：示例： [链接1](http://xxx)<p><textarea style='width:75%;height: 200px;' id='links'>${data.web.links}</textarea></p>
+                网站keywords(逗号分隔)：<p><textarea style='width:75%;height: 200px;' id='keywords'>${data.web.keywords}</textarea></p>;`
                 document.getElementById('version').innerHTML = data.version
-                document.getElementById('index_title').value = data.web.index_title;
-                document.getElementById('index_description').value = data.web.index_description;
-                document.getElementById('notice').value = data.web.notice.data;
-                document.getElementById('copyright').value = data.web.copyright;
-                document.getElementById('record').value = data.web.record;
-                document.getElementById('links').value = data.web.links;
-                document.getElementById('keywords').value = data.web.keywords;
                 var setting = "";
                 for (var key in data["setting"]) {
                     var value = data["setting"][key];
@@ -186,8 +187,7 @@ function check_update () {
         url="https://api.github.com/repos/molanp/seaweb/releases/latest",
         function(data,status) {
             if (status=='success') {
-                latest = data.name;
-                document.getElementsByName("latest")[0].innerHTML = `<a href='${data.html_url}' target='_blank'>${latest}<a>`;
+                document.getElementById("latest_version").innerHTML = `<a href='${data.html_url}' target='_blank'>${data.name}<a>`;
             }
         }
     );
