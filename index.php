@@ -10,9 +10,10 @@ if ($web["setting"]["maintenance_mode"]===true) {
 }
 $web = $web["web"];
 ?>
+
 <!DOCTYPE html>
 <html>
-<html lang="zh-CN">
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" />
@@ -33,60 +34,58 @@ $web = $web["web"];
     <script src="/assets/js/purify.min.js"></script>
     <script src="/assets/js/app.js"></script>
     <title><?= $web["index_title"]?></title>
+
+    <div class="mdui-text-color-white-text mdui-valign mdui-color-light-blue-200" style="height: 200px;">
+            <div class="mdui-text-color-white mdui-center">
+                <br/>
+                <span class="mdui-typo-display-3" name="title">title</span>
+                <span name="index_description">Loading...</span>
+                <p><small>友情链接<span name="links"></span></small></p>
+            </div>
+    </div>
+
 </head>
-<body class="mdui-drawer-body-left mdui-theme-layout-auto" style="padding-top: 20px;">
-    <button onmouseover="goout(this)" onmouseout="goin(this)" id="aside_btn"></button>
-    <div class="mdui-drawer" id="drawer">
-    <ul class="mdui-list">
-        <li class="mdui-text-color-theme mdui-text-center mdui-typo-display-1" name="title">Loading...</li>
-        <li class='mdui-subheader mdui-text-center'>Version&nbsp;<span name="version">Loading...</span></li>
-        <li class="mdui-list-item mdui-ripple">
-            <input class="mdui-textfield mdui-textfield-input mdui-list-item-content" id="search" placeholder="搜索...">
-            <i class="mdui-list-item-icon mdui-icon material-icons">search</i>
-        </li>
-        <div class="mdui-panel mdui-panel-scrollable">
-            <ul class="mdui-list" id="search_result">
+<body class="mdui-appbar-with-toolbar mdui-theme-primary-light-blue mdui-theme-accent-blue" id="top">
+    <header class="mdui-appbar-fixed mdui-appbar mdui-color-white">
+        <div class="mdui-color-white mdui-toolbar">
+            <span class="mdui-typo-headline mdui-hidden-xs" name="title">title</span>
+            <span name="version">version</span>
+            <div class="mdui-toolbar-spacer"></div>
+            <button mdui-tooltip="{content: '夜间模式', position: 'bottom'}" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons" onclick="changeTheme()">brightness_medium</i></button>
+            <button mdui-menu="{target: '#main-menu'}" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons">more_vert</i></button>
+            <ul class="mdui-menu" id="main-menu">
+                <li class="mdui-menu-item" mdui-dialog="{target: '#login'}">
+                    <a href="/admin" class="mdui-ripple">
+                        <i class="mdui-menu-item-icon mdui-icon material-icons">person</i> 后台登录
+                    </a>
+                </li>
             </ul>
         </div>
-        <li class="mdui-list-item mdui-ripple">
-                <a class="mdui-list-item-content" href="/">
-                    <i class="mdui-icon material-icons">home</i>主页
-                </a>
-            </li>
-            <li class="mdui-list-item mdui-ripple">
-                <a class="mdui-list-item-content" href="javascript:changeTheme()">
-                    <i class="mdui-icon material-icons">brightness_medium</i>夜间模式
-                </a>
-            </li>
-            <li class='mdui-subheader'>管理入口</li>
-            <li class="mdui-list-item mdui-ripple">
-                <a class="mdui-list-item-content" href="/admin">
-                    <i class="mdui-icon material-icons">exit_to_app</i>登录
-                </a>
-            </li>
-            <span name="sider_list">Loading...</span>
-            <li class="mdui-subheader mdui-text-center" name="copyright"></li>
-        </ul>
-        <hr>
+    </header>
+<div class="mdui-container mdui-p-x-2" id="main">
+<div class="mdui-progress">
+                <div class="mdui-progress-indeterminate"></div>
+            </div>
+    <!-- 展示所有接口 -->
+    <div id="app_api">
+        <div class="mdui-row">
+            <div class="title">
+                尚未任何接口
+            </div>
+            <div class="description">
+                添加接口后，将显示在这里
+            </div>
+        </div>
+    </div>
+</div>
 
-    </div>
-    <div class="mdui-text-color-theme mdui-typo-display-1 mdui-text-center" name="title">Loading...</div>
-    <div id="box">
-        <h3 class="mdui-text-color-theme article-title"><i class="mdui-icon material-icons mdui-text-color-blue">star_border</i>网站简介</h3>
-        <p name="index_description">Loading...</p>
-    </div>
-    <div id="box">
-        <h3 class="mdui-text-color-theme article-title"><i class="mdui-icon material-icons mdui-text-color-orange">announcement</i>公告<code><span name="latesttime"></span></code></h3>
-        <p name="notice">Loading...</p>
-    </div>
-    <div id="box">
-            <h3 class="mdui-text-color-theme article-title"><i class="mdui-icon material-icons mdui-text-color-blue">link</i>友情链接</h3>
-            <span name="links"></span>
-    </div>
-    <div id="footer">
-        <p name="record">Loading...</p>
-        <p id="copyright"><span name="copyright">Loading...</span>&nbsp;.&nbsp;Power by <a href="https://github.com/molanp">molanp</a></p>
-    </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mdui/1.0.2/js/mdui.min.js"></script>
+<a class="mdui-fab mdui-fab-fixed mdui-fab-hide mdui-ripple mdui-color-theme-accent" href="javascript:goTop();" id="fabUp" style="margin-bottom:60px;">
+    <i class="mdui-icon material-icons">expand_less</i>
+</a>
+<footer class="foot mdui-text-center mdx-footer-morden">
+    <span name="record"></span>  
+    <span name="copyright"></span>                
+</footer>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/mdui/1.0.2/js/mdui.min.js"></script>
 </body>
 </html>

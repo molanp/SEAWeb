@@ -17,7 +17,7 @@ $pages = [];
 $data = curl_get('http://'.$_SERVER['HTTP_HOST'].'/v2/info');
 foreach($data['data'] as $type){
     foreach($type as $info){
-        $pages[] = ['url'=>'http://'.$_SERVER['HTTP_HOST'].'/'.$info['path'], 'lastmod' => date('Y-m-d'), 'changefreq' => 'daily'];
+        $pages[] = ['url'=>'http://'.$_SERVER['HTTP_HOST'].$info['path'], 'lastmod' => date('Y-m-d'), 'changefreq' => 'daily'];
     }
 }
 foreach ($pages as $page) {
