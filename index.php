@@ -3,7 +3,7 @@ include_once('services/until.php');
 include_once('services/Config.class.php');
 
 load();
-$web = curl_get('http://'.$_SERVER['HTTP_HOST'].'/v2/info',["for"=>"web"]);
+$web = requests->get('http://'.$_SERVER['HTTP_HOST'].'/v2/info',["for"=>"web"])->json();
 $web = ($web["status"] != 200) ? die($web["data"]) : $web["data"];
 if ($web["setting"]["maintenance_mode"]===true) {
     die(include_once('page/maintenance.html'));
@@ -34,23 +34,21 @@ $web = $web["web"];
     <script src="/assets/js/purify.min.js"></script>
     <script src="/assets/js/app.js"></script>
     <title><?= $web["index_title"]?></title>
-
-    <div class="mdui-text-color-white-text mdui-valign mdui-color-light-blue-200" style="height: 200px;">
-            <div class="mdui-text-color-white mdui-center">
-                <br/>
-                <span class="mdui-typo-display-3" name="title">title</span>
-                <span name="index_description">Loading...</span>
-                <p><small>友情链接<span name="links"></span></small></p>
-            </div>
-    </div>
-
 </head>
 <body class="mdui-appbar-with-toolbar mdui-theme-primary-light-blue mdui-theme-accent-blue" id="top">
+    <div class="mdui-text-color-white-text mdui-valign mdui-color-light-blue-200" style="height: 200px;">
+        <div class="mdui-text-color-white mdui-center">
+            <br/>
+            <span class="mdui-typo-display-3" name="title">title</span>
+            <span name="index_description">Loading...</span>
+            <p><small>友情链接<span name="links"></span></small></p>
+        </div>
+    </div>
     <header class="mdui-appbar-fixed mdui-appbar mdui-color-white">
-        <div class="mdui-color-white mdui-toolbar">
-            <span class="mdui-typo-headline mdui-hidden-xs" name="title">title</span>
-            <span name="version">version</span>
-            <div class="mdui-toolbar-spacer"></div>
+    <div class="mdui-color-white mdui-toolbar">
+        <span class="mdui-typo-headline mdui-hidden-xs" name="title">title</span>
+        <span name="version">version</span>
+        <div class="mdui-toolbar-spacer"></div>
             <button mdui-tooltip="{content: '夜间模式', position: 'bottom'}" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons" onclick="changeTheme()">brightness_medium</i></button>
             <button mdui-menu="{target: '#main-menu'}" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons">more_vert</i></button>
             <ul class="mdui-menu" id="main-menu">

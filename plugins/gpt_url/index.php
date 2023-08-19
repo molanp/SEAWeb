@@ -17,20 +17,21 @@ class gpt_url {
 
     public function run() {
         $default = [];
-        $html = curl_get('https://c.aalib.net/tool/chatgpt/');
+        $html = requests->get('https://c.aalib.net/tool/chatgpt/')->json();
         preg_match_all('/<td><a\s+href="([^"]+)"\s+target="_blank">([^<]+)<\/a><\/td>/', $html, $matches);
         if (count($matches[1]) > 0) {
             foreach ($matches[1] as $index => $link) {
                 $default[] = $link;
             }
         }
-        $html = curl_get('http://doc.wuguokai.cn/s/xPq1iNw_v');
+        /*
+        $html = requests->get('http://doc.wuguokai.cn/s/xPq1iNw_v')->json();
         preg_match_all('/国内加速站点\d+：\s*(https?:\/\/[^\s]+)/', $html, $matches);
         if (count($matches[1]) > 0) {
             foreach ($matches[1] as $index => $link) {
                 $default[] = $link;
             }
-        }
+        }*/
         _return_(['count'=>count($default),'default'=>array_values(array_unique($default))]);
     }
 }

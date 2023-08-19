@@ -50,11 +50,11 @@ class zhihu_yx {
                 ]
             ];
         }
-        $token = curl_post("http://36.134.102.174:8087/user/login",["userName"=>"seaweb","password"=>"123456"],$header=[
+        $token = requests->post("http://36.134.102.174:8087/user/login",["userName"=>"seaweb","password"=>"123456"],$header=[
             "Host"=>"36.134.102.174:8087",
             "Origin"=>"http://119.91.35.62",
             "Referer"=>"http://119.91.35.62/"//请勿高频请求接口，爱护接口。增加使用寿命
-        ]);
+        ])->json();
         if ($token && isset($token["code"]) && $token["code"] === 200) {
             $token = $token["data"]["zltoken"];
         } else {
@@ -63,12 +63,12 @@ class zhihu_yx {
                 "data" => ["msg"=>"Failed to get token.","reason"=>$token]
             ];
         }
-        $data = curl_get($api,['url'=>$url], $header=[
+        $data = requests->get($api,['url'=>$url], $header=[
             "Host"=>"36.134.102.174:8087",
             "Origin"=>"http://119.91.35.62",
             "Referer"=>"http://119.91.35.62/",
             "zltoken"=>$token
-        ]);
+        ])->json();
         if ($data && isset($data['code']) && $data['code'] == 200 && $data['data']['title'] != "无此文章") {
             $title = trim(preg_replace('/(\s+)?(第)?(\s+)?\d+\s+节\s+/u','',$data['data']['title']));
             $content = $data['data']['content'];

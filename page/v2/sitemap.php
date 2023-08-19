@@ -14,7 +14,7 @@ $urlset->setAttribute('xmlns', 'http://www.sitemaps.org/schemas/sitemap/0.9');
 $urlset->setAttribute('xmlns:mobile','http://www.sitemaps.org/schemas/sitemap-mobile/1');
 $xml->appendChild($urlset);
 $pages = [];
-$data = curl_get('http://'.$_SERVER['HTTP_HOST'].'/v2/info');
+$data = requests->get('http://'.$_SERVER['HTTP_HOST'].'/v2/info')->json();
 foreach($data['data'] as $type){
     foreach($type as $info){
         $pages[] = ['url'=>'http://'.$_SERVER['HTTP_HOST'].$info['path'], 'lastmod' => date('Y-m-d'), 'changefreq' => 'daily'];
