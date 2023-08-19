@@ -1,5 +1,8 @@
 <?php
 include_once('Config.class.php');
+include_once('requests.php');
+
+define('requests', new requests());
 
 /**
  * 检查给定文件夹中是否存在指定的文件
@@ -56,100 +59,6 @@ function re_par($key=[]) {
         $table .= "\n|{$key[$i]}|{$info[$i]}|";
     };
     return $table;
-}
-/**
- * 使用 CURL 发起 GET 请求获取数据
- *
- * @param string $url 请求的 URL
- * @param array $data 请求参数，可选，默认为空数组
- * @param array $cookie 提交的cookie，key->value形式
- * @param array $header 请求头部信息
- * @return mixed 返回请求结果，如果发生错误，则返回错误信息
- */
-function curl_get($url, $data = [], $cookie = [], $headers = [])
-{
-    if ($url == "") {
-        return false;
-    }
-    $url = $url . '?' . http_build_query($data);
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-    curl_setopt($ch, CURLOPT_URL, $url);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($ch, CURLOPT_HEADER, 0);
-    curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36 Edg/114.0.1823.82");
-    curl_setopt($ch, CURLOPT_TIMEOUT, 5);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-    if (!empty($cookie)) {
-        $cookieString = "";
-        foreach ($cookie as $key => $value) {
-            $cookieString .= $key . "=" . $value . "; ";
-        }
-        curl_setopt($ch, CURLOPT_COOKIE, rtrim($cookieString, "; "));
-    }
-    if (!empty($headers)) {
-        $headerString = [];
-        foreach ($headers as $key => $value) {
-            $headerString[] = $key . ": " . $value;
-        }
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headerString);
-    }
-    curl_setopt($ch, CURLOPT_ENCODING, 'gzip');
-    $output = curl_exec($ch);
-    curl_close($ch);
-    if ($output === false) {
-        return curl_error($ch);
-    }
-    return json($output);
-}
-/**
- * 使用 CURL 发起 POST 请求获取数据(仅提交json数据)
- *
- * @param string $url 请求的 URL
- * @param array $data 请求参数，可选，默认为空数组
- * @param array $cookie 提交的cookie，key->value形式
- * @param array $header 请求头部信息
- * @return mixed 返回请求结果，如果发生错误，则返回错误信息
- */
-function curl_post($url, $data = [], $cookie = [], $headers = [])
-{
-    if ($url == "") {
-        return false;
-    }
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-    curl_setopt($ch, CURLOPT_URL, $url);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($ch, CURLOPT_HEADER, 0);
-    curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36 Edg/114.0.1823.82");
-    curl_setopt($ch, CURLOPT_TIMEOUT, 5);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-    curl_setopt($ch, CURLOPT_POST, 1);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
-    if (!empty($cookie)) {
-        $cookieString = "";
-        foreach ($cookie as $key => $value) {
-            $cookieString .= $key . "=" . $value . "; ";
-        }
-        curl_setopt($ch, CURLOPT_COOKIE, rtrim($cookieString, "; "));
-    }
-    if (!empty($headers)) {
-        $headerString = [];
-        foreach ($headers as $key => $value) {
-            $headerString[] = $key . ": " . $value;
-        }
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headerString);
-    }
-    curl_setopt($ch, CURLOPT_ENCODING, 'gzip');
-    $output = curl_exec($ch);
-    curl_close($ch);
-    if ($output === false) {
-        return curl_error($ch);
-    }
-    return json_decode($output, true);
 }
 /**
  * 返回结果
