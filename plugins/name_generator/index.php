@@ -8,7 +8,7 @@ class name_generator {
             'method'=>'GET',
             'author'=>'molanp',
             'type'=>'潮',
-            'request_par'=> re_par(['-'=>'-']),
+            'request_par'=> re_par(),
             'return_par'=> re_par(['data'=>'你的亚文化名字']),
         ];
     }

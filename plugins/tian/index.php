@@ -7,7 +7,7 @@ class tian {
             'profile'=> '一键获取舔狗日记',
             'method'=>'GET',
             'author'=>'molanp',
-            'request_par'=> re_par(['-'=>'-']),
+            'request_par'=> re_par(),
             'return_par'=> re_par(['data'=>'舔狗语录']),
         ];
     }

@@ -81,8 +81,9 @@ $web = $web["web"];
     <i class="mdui-icon material-icons">expand_less</i>
 </a>
 <footer class="foot mdui-text-center mdx-footer-morden">
-    <span name="record"></span>  
-    <span name="copyright"></span>                
+    <span name="record"></span>
+    <span name="copyright"></span>
+    <p>本站内容由网友上传(或整理自网络)，原作者已无法考证，版权归原作者所有。仅供学习参考，其观点不代表本站立场，网站接口数据均收集互联网。</p>
 </footer>
      <script src="https://cdnjs.cloudflare.com/ajax/libs/mdui/1.0.2/js/mdui.min.js"></script>
 </body>
