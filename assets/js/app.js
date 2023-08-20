@@ -1,6 +1,6 @@
 window.onload = function() {
-    let darkMode = getCookie("theme");
-    if (darkMode === "dark") enableDarkMode();
+    let darkMode = sessionStorage.theme;
+    if (darkMode == 1) enableDarkMode();
 
     marked.setOptions({
         gfm: true,//默认为true。 允许 Git Hub标准的markdown.
@@ -14,48 +14,24 @@ window.onload = function() {
         headerIds: false//因warning禁用
     });
     load_info();
-
-    //document.getElementById('search').addEventListener('input', Search);
-    window.search_data = {};
-    var search = JSON.parse(getCookie('search'));
-    for (var type in search) {
-        for (var plugin_name in search[type]) {
-            search_data[plugin_name] = [search[type][plugin_name]['api_profile'], search[type][plugin_name]['path']];
-        }
-    }
     mdui.mutation();
-}
-
-function getCookie(cname) {
-    var name = cname + "=";
-    var ca = document.cookie.split(';');
-    for(var i=0; i<ca.length; i++) 
-    {
-        var c = ca[i].trim();
-        if (c.indexOf(name)==0) return c.substring(name.length,c.length);
-    }
-    return null;
-}
-
-function setCookie(cname,cvalue) {
-    document.cookie = cname + "=" + cvalue + "; " + "path=/";
 }
 
 function enableDarkMode() {
     var $ = mdui.$;
     $('body').addClass("mdui-theme-layout-dark");
-    setCookie("theme", "dark");
+    sessionStorage.setItem("theme", 1);
 };
 
 function disableDarkMode() {
     var $ = mdui.$;
     $('body').removeClass("mdui-theme-layout-dark");
-    setCookie("theme", "light");
+    sessionStorage.setItem("theme", 0);
 };
 
 function changeTheme() {
-    darkMode = getCookie("theme");
-    if (darkMode === "dark") {
+    darkMode = sessionStorage.getItem('theme');
+    if (darkMode == 1) {
         disableDarkMode();
     } else {
         enableDarkMode();
@@ -66,15 +42,8 @@ window
 .matchMedia("(prefers-color-scheme: dark)")
 .addListener(e=>(e.matches ? enableDarkMode() : disableDarkMode()))
 
-function goout(x) {
-    x.style.backgroundColor='#eb6161';
-}
-
-function goin(x) {
-    x.style.backgroundColor='#F08080';
-}
-
-function cookie_web(data) {
+function _web(data) {
+    data = JSON.parse(data);
     document.getElementsByName("title")[0].innerHTML = data.web.index_title;
     document.getElementsByName("title")[1].innerHTML = data.web.index_title;
     document.getElementsByName("index_description")[0].innerHTML = DOMPurify.sanitize(marked.parse(data.web.index_description));
@@ -92,7 +61,8 @@ function cookie_web(data) {
     document.getElementsByName("record")[0].innerHTML = data.web.record;
 }
 
-function cookie_api(data) {
+function _api(data) {
+    data = JSON.parse(data);
     item = '';
     for (var type in data) {
         for (var name in data[type]) {
@@ -126,78 +96,41 @@ function cookie_api(data) {
 
 function load_info() {
     $.get(url=window.location.origin+'/v2/sitemap');
-    $.get(
-        url=window.location.origin+'/v2/info',
-        data={"for":"web"},
-    )
-    .done(function(data,status) {
-        if (data.status==200) {
-            var data = data.data;
-            cookie_web(data);
-        } else {
-            alert(JSON.stringify(data.data));
-        }
-    })
-    .fail(function(data,status){
-        alert(`信息加载失败 code:${status}`)
-    });
-    $.get(
-        url=window.location.origin+'/v2/info'
-    )
-    .done(function(data,status) {
-        if (data.status==200) {
-            var data = data.data;
-            cookie_api(data);
-            setCookie('search',JSON.stringify(data))
-        } else {
-            alert(JSON.stringify(data.data));
-        }
-    })
-    .fail(function(data,status){
-        alert(`信息加载失败 code:${status}`)
-    });
-}
-
-function Search() {
-    var data = search_data;
-    var maxResults = 3;
-    var displayedResults = 0;
-    var ul = document.getElementById('search_result');
-    var inp = document.getElementById('search');
-    if (inp.value == "") {
-        ul.innerHTML = '';
-        return;
-    }
-    ul.innerHTML = '';
-    displayedResults = 0;
-    for (var key in data) {
-        if (displayedResults >= maxResults) {
-        break;
-        }
-        if ((key.includes(inp.value) || data[key][0].includes(inp.value)) && data[key][0] !== "") {
-        var li = document.createElement('li');
-        li.classList.add('mdui-list-item');
-        var content = "<div class='mdui-list-item-content'>";
-        var title = "<span class='mdui-text-color-theme'>" + key.replace(new RegExp(inp.value, 'g'), "<span class='mdui-text-color-green'>" + inp.value + "</span>") + "</span>";
-        var text = "<span class='mdui-text-color-theme'>" + data[key][0].replace(new RegExp(inp.value, 'g'), "<span class='mdui-text-color-green'>" + inp.value + "</span>") + "</span>";
-        content += "<div class='article-title'>" + title + "</div><div class='mdui-list-item-text'>" + text + "</div>";
-        li.innerHTML = content;
-        (function(url) {
-            li.addEventListener('click', function () {
-            window.location.href = window.location.origin + url;
-            });
-        })(data[key][1]);
-        ul.appendChild(li);
-        displayedResults++;
-        }
-    }
-    ul.style.position = "absolute";
-    ul.style.zIndex = "9999";
-    if (getCookie('theme')!= 'dark') {
-        ul.style.backgroundColor = 'rgba(255, 255, 255, 0.8)';
+    if (sessionStorage.getItem('data_web') == null) {
+        $.get(
+            url=window.location.origin+'/v2/info',
+            data={"for":"web"},
+        )
+        .done(function(data,status) {
+            if (data.status==200) {
+                sessionStorage.setItem('data_web', JSON.stringify(data.data));
+                _web(sessionStorage.getItem('data_web'));
+            } else {
+                alert(JSON.stringify(data.data));
+            }
+        })
+        .fail(function(data,status){
+            alert(`信息加载失败 code:${status}`)
+        });
     } else {
-        ul.style.backgroundColor = 'rgba(48, 48, 48, 0.8)';
-
+        _web(sessionStorage.getItem('data_web'));
+    };
+    if (sessionStorage.getItem('data_api') == null) {
+        $.get(
+            url=window.location.origin+'/v2/info'
+        )
+        .done(function(data,status) {
+            if (data.status==200) {
+                sessionStorage.setItem('data_api', JSON.stringify(data.data));
+                _api(sessionStorage.getItem('data_api'));
+            } else {
+                alert(JSON.stringify(data.data));
+            }
+        })
+        .fail(function(data,status){
+            alert(`信息加载失败 code:${status}`)
+        });
+    } else {
+        _api(sessionStorage.getItem('data_api'));
     }
-    mdui.mutation();
 }

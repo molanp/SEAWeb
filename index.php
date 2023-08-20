@@ -33,6 +33,8 @@ $web = $web["web"];
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <script src="/assets/js/purify.min.js"></script>
     <script src="/assets/js/app.js"></script>
+    <script src="/assets/js/notice.js"></script>
+    <script src="/assets/js/search.js"></script>
     <title><?= $web["index_title"]?></title>
 </head>
 <body class="mdui-appbar-with-toolbar mdui-theme-primary-light-blue mdui-theme-accent-blue" id="top">
@@ -42,13 +44,19 @@ $web = $web["web"];
             <span class="mdui-typo-display-3" name="title">title</span>
             <span name="index_description">Loading...</span>
             <p><small>友情链接<span name="links"></span></small></p>
+            <input class="mdui-textfield-input" type="text" placeholder="搜索api名称" id="search"/>
+            <div class="mdui-panel mdui-panel-scrollable">
+                <ul class="mdui-list" id="search_result">
+                </ul>
+            </div>
         </div>
     </div>
     <header class="mdui-appbar-fixed mdui-appbar mdui-color-white">
-    <div class="mdui-color-white mdui-toolbar">
-        <span class="mdui-typo-headline mdui-hidden-xs" name="title">title</span>
-        <span name="version">version</span>
-        <div class="mdui-toolbar-spacer"></div>
+        <div class="mdui-color-white mdui-toolbar">
+            <span class="mdui-typo-headline mdui-hidden-xs" name="title">title</span>
+            <span class="mdui-typo-title" name="version">version</span>
+            <div class="mdui-toolbar-spacer"></div>
+            <button mdui-tooltip="{content: '公告', position: 'bottom'}" onclick="notice()" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons">announcement</i></button>
             <button mdui-tooltip="{content: '夜间模式', position: 'bottom'}" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons" onclick="changeTheme()">brightness_medium</i></button>
             <button mdui-menu="{target: '#main-menu'}" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons">more_vert</i></button>
             <ul class="mdui-menu" id="main-menu">
@@ -61,9 +69,9 @@ $web = $web["web"];
         </div>
     </header>
 <div class="mdui-container mdui-p-x-2" id="main">
-<div class="mdui-progress">
-                <div class="mdui-progress-indeterminate"></div>
-            </div>
+    <div class="mdui-progress">
+        <div class="mdui-progress-indeterminate"></div>
+    </div>
     <!-- 展示所有接口 -->
     <div id="app_api">
         <div class="mdui-row">
@@ -86,5 +94,8 @@ $web = $web["web"];
     <p>本站内容由网友上传(或整理自网络)，原作者已无法考证，版权归原作者所有。仅供学习参考，其观点不代表本站立场，网站接口数据均收集互联网。</p>
 </footer>
      <script src="https://cdnjs.cloudflare.com/ajax/libs/mdui/1.0.2/js/mdui.min.js"></script>
+     <script>
+        document.getElementById('search').addEventListener('input', Search);
+     </script>
 </body>
 </html>

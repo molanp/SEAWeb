@@ -46,6 +46,7 @@ $web = $web["web"];
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <script src="/assets/js/purify.min.js"></script>
     <script src="/assets/js/api.js"></script>
+    <script src="/assets/js/notice.js"></script>
     <title><?= $api_name." - ".$web["index_title"]?></title>
 </head>
 
@@ -53,11 +54,12 @@ $web = $web["web"];
 
     <header class="mdui-appbar-fixed mdui-appbar mdui-color-white">
         <div class="mdui-color-white mdui-toolbar">
-            <span class="mdui-typo-headline mdui-hidden-xs" id="title">title</span>
+            <a class="mdui-typo-headline mdui-hidden-xs" href="/" id="title">title</a>
             <span class="mdui-typo-title" id="version">version</span>
             <div class="mdui-toolbar-spacer"></div>
-            <button id="change_style" mdui-tooltip="{content: '夜间模式', position: 'bottom'}" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons">brightness_4</i></button>
-           <button mdui-menu="{target: '#main-menu'}" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons">more_vert</i></button>
+            <button mdui-tooltip="{content: '公告', position: 'bottom'}" onclick="notice()" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons">announcement</i></button>
+            <button mdui-tooltip="{content: '夜间模式', position: 'bottom'}" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons" onclick="changeTheme()">brightness_medium</i></button>
+            <button mdui-menu="{target: '#main-menu'}" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons">more_vert</i></button>
             <ul class="mdui-menu" id="main-menu">
                 <li class="mdui-menu-item" mdui-dialog="{target: '#login'}">
                     <a href="/admin" class="mdui-ripple">
@@ -69,7 +71,7 @@ $web = $web["web"];
     </header>
   		<div class="mdui-m-b-2" id="doc">
   			<div class="mdui-text-center mdui-color-theme-a200 mdui-text-color-white mdui-m-b-2" style="padding-top:80px;padding-bottom:80px;">
-  				<div class="mdui-typo-display-1"><span name="api_name">Loading...</span></div>
+  				<div class="mdui-typo-display-1"><span name="api_name">请刷新页面！</span></div>
   				<div class="mdui-typo-subtitle"><span name="api_profile">Loading...</span></div>
                 <div class="mdui-chip" mdui-tooltip="{content: 'API Version', position: 'top'}">
                     <span class="mdui-chip-title"><i class="mdui-icon material-icons mdui-text-color-blue">info_outline</i><span name="api_version">Loading...</span></span>
