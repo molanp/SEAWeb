@@ -101,8 +101,8 @@ function cookie_api(data) {
             } else {
                 status = `<div class="mdui-badge mdui-color-green-400 mdui-text-color-white">正常</div>`
             }
-            item += `<div class="mdui-col-sm-6 mdui-col-md-4" v-if="api">
-            <div class="mdui-card mdui-hoverable mdui-m-y-2">
+            item += `<div class="mdui-col-sm-6 mdui-col-md-4">
+            <div class="mdui-card mdui-hoverable mdui-m-y-2" style="border-radius:10px">
                 <div class="mdui-card-primary">
                     <div class="mdui-card-primary-title">
                         ${name}${status}

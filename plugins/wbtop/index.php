@@ -7,7 +7,7 @@ class wbtop {
             'profile'=> '一键获取微博热搜',
             'method'=>'GET',
             'author'=>'molanp',
-            'request_par'=> re_par(['-' => '-']),
+            'request_par'=> re_par(),
             'return_par'=> re_par([
                 'rank' => '热搜排行',
                 'hot_word_num' => '热度',
