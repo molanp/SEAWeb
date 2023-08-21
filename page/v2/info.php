@@ -57,7 +57,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
                                 }
                             } else {
                                 //error_log("插件类缺少 getInfo() 方法，文件路径：$pluginFilePath ，文件名：$file",3,LOGGER);
-                            }
+                            };
+                            unset($plugin);
                         }
                     }
                     cache('status', $conname);
@@ -123,7 +124,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
                                 if ($DATA->get($info['name']) === '' || $DATA->get($info['name']) === null) {
                                     $DATA->set($info['name'], true)->save();
                                 }
-                            }
+                            };
+                            unset($plugin);
                         } else {
                             //error_log("插件类缺少 getInfo() 方法，文件路径：$pluginFilePath ，文件名：$file",3,LOGGER);
                         }
