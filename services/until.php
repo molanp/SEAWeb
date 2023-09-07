@@ -1,9 +1,22 @@
 <?php
 include_once('Config.class.php');
 include_once('requests.php');
+include_once('watchdog.php');
 
 define('requests', new requests());
 
+/**
+ * 在给定的字符串末尾添加斜杠("/")，如果它尚未以斜杠结尾。
+ *
+ * @param string $inputString 要处理的字符串
+ * @return string 处理后的字符串，确保以斜杠结尾
+ */
+function addSlashIfNeeded($inputString) {
+    if (substr($inputString, -1) !== '/') {
+        $inputString .= '/';
+    }
+    return $inputString;
+}
 /**
  * 检查给定文件夹中是否存在指定的文件
  *
@@ -82,38 +95,12 @@ function _return_($content,$status=200,$location=false) {
     }
 }
 /**
- * 自定义错误处理函数
- *
- * @param int $errno 错误级别
- * @param string $errstr 错误信息
- * @param string $errfile 发生错误的文件名
- * @param int $errline 发生错误的行号
- * @return void
- */
-function watchdog($errno,$errstr=NULL, $errfile=NULL, $errline=NULL) {
-    header("HTTP/1.1 500");
-    //error_log(date(Y-m-d H:i:s)."[$errno] $errstr in $errfile line $errline.", 1,"logs/log.log");
-    if (isset($errfile,$errline)) {
-        $message = "Error[$errno]: $errstr in $errfile line $errline.";
-    } elseif(isset($errstr)) {
-        $message = "Error[$errno]: $errstr";
-    } else {
-        $message = "Error: $errno";
-    }
-    _return_($message,500);
-}
-set_error_handler("watchdog");
-set_exception_handler("watchdog");
-/**
  * 检查 API 状态
  *
  * @return bool 返回是否需要处理 API 请求
  */
 function handle_check($name) {
-    $DATA = new Config($_SERVER['DOCUMENT_ROOT'].'/data/status');
-    $WEB= new Config($_SERVER['DOCUMENT_ROOT'].'/data/web');
-    $status=$DATA->get($name,true);
-    if ($status !== true || $WEB->get('setting',["maintenance_mode"=>false])["maintenance_mode"]===true) {
+    if ($database->query("SELECT status FROM api WHERE name = '".$info["name"]."'")->fetchColumn() ?? "true" != 'true' || $database->query("SELECT value FROM setting WHERE item = 'maintenance_mode'")->fetchColumn() == 'true') {
         header("HTTP/1.1 406");
         _return_("API already closed",406);
     } else {
@@ -164,19 +151,20 @@ function load() {
     $DATA = new Config($_SERVER['DOCUMENT_ROOT'].'/data/web');
     if(!file_exists($_SERVER['DOCUMENT_ROOT'].'/data')) {
         mkdir($_SERVER['DOCUMENT_ROOT'].'/data');
-        $DATA->set("account",["username"=>"admin","password"=>hash('sha256', 'password')])->save();
         $DATA->set("web",[
             "record"=>"",
             "index_title"=>"SEAWeb",
             "copyright"=>"",
             "index_description"=>"这是网站简介，这里支持*MarkDown*语法",
             "notice"=>[
-                "data"=>"> **这里也支持markdown语法**\n\n欢迎使用SEAWeb，本模板由[molanp](https://github.com/molanp)开发与维护。目前正在不断完善~\n如果你觉得这个API有什么不完善的地方或者说你有什么更好的想♂法，可以在[issues](https://github.com/molanp/easyapi_wesbite/issues)上提出建议",
+                "data"=>"> **这里也支持markdown语法**\n\n欢迎使用SEAWeb，本模板由[molanp](https://github.com/molanp)开发与维护。目前正在不断完善~\n如果你觉得这个API有什么不完善的地方或者说你有什么更好的想法，可以在[issues](https://github.com/molanp/easyapi_wesbite/issues)上提出建议",
                 "latesttime"=>date('Y-m-d')],
             "keywords"=>"API,api",
             "links"=>"[GitHub](https://github.com/molanp/SEAWeb)\n[Issues](https://github.com/molanp/SEAWeb/issues)\n[开发指南](https://molanp.github.io/SEAWeb_docs)"])->save();
-        $DATA->set("setting",["maintenance_mode"=>false])->save();
-    }
+    };
+    //数据迁移
+    $DATA->delete("account");
+    $DATA->delete("setting");
 }
 /**
  * 缓存函数
@@ -255,13 +243,16 @@ function json($json) {
 }
 /**
  * 检查请求次数是否超过限制
- * 此函数应在 handle_check() 后执行
+ * 此函数应在 run() 内执行
  *
  * @param string $limit 最大请求次数和时间单位，例如 '3/s' '10/min', '5/hour', '100/day'
- * @param string $name 如果引用文件中没有$name变量，请在此处自定义标识符
+ * @param string $name 固定传入__CLASS__，只能在类内使用本函数
  * @return void
  */
 function RequestLimit($limit,$name=null) {
+    if (!isset($name)) {
+        throw new Exception( "请求限制函数未传入classname");
+    };
     $DATA = new Config($_SERVER['DOCUMENT_ROOT'].'/data/limit');
     $requests = $DATA->get('requests',[]);
     $lastRequestTime = $DATA->get('lastRequestTime',[]);

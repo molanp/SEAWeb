@@ -32,6 +32,8 @@ function login() {
                         document.cookie=`user=${data.data.user};`;
                         document.cookie=`token=${data.data.token};`;
                         location.reload();
+                    } else {
+                        regFail(JSON.stringify(data.data.msg));
                     }
                 } else {
                     console.error(data);

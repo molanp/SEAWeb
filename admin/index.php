@@ -1,9 +1,10 @@
 <?php
 include_once('../services/Config.class.php');
+include_once('../services/connect.php');
+include_once('../services/until.php');
 
 $DATA = new Config('../data/web');
-$account = $DATA->get('account');
-if (isset($_COOKIE['token']) && $_COOKIE['token'] == $account['password']) {
+if (isset($_COOKIE['token'],$_COOKIE['user']) && $database->query("SELECT token FROM users WHERE username = '".$_COOKIE["user"]."'")->fetchColumn() == $_COOKIE['token']) {
     die(include_once('../page/backstage.html'));
 } else {?>
     <!DOCTYPE html>
@@ -102,5 +103,4 @@ if (isset($_COOKIE['token']) && $_COOKIE['token'] == $account['password']) {
                 class="login-button mdui-btn mdui-btn-raised mdui-ripple">登入</button>
         </div>
     </body>
-    </html>
-    <?php }?>
+    </html><?php }?>

@@ -18,12 +18,13 @@ foreach(array_keys($types) as $type) {
 if (!isset($data)) {
     die(header("location: http://".$_SERVER['HTTP_HOST']));
 }
-$web = requests->get('http://'.$_SERVER['HTTP_HOST'].'/v2/info',["for"=>"web"])->json();
-$web = ($web["status"] != 200) ? die($web["data"]) : $web["data"];
-if ($web["setting"]["maintenance_mode"]===true) {
-    die(include_once('./maintenance.html'));
-}
-$web = $web["web"];
+
+include_once('../services/connect.php');
+if ($database->query("SELECT value FROM setting WHERE item = 'maintenance_mode'")->fetchColumn() == 'true') {
+    die(include_once('maintenance.html'));
+};
+$web = new Config($_SERVER['DOCUMENT_ROOT'].'/data/web');
+$web = $web->get("web");
 ?>
 
 <!DOCTYPE html>
@@ -71,7 +72,13 @@ $web = $web["web"];
     </header>
   		<div class="mdui-m-b-2" id="doc">
   			<div class="mdui-text-center mdui-color-theme-a200 mdui-text-color-white mdui-m-b-2" style="padding-top:80px;padding-bottom:80px;">
-  				<div class="mdui-typo-display-1"><span name="api_name">请刷新页面！</span></div>
+      			<noscript>
+                    <div style="text-align: center;margin-top: 10%;">
+                        <h4>Sorry, the web page requires a Javascript runtime environment, please allow you to run scripts or use a new version of the modern browser.</h4>
+                        <p>It is recommended to use <a href="https://www.google.cn/chrome/">Chrome</a> modern browser.</p>
+                    </div>
+                </noscript>
+  				<div class="mdui-typo-display-1"><span name="api_name">Loading...</span></div>
   				<div class="mdui-typo-subtitle"><span name="api_profile">Loading...</span></div>
                 <div class="mdui-chip" mdui-tooltip="{content: 'API Version', position: 'top'}">
                     <span class="mdui-chip-title"><i class="mdui-icon material-icons mdui-text-color-blue">info_outline</i><span name="api_version">Loading...</span></span>
@@ -83,9 +90,9 @@ $web = $web["web"];
             <h3 class="mdui-text-color-theme article-title"><i class="mdui-icon material-icons mdui-text-color-orange">view_compact</i>API 地址</h3>
             <span name="api_address">Loading...</span>
             <h3 class="mdui-text-color-theme article-title"><i class="mdui-icon material-icons mdui-text-color-purple">vpn_key</i>参数列表 (打<code>*</code>是必填项)</h3>
-            <span name="request_parameters">Loading...</span>
+            <span name="request">Loading...</span>
             <h3 class="mdui-text-color-theme article-title"><i class="mdui-icon material-icons mdui-text-color-gray">reply</i>返回的数据</h3>
-            <span name="return_parameters">Loading...</span>
+            <span name="response">Loading...</span>
             <a class="mdui-fab mdui-fab-fixed mdui-fab-hide mdui-ripple mdui-color-theme-accent" href="javascript:goTop();" id="fabUp" style="margin-bottom:60px;">
     <i class="mdui-icon material-icons">expand_less</i>
 </a>

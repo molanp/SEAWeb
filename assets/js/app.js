@@ -43,12 +43,11 @@ window
 .addListener(e=>(e.matches ? enableDarkMode() : disableDarkMode()))
 
 function _web(data) {
-    data = JSON.parse(data);
-    document.getElementsByName("title")[0].innerHTML = data.web.index_title;
-    document.getElementsByName("title")[1].innerHTML = data.web.index_title;
-    document.getElementsByName("index_description")[0].innerHTML = DOMPurify.sanitize(marked.parse(data.web.index_description));
+    document.getElementsByName("title")[0].innerHTML = data.index_title;
+    document.getElementsByName("title")[1].innerHTML = data.index_title;
+    document.getElementsByName("index_description")[0].innerHTML = DOMPurify.sanitize(marked.parse(data.index_description));
     var link_list = '';
-    links = data.web.links.split(/[\r\n]+/);
+    links = data.links.split(/[\r\n]+/);
     for (var link in links) {
         link_list += `<div class="mdui-chip">
         <img class="mdui-chip-icon" src="/favicon.ico">
@@ -57,12 +56,12 @@ function _web(data) {
     }
     document.getElementsByName("links")[0].innerHTML = link_list;
     document.getElementsByName("version")[0].innerHTML = "Version "+data.version+"<br/>";
-    document.getElementsByName("copyright")[0].innerHTML = "&copy;" +data.web.copyright;
-    document.getElementsByName("record")[0].innerHTML = data.web.record;
+    document.getElementsByName("copyright")[0].innerHTML = "&copy;" +data.copyright;
+    document.getElementsByName("record")[0].innerHTML = data.record;
 }
 
 function _api(data) {
-    data = JSON.parse(data);
+    window.search = data;
     item = '';
     for (var type in data) {
         for (var name in data[type]) {
@@ -96,41 +95,31 @@ function _api(data) {
 
 function load_info() {
     $.get(url=window.location.origin+'/v2/sitemap');
-    if (sessionStorage.getItem('data_web') == null) {
-        $.get(
-            url=window.location.origin+'/v2/info',
-            data={"for":"web"},
-        )
-        .done(function(data,status) {
-            if (data.status==200) {
-                sessionStorage.setItem('data_web', JSON.stringify(data.data));
-                _web(sessionStorage.getItem('data_web'));
-            } else {
-                alert(JSON.stringify(data.data));
-            }
-        })
-        .fail(function(data,status){
-            alert(`信息加载失败 code:${status}`)
-        });
-    } else {
-        _web(sessionStorage.getItem('data_web'));
-    };
-    if (sessionStorage.getItem('data_api') == null) {
-        $.get(
-            url=window.location.origin+'/v2/info'
-        )
-        .done(function(data,status) {
-            if (data.status==200) {
-                sessionStorage.setItem('data_api', JSON.stringify(data.data));
-                _api(sessionStorage.getItem('data_api'));
-            } else {
-                alert(JSON.stringify(data.data));
-            }
-        })
-        .fail(function(data,status){
-            alert(`信息加载失败 code:${status}`)
-        });
-    } else {
-        _api(sessionStorage.getItem('data_api'));
-    }
+    $.get(
+        url=window.location.origin+'/v2/info',
+        data={"for":"web"},
+    )
+    .done(function(data,status) {
+        if (data.status==200) {
+            _web(data.data);
+        } else {
+            alert(JSON.stringify(data.data));
+        }
+    })
+    .fail(function(data,status){
+        alert(`信息加载失败 code:${status}`)
+    });
+    $.get(
+        url=window.location.origin+'/v2/info'
+    )
+    .done(function(data,status) {
+        if (data.status==200) {
+            _api(data.data);
+        } else {
+            alert(JSON.stringify(data.data));
+        }
+    })
+    .fail(function(data,status){
+        alert(`信息加载失败 code:${status}`)
+    });
 }

@@ -10,23 +10,11 @@
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <script src="/assets/js/login.js"></script>
     <script src="/assets/js/backstage.js"></script>
+    <script src="//cdn.bootcdn.net/ajax/libs/eruda/2.3.3/eruda.js"></script>
+    <script>eruda.init();</script>
     <title>后台管理</title>
 </head>
 <body class="mdui-appbar-with-toolbar mdui-drawer-body-left">
-<div class="mdui-drawer mdui-drawer-close" id="sider">
-        <ul class="mdui-list">
-        <li class="mdui-list-item mdui-ripple">
-            <div class="mdui-list-item-content">
-                <a href="#">主面板</a>
-            </div>
-        </li>
-        <li class="mdui-list-item mdui-ripple">
-            <div class="mdui-list-item-content">
-                <a href="#api_control">api控制</a>
-            </div>
-        </li>
-        </ul>
-    </div>
     <div class="mdui-appbar mdui-appbar-fixed mdui-toolbar mdui-color-blue mdui-appbar-inset">
         <a href="/" class="mdui-btn mdui-btn-icon" mdui-tooltip="{content: 'Back Home', position: 'auto'}">
             <i class="mdui-icon material-icons">home</i>
@@ -55,15 +43,28 @@
             </li>
         </ul>
     </div>
+    <div class="mdui-drawer mdui-drawer-close" id="sider">
+        <ul class="mdui-list">
+            <li class="mdui-list-item mdui-ripple">
+                <div class="mdui-list-item-content">
+                    <a href="#">主面板</a>
+                </div>
+            </li>
+            <li class="mdui-list-item mdui-ripple">
+                <div class="mdui-list-item-content">
+                    <a href="#api_control">api控制</a>
+                </div>
+            </li>
+            <li class="mdui-list-item mdui-ripple">
+                <div class="mdui-list-item-content">
+                    <a href="#settings">网站设置</a>
+                </div>
+            </li>
+        </ul>
+    </div>
     <div class="mdui-container mdui-container-fluid">
         <div class="tabs">
             <div id="home">
-                <div class="mdui-panel" mdui-panel>
-                    <div class="mdui-panel-item">
-                        <div class="mdui-panel-item-header">网站设置</div>
-                            <div class="mdui-panel-item-body" id="setting">Loading...</div>
-                    </div>
-                </div>
                 <div class="mdui-panel" mdui-panel>
                     <div class="mdui-panel-item">
                         <div class="mdui-panel-item-header">SEAWeb版本: <span id="version">${data.version}</span></div>
@@ -80,7 +81,7 @@
                             </div>
                     </div>
                 </div>
-                <button onclick='save()'
+                <button onclick='save("web")'
                 class='login-button mdui-btn mdui-btn-raised mdui-ripple'>Save</button>
             </div>
             <div id="api_control">
@@ -88,7 +89,15 @@
                 <br>
                 <span id="api_list">${api_list}</span>
                 <br>
-                <button onclick='save_api()'
+                <button onclick='save("status")'
+                class='login-button mdui-btn mdui-btn-raised mdui-ripple'>Save</button>
+            </div>
+            <div id="settings">
+                <h3>网站设置</h3>
+                <br>
+                <span id="setting">${setting_list}</span>
+                <br>
+                <button onclick='save("setting")'
                 class='login-button mdui-btn mdui-btn-raised mdui-ripple'>Save</button>
             </div>
         </div>
