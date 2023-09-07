@@ -3,12 +3,12 @@ include_once('services/until.php');
 include_once('services/Config.class.php');
 
 load();
-$web = requests->get('http://'.$_SERVER['HTTP_HOST'].'/v2/info',["for"=>"web"])->json();
-$web = ($web["status"] != 200) ? die($web["data"]) : $web["data"];
-if ($web["setting"]["maintenance_mode"]===true) {
+include_once('services/connect.php');
+if ($database->query("SELECT value FROM setting WHERE item = 'maintenance_mode'")->fetchColumn() == 'true') {
     die(include_once('page/maintenance.html'));
-}
-$web = $web["web"];
+};
+$web = new Config($_SERVER['DOCUMENT_ROOT'].'/data/web');
+$web = $web->get("web");
 ?>
 
 <!DOCTYPE html>
@@ -73,6 +73,12 @@ $web = $web["web"];
         <div class="mdui-progress-indeterminate"></div>
     </div>
     <!-- 展示所有接口 -->
+    <noscript>
+        <div style="text-align: center;margin-top: 10%;">
+            <h4>Sorry, the web page requires a Javascript runtime environment, please allow you to run scripts or use a new version of the modern browser.</h4>
+            <p>It is recommended to use <a href="https://www.google.cn/chrome/">Chrome</a> modern browser.</p>
+        </div>
+    </noscript>
     <div id="app_api">
         <div class="mdui-row">
             <div class="title">
@@ -95,7 +101,7 @@ $web = $web["web"];
 </footer>
      <script src="https://cdnjs.cloudflare.com/ajax/libs/mdui/1.0.2/js/mdui.min.js"></script>
      <script>
-        document.getElementById('search').addEventListener('input', Search);
+        document.getElementById('search').addEventListener('input', search);
      </script>
 </body>
 </html>

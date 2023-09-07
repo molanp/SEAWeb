@@ -1,6 +1,6 @@
-function Search() {
+function search() {
     search_data = {};
-    var search = JSON.parse(sessionStorage.getItem('data_api'));
+    var search = window.search;
     for (var type in search) {
         for (var plugin_name in search[type]) {
             search_data[plugin_name] = [search[type][plugin_name]['api_profile'], search[type][plugin_name]['path']];

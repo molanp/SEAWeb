@@ -13,9 +13,6 @@ window.onload = function() {
         mangle: false,//因warning禁用
         headerIds: false//因warning禁用
     });
-    if (sessionStorage.getItem('data_api')==null) {
-        location.reload();
-    }
     api_info();
     mdui.mutation();
 }
@@ -46,69 +43,50 @@ window
 .addListener(e=>(e.matches ? enableDarkMode() : disableDarkMode()))
 
 function api_info() {
-    if (sessionStorage.getItem('data_api') == null) {
-        $.get(url=window.location.origin+'/v2/info')
-        .done(function(data,status) {
-            if (data.status==200) {
-                var data = data.data;
-                sessionStorage.setItem('data_api', JSON.stringify(data));
-                _api(data);
-            } else {
-                alert(JSON.stringify(data.data));
-            }
-        })
-        .fail(function(data,status){
-            alert(`信息加载失败 code:${status}`)
-        });
-    } else {
-        _api(sessionStorage.getItem('data_api'));
-    };
-    if (sessionStorage.getItem('data_web') == null) {
-        $.get(
-            url=window.location.origin+'/v2/info',
-            data={"for":"web"},
-        )
-        .done(function(data,status) {
-            if (data.status==200) {
-                var data = data.data;
-                sessionStorage.setItem('data_web', JSON.stringify(data));
-                _web(data);
-            } else {
-                alert(JSON.stringify(data.data));
-            }
-        })
-        .fail(function(data,status){
-            alert(`信息加载失败 code:${status}`)
-        });
-    } else {
-        _web(sessionStorage.getItem('data_web'));
-    }
+    $.get(
+    url=window.location.origin+'/v2/api_info',
+    data = {"url": window.location.pathname}
+    )
+    .done(function(data,status) {
+        if (data.status==200) {
+            _api(data.data);
+        } else {
+            alert(JSON.stringify(data.data));
+        }
+    })
+    .fail(function(data,status){
+        alert(`信息加载失败 code:${status}`)
+    });
+    $.get(
+        url=window.location.origin+'/v2/info',
+        data={"for":"web"},
+    )
+    .done(function(data,status) {
+        if (data.status==200) {
+            var data = data.data;
+            _web(data);
+        } else {
+            alert(JSON.stringify(data.data));
+        }
+    })
+    .fail(function(data,status){
+        alert(`信息加载失败 code:${status}`)
+    });
 }
 
 function _web(data) {
-    data = JSON.parse(data);
-    document.getElementById("title").innerHTML = data.web.index_title;
+    document.getElementById("title").innerHTML = data.index_title;
     document.getElementById("version").innerHTML = "Version "+data.version+"<br/>";
-    document.getElementsByName("copyright")[0].innerHTML = "&copy;" +data.web.copyright;
-    document.getElementsByName("record")[0].innerHTML = data.web.record;
+    document.getElementsByName("copyright")[0].innerHTML = "&copy;" +data.copyright;
+    document.getElementsByName("record")[0].innerHTML = data.record;
 }
 
-function _api(data) {
-    data = JSON.parse(data);
-    path = window.location.pathname.match(/(.*)$/)[1];
-    for (var type in data) {
-        for (var plugin in data[type]) {
-            if (window.location.pathname.match(/(.*)$/)[1]==data[type][plugin]["path"]) {
-                var api_name = plugin;
-                var api_data = data[type][plugin];
-            }
-        }
-    }
-    document.getElementsByName("api_name")[0].innerHTML = DOMPurify.sanitize(api_name);
-    document.getElementsByName("return_parameters")[0].innerHTML = DOMPurify.sanitize(marked.parse(api_data.return_parameters));
-    document.getElementsByName("request_parameters")[0].innerHTML = DOMPurify.sanitize(marked.parse(api_data.request_parameters));
-    document.getElementsByName("api_address")[0].innerHTML = DOMPurify.sanitize(marked.parse(api_data.api_address));
+function _api(api_data) {
+    document.getElementsByName("api_name")[0].innerHTML = DOMPurify.sanitize(api_data.name);
+    document.getElementsByName("response")[0].innerHTML = DOMPurify.sanitize(marked.parse(api_data.response));
+    document.getElementsByName("request")[0].innerHTML = DOMPurify.sanitize(marked.parse(api_data.request));
+    document.getElementsByName("api_address")[0].innerHTML = DOMPurify.sanitize(marked.parse(`|Method|Url|\n|--|--|\n|${api_data.method}|<a target='_blank' href='/api${window.location.pathname}'>/api${window.location.pathname}</a>|`));
     document.getElementsByName("author")[0].innerHTML = DOMPurify.sanitize(api_data.author);
     document.getElementsByName("api_version")[0].innerHTML = DOMPurify.sanitize(api_data.version);
-    document.getElementsByName("api_profile")[0].innerHTML = DOMPurify.sanitize(marked.parse(api_data.api_profile));
+    document.getElementsByName("api_profile")[0].innerHTML = DOMPurify.sanitize(marked.parse(api_data.profile));
 }

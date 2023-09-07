@@ -1,10 +1,20 @@
 function notice() {
-    data = JSON.parse(sessionStorage.getItem('data_web'))['web'];
-    mdui.dialog({
-        title: '公告<code>'+data.notice.latesttime+'</code>',
-        content: marked.parse(data.notice.data),
-        buttons: [{
-            text: '确定',
-        }]
+    $.get("/v2/notice")
+    .done(function(data,status) {
+        if (data.status==200) {
+            data = data.data;
+            mdui.dialog({
+                title: '公告<code>'+data.time+'</code>',
+                content: marked.parse(data.notice),
+                buttons: [{
+                    text: '确定',
+                }]
+            });
+        } else {
+            alert(JSON.stringify(data.data));
+        }
+    })
+    .fail(function(data,status){
+        alert(`信息加载失败 code:${status}`)
     });
 }

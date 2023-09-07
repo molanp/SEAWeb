@@ -1,6 +1,7 @@
 <?php
 include_once($_SERVER['DOCUMENT_ROOT'].'/services/until.php');
-include_once $_SERVER['DOCUMENT_ROOT'].'/services/path.php';
+include_once($_SERVER['DOCUMENT_ROOT'].'/services/path.php');
+include_once($_SERVER['DOCUMENT_ROOT'].'/services/connect.php');
 
 $pluginFiles = preg_replace('/api\//',"",parse_url('http' . (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 's' : '') . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'], PHP_URL_PATH));
 if (check_files(PLUGIN_FOLDERS, $pluginFiles.'/index.php')) {
