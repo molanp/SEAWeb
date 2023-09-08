@@ -77,6 +77,9 @@ $web = $web->get("web");
             <div class="mdui-chip" mdui-tooltip="{content: 'API Author', position: 'top'}">
                 <span class="mdui-chip-title"><i class="mdui-icon material-icons mdui-text-color-blue">account_circle</i><span name="author">Loading...</span></span>
             </div>
+            <div class="mdui-chip" mdui-tooltip="{content: 'API Count', position: 'top'}">
+                <span class="mdui-chip-title"><i class="mdui-icon material-icons mdui-text-color-blue">equalizer</i><span name="api_count">Loading...</span> times</span>
+            </div>
         </div>
         <div class="mdui-container">
             <div class="mdui-row">

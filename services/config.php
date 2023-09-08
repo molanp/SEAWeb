@@ -2,8 +2,9 @@
 class config {
     private $classname = null;
     
-    public __construct($classname) {
+    public function __construct($classname) {
         $this->name = $classname;
+        //more...
     }
     
 }

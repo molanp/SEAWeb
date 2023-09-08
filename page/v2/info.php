@@ -3,6 +3,7 @@ include_once($_SERVER['DOCUMENT_ROOT'].'/services/Config.class.php');
 include_once($_SERVER['DOCUMENT_ROOT'].'/services/until.php');
 include_once($_SERVER['DOCUMENT_ROOT'].'/services/path.php');
 include_once($_SERVER['DOCUMENT_ROOT'].'/services/__version__.php');
+include_once($_SERVER['DOCUMENT_ROOT'].'/services/logger.php');
 
 if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     include_once($_SERVER['DOCUMENT_ROOT'].'/services/connect.php');
@@ -83,11 +84,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
                                         )
                                     )
                                 ));
-                                // 假设 $data 是要插入的关联数组，其中键是列名，值是对应的数据
-                                $status = $database->query("SELECT status FROM api WHERE name = '" . $info["name"] . "'")->fetchColumn();
-$status = ($status === false) ? "true" : $status;
+                                // 获取状态，使用参数绑定
+                                $statusQuery = $database->prepare("SELECT status FROM api WHERE name = :name");
+                                $statusQuery->execute([':name' => $info["name"]]);
+                                $status = $statusQuery->fetchColumn();
+
+                                // 如果状态不存在，设置默认值
+                                $status = ($status === false) ? "true" : $status;
+
+                                // 获取最大ID，假设使用自增主键
+                                $maxIdQuery = $database->query("SELECT MAX(id) FROM api");
+                                $maxId = $maxIdQuery->fetchColumn();
+                                $id = ($maxId !== false) ? ($maxId + 1) : 0;
+
                                 $data = [
-                                    "id" => $database->query("SELECT MAX(id) FROM api")->fetchColumn() + 1?? 0,
+                                    "id" => $id,
                                     "name" => $info["name"],
                                     "version" => $info["version"],
                                     "author" => $info["author"],
@@ -102,70 +113,53 @@ $status = ($status === false) ? "true" : $status;
                                     "status" => (string) $status,
                                     "time" => $time
                                 ];
-                                
-                                // 构建检查是否存在记录的 SQL 语句
-                                $checkSql = "SELECT COUNT(*) FROM api WHERE name = :name AND type = :type AND file_path = :file_path";
-                                
-                                // 使用预处理语句执行检查
-                                $checkStatement = $database->prepare($checkSql);
-                                $checkStatement->execute([
-                                    ":name" => $info["name"],
-                                    ":type" => $type,
-                                    ":file_path" => $absolutePath
-                                ]);
-                                
-                                // 检查是否存在相同名字和类型但不同 file_path 的记录
-                                if ($checkStatement->fetchColumn() == 0) {
-                                    // 不存在相同记录，执行插入操作
-                                    UpdateOrCreate($database, "api", $data, ["name"=>$info["name"]]);
-                                } else {
-                                    // 存在相同记录，执行其他操作（例如跳过插入或执行其他逻辑）
-                                    // 在这里添加你的处理逻辑
-                                    // 例如：echo "已存在相同记录，跳过插入";
-                                }
+                                UpdateOrCreate($database, "api", $data);
                         } else {
-                            //error_log("插件类缺少 getInfo() 方法，文件路径：$pluginFilePath ，文件名：$file",3,LOGGER);
+                            (new logger())->error("插件类缺少 getInfo() 方法，文件路径：$pluginFilePath ，文件名：$file");
                         }
                     }
                 }
-                $query = $database->prepare("SELECT * FROM api ORDER BY name");//id
-                $query->execute();
-                $conname = [];
-                while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-                    $type = $row['type'];
-                    $name = $row['name'];
-                    $profile = $row['profile'];
-                    $url_path = $row['url_path'];
-                    $status = $row['status'];
-                
-                    // 构建数组项
-                    $conname[$type][$name] = [
-                        'path' => $url_path,
-                        'api_profile' => $profile,
-                        'status' => $status
-                    ];
-                }
-            }
+            };
+            //清理过期数据
+            try {
+                $threshold = time() - (60 * 30); // 计算30分钟前的时间戳
+                $query = "DELETE FROM access_log WHERE time < :threshold";
+                $stmt = $database->prepare($query);
+                $stmt->bindParam(':threshold', $threshold, PDO::PARAM_INT);
+                $stmt->execute();
+                $rowCount = $stmt->rowCount();
+                (new logger())->info("已删除 $rowCount 条过期API记录。");
+            } catch (PDOException $e) {
+                (new logger())->error("删除过期API数据时出错: " . $e->getMessage());
+            };
             break;
-            //delete
-            } else {
-                $query = $database->prepare("SELECT * FROM api ORDER BY name");//id
-                $query->execute();
-                $conname = [];
-                while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-                    $type = $row['type'];
-                    $name = $row['name'];
-                    $profile = $row['profile'];
-                    $url_path = $row['url_path'];
-                    $status = $row['status'];
-                
-                    // 构建数组项
-                    $conname[$type][$name] = [
-                        'path' => $url_path,
-                        'api_profile' => $profile,
-                        'status' => $status
-                    ];
-                }
+            };
+            //统计调用
+            $count = [];
+            $query = "SELECT url, COUNT(*) AS count FROM access_log GROUP BY url";
+            $stmt = $database->prepare($query);
+            $stmt->execute();
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                $count[$row['url']] = $row['count'];
+            }
+
+            $query = $database->prepare("SELECT * FROM api ORDER BY name");//id
+            $query->execute();
+            $conname = [];
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+                $type = $row['type'];
+                $name = $row['name'];
+                $profile = $row['profile'];
+                $url_path = $row['url_path'];
+                $status = $row['status'];
+            
+                // 构建数组项
+                $conname[$type][$name] = [
+                    'path' => $url_path,
+                    'count' => $count["/api".$url_path] ?? 0,
+                    'api_profile' => $profile,
+                    'status' => $status
+                ];
             }
             break;
     }

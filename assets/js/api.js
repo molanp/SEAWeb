@@ -83,6 +83,7 @@ function _web(data) {
 
 function _api(api_data) {
     document.getElementsByName("api_name")[0].innerHTML = DOMPurify.sanitize(api_data.name);
+    document.getElementsByName("api_count")[0].innerHTML = DOMPurify.sanitize(api_data.count);
     document.getElementsByName("response")[0].innerHTML = DOMPurify.sanitize(marked.parse(api_data.response));
     document.getElementsByName("request")[0].innerHTML = DOMPurify.sanitize(marked.parse(api_data.request));
     document.getElementsByName("api_address")[0].innerHTML = DOMPurify.sanitize(marked.parse(`|Method|Url|\n|--|--|\n|${api_data.method}|<a target='_blank' href='/api${window.location.pathname}'>/api${window.location.pathname}</a>|`));
