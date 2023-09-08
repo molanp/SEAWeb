@@ -1,11 +1,10 @@
 <?php
-include_once('../services/Config.class.php');
-include_once('../services/connect.php');
-include_once('../services/until.php');
+include_once($_SERVER['DOCUMENT_ROOT'].'/services/Config.class.php');
+include_once($_SERVER['DOCUMENT_ROOT'].'/services/connect.php');
+include_once($_SERVER['DOCUMENT_ROOT'].'/services/until.php');
 
-$DATA = new Config('../data/web');
 if (isset($_COOKIE['token'],$_COOKIE['user']) && $database->query("SELECT token FROM users WHERE username = '".$_COOKIE["user"]."'")->fetchColumn() == $_COOKIE['token']) {
-    die(include_once('../page/backstage.html'));
+    die(include_once($_SERVER['DOCUMENT_ROOT'].'/page/backstage.html'));
 } else {?>
     <!DOCTYPE html>
     <html lang="zh-CN">
@@ -16,8 +15,8 @@ if (isset($_COOKIE['token'],$_COOKIE['user']) && $database->query("SELECT token 
         <meta name="renderer" content="webkit" />
         <meta name="force-rendering" content="webkit" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-        <link rel="Shortcut Icon" href="../favicon.ico">
-        <link rel="bookmark" href="../favicon.ico" type="image/x-icon" />   
+        <link rel="Shortcut Icon" href="/favicon.ico">
+        <link rel="bookmark" href="/favicon.ico" type="image/x-icon" />   
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mdui/1.0.2/css/mdui.min.css" />
         <script src="https://cdnjs.cloudflare.com/ajax/libs/mdui/1.0.2/js/mdui.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.4.17/sweetalert2.all.min.js"></script>

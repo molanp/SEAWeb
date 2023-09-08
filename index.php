@@ -44,11 +44,6 @@ $web = $web->get("web");
             <span class="mdui-typo-display-3" name="title">title</span>
             <span name="index_description">Loading...</span>
             <p><small>友情链接<span name="links"></span></small></p>
-            <input class="mdui-textfield-input" type="text" placeholder="搜索api名称" id="search"/>
-            <div class="mdui-panel mdui-panel-scrollable">
-                <ul class="mdui-list" id="search_result">
-                </ul>
-            </div>
         </div>
     </div>
     <header class="mdui-appbar-fixed mdui-appbar mdui-color-white">
@@ -61,7 +56,7 @@ $web = $web->get("web");
             <button mdui-menu="{target: '#main-menu'}" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons">more_vert</i></button>
             <ul class="mdui-menu" id="main-menu">
                 <li class="mdui-menu-item" mdui-dialog="{target: '#login'}">
-                    <a href="/admin" class="mdui-ripple">
+                    <a href="/sw-ad" class="mdui-ripple">
                         <i class="mdui-menu-item-icon mdui-icon material-icons">person</i> 后台登录
                     </a>
                 </li>
@@ -91,17 +86,14 @@ $web = $web->get("web");
     </div>
 </div>
 
-<a class="mdui-fab mdui-fab-fixed mdui-fab-hide mdui-ripple mdui-color-theme-accent" href="javascript:goTop();" id="fabUp" style="margin-bottom:60px;">
-    <i class="mdui-icon material-icons">expand_less</i>
-</a>
+<button class="mdui-fab mdui-fab-fixed mdui-ripple mdui-color-pink" onclick="output()">
+  <i class="mdui-icon material-icons">search</i>
+</button>
 <footer class="foot mdui-text-center mdx-footer-morden">
     <span name="record"></span>
     <span name="copyright"></span>
     <p>本站内容由网友上传(或整理自网络)，原作者已无法考证，版权归原作者所有。仅供学习参考，其观点不代表本站立场，网站接口数据均收集互联网。</p>
 </footer>
      <script src="https://cdnjs.cloudflare.com/ajax/libs/mdui/1.0.2/js/mdui.min.js"></script>
-     <script>
-        document.getElementById('search').addEventListener('input', search);
-     </script>
 </body>
 </html>

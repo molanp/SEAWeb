@@ -406,18 +406,18 @@ class cp {
             'profile'=> '一键获取cp文章',
             'method'=>'GET',
             'author'=>'molanp',
-            'request_par'=> re_par(['0' => "攻",'1' => "受"]),
+            'request_par'=> re_par(['boy' => "攻",'girl' => "受"]),
             'return_par'=> re_par()
         ];
     }
     public function run($request) {
         $cp = $this->cp;
-        if (!isset($request[0], $request[1])) {
+        if (!isset($request["boy"], $request["girl"])) {
             $result = '谁和谁组？';
         } else {
             // 随机选取数组中的一个对象
-            $result = str_replace('<攻>', $request[0], 
-                str_replace('<受>', $request[1],  
+            $result = str_replace('<攻>', $request["boy"], 
+                str_replace('<受>', $request["girl"],  
                     $cp[array_rand($cp)]
                 )
             );

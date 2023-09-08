@@ -26,7 +26,7 @@ function enableDarkMode() {
 function disableDarkMode() {
     var $ = mdui.$;
     $('body').removeClass("mdui-theme-layout-dark");
-    sessionStorage.setItem("theme", 0);
+    sessionStorage.removeItem("theme");
 };
 
 function changeTheme() {
