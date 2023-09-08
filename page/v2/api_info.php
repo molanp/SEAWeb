@@ -25,6 +25,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         foreach ($result as $column => $value) {
             $data[$column] = $value;
         };
+        //统计调用
+        $count = [];
+        $query = "SELECT url, COUNT(*) AS count FROM access_log GROUP BY url";
+        $stmt = $database->prepare($query);
+        $stmt->execute();
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $count[$row['url']] = $row['count'];
+        };
+        $data['count'] = $count["/api".$urlPath] ?? 0;
         _return_($data);
     } else {
         // 没有匹配的记录

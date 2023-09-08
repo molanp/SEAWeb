@@ -48,8 +48,8 @@ function load() {
                 网站底部版权信息：<p><textarea style='width:75%;height: 200px;' id='copyright'>${data.copyright}</textarea></p>
                 网页备案号：<p><textarea style='width:75%;height: 200px;' id='record'>${data.record}</textarea></p>
                 友情链接(一行一个)：示例： [链接1](http://xxx)<p><textarea style='width:75%;height: 200px;' id='links'>${data.links}</textarea></p>
-                网站keywords(逗号分隔)：<p><textarea style='width:75%;height: 200px;' id='keywords'>${data.keywords}</textarea></p>;`
-                document.getElementById('version').innerHTML = data.version
+                网站keywords(逗号分隔)：<p><textarea style='width:75%;height: 200px;' id='keywords'>${data.keywords}</textarea></p>`;
+                document.getElementById('version').innerHTML = data.version;
                 mdui.mutation();
             }
         }

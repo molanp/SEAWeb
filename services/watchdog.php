@@ -17,7 +17,9 @@ function watchdog($errno,$errstr=NULL, $errfile=NULL, $errline=NULL) {
         $message = "Error[$errno]: $errstr";
     } else {
         $message = "Error: $errno";
-    }
+    };
+    include_once("logger.php");
+    (new logger())->error($message);
     _return_($message,500);
 }
 set_error_handler("watchdog");

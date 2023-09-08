@@ -1,6 +1,8 @@
 <?php
 include_once($_SERVER["DOCUMENT_ROOT"]."/configs/config.php");
 include_once("watchdog.php");
+include_once("logger.php");
+
 if ($sqlite_mode === true) {
     $database = new PDO("sqlite:".$_SERVER["DOCUMENT_ROOT"]."/data/main.db");
 } elseif ($sqlite_mode === false) {
@@ -17,50 +19,17 @@ $database->exec("CREATE TABLE IF NOT EXISTS setting(item TEXT, value TEXT, info 
 if ($database->query("SELECT COUNT(*) FROM setting")->fetchColumn() <= 0) {
     $database->exec("INSERT INTO setting(item, value, info) VALUES('maintenance_mode', 'false', '开启后网站将暂停访问')");
 }
-$database->exec("CREATE TABLE IF NOT EXISTS api(id INTEGER, name TEXT, version TEXT, author TEXT, method TEXT, profile TEXT, request TEXT, response TEXT, class TEXT, url_path TEXT, file_path TEXT, type TEXT, top TEXT, status TEXT, time BIGINT)");
+$database->exec("CREATE TABLE IF NOT EXISTS api(id INTEGER, name TEXT, version TEXT, author TEXT, method TEXT, profile TEXT, request TEXT, response TEXT, class TEXT, url_path TEXT, file_path TEXT, type TEXT, top TEXT, status TEXT, time BIGINT, PRIMARY KEY (name, type))");
 $database->exec("CREATE TABLE IF NOT EXISTS access_log(time TEXT, ip TEXT, url TEXT, referer TEXT, param TEXT)");
 
-function UpdateOrCreate($pdo, $table, $data = [], $condition = []) {
+function UpdateOrCreate($pdo, $table, $data = []) {
+    global $sqlite_mode;
     try {
         $pdo->beginTransaction();
-
-        // 构建SELECT语句
-        $selectSql = 'SELECT * FROM ' . $table . ' WHERE ';
-        $selectParams = array();
-        foreach ($condition as $key => $value) {
-            $selectSql .= $key . ' = :' . $key . ' AND ';
-            $selectParams[':' . $key] = $value;
-        }
-        $selectSql = rtrim($selectSql, ' AND ');
-
-        // 执行SELECT语句
-        $selectStmt = $pdo->prepare($selectSql);
-        $selectStmt->execute($selectParams);
-
-        // 判断条件是否匹配
-        if ($selectStmt->rowCount() > 0) {
-            // 条件匹配，执行UPDATE语句
-            $updateSql = 'UPDATE ' . $table . ' SET ';
-            $updateParams = array();
-            foreach ($data as $key => $value) {
-                $updateSql .= $key . ' = :' . $key . ', ';
-                $updateParams[':' . $key] = $value;
-            }
-            $updateSql = rtrim($updateSql, ', ');
-            $updateSql .= ' WHERE ';
-            foreach ($condition as $key => $value) {
-                $updateSql .= $key . ' = :' . $key . ' AND ';
-                $updateParams[':' . $key] = $value;
-            }
-            $updateSql = rtrim($updateSql, ' AND ');
-
-            $updateStmt = $pdo->prepare($updateSql);
-            $updateStmt->execute($updateParams);
-        } else {
-            // 条件不匹配，执行INSERT语句
-            $insertSql = 'INSERT INTO ' . $table . ' (';
+        if($sqlite_mode===true) {
+            $insertSql = 'INSERT OR REPLACE INTO ' . $table . ' (';
             $insertValues = '';
-            $insertParams = array();
+            $insertParams = [];
             foreach ($data as $key => $value) {
                 $insertSql .= $key . ', ';
                 $insertValues .= ':' . $key . ', ';
@@ -72,13 +41,26 @@ function UpdateOrCreate($pdo, $table, $data = [], $condition = []) {
 
             $insertStmt = $pdo->prepare($insertSql);
             $insertStmt->execute($insertParams);
-        }
+        } else {
+            $insertSql = 'INSERT INTO ' . $table . ' (';
+            $insertValues = '';
+            $insertParams = [];
+            foreach ($data as $key => $value) {
+                $insertSql .= $key . ', ';
+                $insertValues .= ':' . $key . ', ';
+                $insertParams[':' . $key] = $value;
+            }
+            $insertSql = rtrim($insertSql, ', ');
+            $insertValues = rtrim($insertValues, ', ');
+            $insertSql .= ') VALUES (' . $insertValues . ') ON DUPLICATE KEY UPDATE ';
 
+            $insertStmt = $pdo->prepare($insertSql);
+            $insertStmt->execute($insertParams);
+        }
         $pdo->commit();
     } catch (PDOException $e) {
-        // 错误处理，可以记录日志或回滚事务
-        //$pdo->rollBack();
-        //error_log('Database error: ' . $e->getMessage());
+        $pdo->rollBack();
+        (new logger())->error('Database error: ' . $e->getMessage());
     }
 }
 function tokentime($token) {
@@ -109,16 +91,16 @@ function tokentime($token) {
 function apineedupdate() {
     global $database;
     // 查询是否存在api表并且获取最后更新时间
-    $stmt = $database->query("SELECT time FROM api");
-    if ($stmt->rowCount() > 0) {
-        $lastUpdateTime = $stmt->fetchColumn();
-        
+    $stmt = $database->query("SELECT MAX(time) FROM api");
+    $lastUpdateTime = $stmt->fetchColumn();
+
+    if ($lastUpdateTime !== false) {
         // 检查最后更新时间是否在30分钟内
         if (time() - $lastUpdateTime < 60 * 30) {
             return false;
         }
     }
-    
+
     // 如果没有api表或者最后更新时间超过了30分钟，则需要更新
     return true;
 }

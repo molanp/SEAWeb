@@ -65,7 +65,7 @@ function _api(data) {
     item = '';
     for (var type in data) {
         for (var name in data[type]) {
-            if (data[type][name].status == false) {
+            if (data[type][name].status === 'false') {
                 status = `<div class="mdui-badge mdui-color-red-400 mdui-text-color-white">维护</div>`
             } else {
                 status = `<div class="mdui-badge mdui-color-green-400 mdui-text-color-white">正常</div>`
@@ -76,7 +76,7 @@ function _api(data) {
                     <div class="mdui-card-primary-title">
                         ${name}${status}
                         <div class="mdui-card-primary-subtitle" style="font-size:12px;">
-                        <i class="mdui-icon material-icons" style="font-size:12px;">equalizer</i>累计调用：N/A次
+                        <i class="mdui-icon material-icons" style="font-size:12px;">equalizer</i>累计调用：${data[type][name].count}次
                             <br/>
                         <i class="mdui-icon material-icons" style="font-size:12px;">folder</i>分类：${type}</div>
                     </div>

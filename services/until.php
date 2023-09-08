@@ -100,7 +100,9 @@ function _return_($content,$status=200,$location=false) {
  * @return bool 返回是否需要处理 API 请求
  */
 function handle_check($name) {
-    if ($database->query("SELECT status FROM api WHERE name = '".$info["name"]."'")->fetchColumn() ?? "true" != 'true' || $database->query("SELECT value FROM setting WHERE item = 'maintenance_mode'")->fetchColumn() == 'true') {
+    include_once("connect.php");
+    global $database;
+    if ($database->query("SELECT status FROM api WHERE name = '".$name."'")->fetchColumn() == 'false' || $database->query("SELECT value FROM setting WHERE item = 'maintenance_mode'")->fetchColumn() == 'true') {
         header("HTTP/1.1 406");
         _return_("API already closed",406);
     } else {
