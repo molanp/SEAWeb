@@ -10,13 +10,12 @@
  */
 function watchdog($errno,$errstr=NULL, $errfile=NULL, $errline=NULL) {
     header("HTTP/1.1 500");
-    //error_log(date(Y-m-d H:i:s)."[$errno] $errstr in $errfile line $errline.", 1,"logs/log.log");
     if (isset($errfile,$errline)) {
-        $message = "Error[$errno]: $errstr in $errfile line $errline.";
+        $message = "[$errno]: $errstr in $errfile line $errline.";
     } elseif(isset($errstr)) {
-        $message = "Error[$errno]: $errstr";
+        $message = "[$errno]: $errstr";
     } else {
-        $message = "Error: $errno";
+        $message = "$errno";
     };
     include_once("logger.php");
     (new logger())->error($message);
