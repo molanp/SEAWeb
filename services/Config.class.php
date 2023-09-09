@@ -115,7 +115,7 @@
 
  
 
-define('CONFIG_EXIT', ''); 
+define('CONFIG_EXIT', '<?php die(header("HTTP/1.1 403"))?>'); 
 
 class Config { 
 

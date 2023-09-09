@@ -1,12 +1,19 @@
 <IfModule mod_rewrite.c>
-php_value date.timezone Asia/Shanghai
-Options -Indexes
-ErrorDocument 404 /404.html
-RewriteEngine On  
-RewriteBase /
-RewriteRule ^api/(.*)$ page/v2/loader.php/%1 [QSA,L]
-RewriteRule ^v2/(.*)$ page/v2/$1.php [QSA,L]
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*)$ page/manager.php/$1 [QSA,L]
+    php_value date.timezone Asia/Shanghai
+    Options -Indexes
+    ErrorDocument 404 /404.html
+    RewriteEngine On
+    RewriteBase /
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_URI} \..+$
+    RewriteCond %{REQUEST_URI} !\.(php|css|js|ico)$ [NC]
+    RewriteRule ^ - [F]
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^api/(.*)$ page/v2/loader.php/%1 [QSA,L]
+    RewriteRule ^v2/(.*)$ page/v2/$1.php [QSA,L]
+    RewriteCond %{REQUEST_URI} !^/page [NC]
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)$ page/manager.php/$1 [QSA,L]
 </IfModule>
