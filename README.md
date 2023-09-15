@@ -14,8 +14,3 @@
 ![image](https://github.com/molanp/SEAWeb/assets/104612722/e353df31-9321-41b2-9d29-a41e4f79fa00)
 手机端样式
 ![image](https://github.com/molanp/SEAWeb/assets/104612722/5b191209-5550-43a7-9fef-407dbafd1008)
-
-
-## 备注
-
-本模板内大部分内容均可在`http://{your_website_url}/admin`中修改
