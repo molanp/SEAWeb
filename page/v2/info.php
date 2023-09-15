@@ -100,9 +100,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
                                 $data = [
                                     "id" => $id,
                                     "name" => $info["name"],
-                                    "version" => $info["version"],
-                                    "author" => $info["author"],
-                                    "method" => $info["method"],
+                                    "version" => $info["version"]??"1.0",
+                                    "author" => $info["author"]??"Unknown",
+                                    "method" => $info["method"]??"GET",
                                     "profile" => $info["profile"],
                                     "request" => $info["request_par"],
                                     "response" => $info["return_par"],

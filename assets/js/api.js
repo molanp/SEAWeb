@@ -90,4 +90,6 @@ function _api(api_data) {
     document.getElementsByName("author")[0].innerHTML = DOMPurify.sanitize(api_data.author);
     document.getElementsByName("api_version")[0].innerHTML = DOMPurify.sanitize(api_data.version);
     document.getElementsByName("api_profile")[0].innerHTML = DOMPurify.sanitize(marked.parse(api_data.profile));
+    document.getElementById("urlInput").textContent = '/api'+window.location.pathname;
+
 }

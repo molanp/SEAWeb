@@ -48,8 +48,8 @@ $web = $web->get("web");
     </div>
     <header class="mdui-appbar-fixed mdui-appbar mdui-color-white">
         <div class="mdui-color-white mdui-toolbar">
-            <span class="mdui-typo-headline mdui-hidden-xs" name="title">title</span>
-            <span class="mdui-typo-title" name="version">version</span>
+            <span class="mdui-typo-headline" name="title">title</span>
+            <span class="mdui-typo-title mdui-hidden-xs" name="version">version</span>
             <div class="mdui-toolbar-spacer"></div>
             <button mdui-tooltip="{content: '公告', position: 'bottom'}" onclick="notice()" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons">announcement</i></button>
             <button mdui-tooltip="{content: '夜间模式', position: 'bottom'}" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons" onclick="changeTheme()">brightness_medium</i></button>
