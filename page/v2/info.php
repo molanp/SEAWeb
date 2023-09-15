@@ -114,25 +114,25 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
                                     "time" => $time
                                 ];
                                 UpdateOrCreate($database, "api", $data);
-                        } else {
-                            (new logger())->error("插件类缺少 getInfo() 方法，文件路径：$pluginFilePath ，文件名：$file");
+                            } else {
+                                (new logger())->error("插件类缺少 getInfo() 方法，文件路径：$pluginFilePath ，文件名：$file");
+                            }
                         }
                     }
-                }
-            };
-            //清理过期数据
-            try {
-                $threshold = time() - (60 * 30); // 计算30分钟前的时间戳
-                $query = "DELETE FROM access_log WHERE time < :threshold";
-                $stmt = $database->prepare($query);
-                $stmt->bindParam(':threshold', $threshold, PDO::PARAM_INT);
-                $stmt->execute();
-                $rowCount = $stmt->rowCount();
-                (new logger())->info("已删除 $rowCount 条过期API记录。");
-            } catch (PDOException $e) {
-                (new logger())->error("删除过期API数据时出错: " . $e->getMessage());
-            };
-            break;
+                };
+                //清理过期数据
+                try {
+                    $threshold = time() - (60 * 30); // 计算30分钟前的时间戳
+                    $query = "DELETE FROM access_log WHERE time < :threshold";
+                    $stmt = $database->prepare($query);
+                    $stmt->bindParam(':threshold', $threshold, PDO::PARAM_INT);
+                    $stmt->execute();
+                    $rowCount = $stmt->rowCount();
+                    (new logger())->info("已删除 $rowCount 条过期API记录。");
+                } catch (PDOException $e) {
+                    (new logger())->error("删除过期API数据时出错: " . $e->getMessage());
+                };
+                break;
             };
             //统计调用
             $count = [];

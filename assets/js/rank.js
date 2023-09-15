@@ -60,14 +60,13 @@ function _load(data) {
             <td>${data[item]["count"]}</td>
         </tr>`
     }
-    console.log(table)
     document.getElementById("rank").innerHTML = table;
 }
 
 
 function load() {
     $.get(
-        url=window.location.origin+'/v2/info',
+        url='/v2/info',
         data={"for":"web"},
     )
     .done(function(data,status) {
@@ -81,7 +80,7 @@ function load() {
         alert(`信息加载失败 code:${status}`)
     });
     $.get(
-        url=window.location.origin+'/v2/hot',
+        url='/v2/hot',
     )
     .done(function(data,status) {
         if (data.status==200) {

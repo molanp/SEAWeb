@@ -104,8 +104,8 @@ $web = $web->get("web");
                     <i class="mdui-icon material-icons mdui-text-color-orange">view_compact</i>API 地址
                     </div>
                     </div>
-                    <div class="mdui-card-content">
-                    <span name="api_address">Loading...</span>
+                    <div class="mdui-card-content mdui-table-fluid">
+                    <table name="api_address" class="mdui-table mdui-table-hoverable"></table>
                     </div>
                 </div>
                 </div>
@@ -116,8 +116,8 @@ $web = $web->get("web");
                     <i class="mdui-icon material-icons mdui-text-color-purple">vpn_key</i>参数列表 (打<code>*</code>是必填项)
                     </div>
                     </div>
-                    <div class="mdui-card-content">
-                    <span name="request">Loading...</span>
+                    <div class="mdui-card-content mdui-table-fluid">
+                    <table name="request" class="mdui-table mdui-table-hoverable"></table>
                     </div>
                 </div>
                 </div>
@@ -128,8 +128,8 @@ $web = $web->get("web");
                     <i class="mdui-icon material-icons mdui-text-color-gray">reply</i>返回的数据
                     </div>
                     </div>
-                    <div class="mdui-card-content">
-                    <span name="response">Loading...</span>
+                    <div class="mdui-card-content mdui-table-fluid">
+                    <table name="response" class="mdui-table mdui-table-hoverable"></table>
                     </div>
                 </div>
                 </div>
@@ -137,7 +137,7 @@ $web = $web->get("web");
                 <div class="mdui-card mdui-hoverable mdui-m-y-2" style="border-radius:10px">
                     <div class="mdui-card-primary">
                     <div class="mdui-card-primary-title">
-                    <i class="mdui-icon material-icons mdui-text-color-gray">reply</i>在线测试
+                    <i class="mdui-icon material-icons mdui-text-color-teal-a400">build</i>在线测试
                     </div>
                     </div>
                     <div class="mdui-card-content">

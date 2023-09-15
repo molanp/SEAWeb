@@ -10,8 +10,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     switch($type) {
         case 'pass':
             $token = $data['token'];
-            $pwd = hash('sha256, $data["new"]');
-            if ($database->query("SELECT username FROM users WHERE token = $token")->rowCount() > 0) {
+            $pwd = hash('sha256', $data["new"]);
+            if (tokentime($token)) {
                 if ($pwd !== hash('sha256',$data["again"])) {
                     _return_('两次输入密码不同',400);
                 } else {

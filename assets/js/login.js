@@ -1,5 +1,3 @@
-console.log("\n %c molanp \n\n","color: #fadfa3; background: #2f55d4; padding:5px 0;")
-
 function getCookie(cname)
 {
     var name = cname + "=";
@@ -57,60 +55,20 @@ function sendData(url, data, callback) {
   }
 
 function regFail(reason) {
-    swal.fire({
-        icon: "error",
-        title: "失败!",
-        text: reason,
-        footer: "必要时可询问提交Issues",
+    mdui.dialog({
+        content: reason,
+        buttons: [{
+            text: '确定',
+        }]
     });
 }
 
 function regsuc(data) {
-    swal.fire({
-        icon: "success",
-        title: "修改成功",
-        text: data,
-        confirmButtonText: '确定'
+    mdui.dialog({
+        content: data,
+        buttons: [{
+            text: '确定',
+        }]
     });
     }
 
-function resetpassword() {
-    swal.fire({
-    title: '修改密码',
-    html: `<div class="form"><div class="mdui-textfield">
-    <input id="new" class="mdui-textfield-input" type="text" placeholder="新的密码" required />
-    <div class="mdui-textfield-error">密码不能为空</div>
-    </div>
-    <div class="mdui-textfield">
-    <input id="again" class="mdui-textfield-input" type="text" placeholder="再输一次" required />
-    <div class="mdui-textfield-error">密码不能为空</div>
-    </div></div>`,
-    showCancelButton: true,
-    confirmButtonText: '提交',
-    preConfirm: () => {
-        sendData('/v2/login',{
-            'type':'pass',
-            'token':getCookie("token"),
-            'new':document.getElementById("new").value,
-            'again':document.getElementById("again").value
-        },function(data,status){
-            if (status === 'success') {
-                if (data.status == 200) {
-                    regsuc(data.data);
-                    loginout()
-                } else {
-                    regFail(data.data)
-                }
-            } else {
-                regFail(data.data);
-            }
-        })
-    }
-  });
-}
-
-function loginout() {
-    document.cookie=`token=; expires=Thu, 01 Jan 1970 00:00:00 GMT";`;
-    document.cookie=`user=; expires=Thu, 01 Jan 1970 00:00:00 GMT";`;
-    location.reload();
-}

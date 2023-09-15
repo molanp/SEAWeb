@@ -15,19 +15,21 @@ $urlset->setAttribute('xmlns:mobile','http://www.sitemaps.org/schemas/sitemap-mo
 $xml->appendChild($urlset);
 $pages = [];
 $data = requests->get('http://'.$_SERVER['HTTP_HOST'].'/v2/info')->json();
-foreach($data['data'] as $type){
-    foreach($type as $info){
-        $pages[] = ['url'=>'http://'.$_SERVER['HTTP_HOST'].$info['path'], 'lastmod' => date('Y-m-d'), 'changefreq' => 'daily'];
+if (isset($data)) {
+    foreach($data['data'] as $type){
+        foreach($type as $info){
+            $pages[] = ['url'=>'http://'.$_SERVER['HTTP_HOST'].$info['path'], 'lastmod' => date('Y-m-d'), 'changefreq' => 'daily'];
+        }
     }
+    foreach ($pages as $page) {
+        $url = $xml->createElement('url');
+        $loc = $xml->createElement('loc', $page['url']);
+        $url->appendChild($loc);
+        $lastmod = $xml->createElement('lastmod', $page['lastmod']);
+        $url->appendChild($lastmod);
+        $changefreq = $xml->createElement('changefreq', $page['changefreq']);
+        $url->appendChild($changefreq);
+        $urlset->appendChild($url);
+    }
+    $xml->save($path);
 }
-foreach ($pages as $page) {
-    $url = $xml->createElement('url');
-    $loc = $xml->createElement('loc', $page['url']);
-    $url->appendChild($loc);
-    $lastmod = $xml->createElement('lastmod', $page['lastmod']);
-    $url->appendChild($lastmod);
-    $changefreq = $xml->createElement('changefreq', $page['changefreq']);
-    $url->appendChild($changefreq);
-    $urlset->appendChild($url);
-}
-$xml->save($path);
