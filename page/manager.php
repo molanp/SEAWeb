@@ -50,6 +50,7 @@ $web = $web->get("web");
             <a class="mdui-typo-headline" href="/" id="title">title</a>
             <span class="mdui-typo-title mdui-hidden-xs" id="version">version</span>
             <div class="mdui-toolbar-spacer"></div>
+            <button mdui-tooltip="{content: '调用排行', position: 'bottom'}" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons" onclick="window.location.href='/page/rank.html'">equalizer</i></button>
             <button mdui-tooltip="{content: '公告', position: 'bottom'}" onclick="notice()" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons">announcement</i></button>
             <button mdui-tooltip="{content: '夜间模式', position: 'bottom'}" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons" onclick="changeTheme()">brightness_medium</i></button>
             <button mdui-menu="{target: '#main-menu'}" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons">more_vert</i></button>

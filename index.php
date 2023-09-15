@@ -38,8 +38,8 @@ $web = $web->get("web");
     <title><?= $web["index_title"]?></title>
 </head>
 <body class="mdui-appbar-with-toolbar mdui-theme-primary-light-blue mdui-theme-accent-blue" id="top">
-    <div class="mdui-text-color-white-text mdui-valign mdui-color-light-blue-200" style="height: 200px;">
-        <div class="mdui-text-color-white mdui-center">
+    <div class="mdui-text-color-white-text mdui-valign mdui-color-light-blue-300" style="height: 200px;">
+        <div class="mdui-center">
             <br/>
             <span class="mdui-typo-display-3" name="title">title</span>
             <span name="index_description">Loading...</span>
@@ -51,6 +51,7 @@ $web = $web->get("web");
             <span class="mdui-typo-headline" name="title">title</span>
             <span class="mdui-typo-title mdui-hidden-xs" name="version">version</span>
             <div class="mdui-toolbar-spacer"></div>
+            <button mdui-tooltip="{content: '调用排行', position: 'bottom'}" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons" onclick="window.location.href='/page/rank.html'">equalizer</i></button>
             <button mdui-tooltip="{content: '公告', position: 'bottom'}" onclick="notice()" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons">announcement</i></button>
             <button mdui-tooltip="{content: '夜间模式', position: 'bottom'}" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons" onclick="changeTheme()">brightness_medium</i></button>
             <button mdui-menu="{target: '#main-menu'}" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons">more_vert</i></button>

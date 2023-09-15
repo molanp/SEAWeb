@@ -20,7 +20,7 @@ if ($database->query("SELECT COUNT(*) FROM setting")->fetchColumn() <= 0) {
     $database->exec("INSERT INTO setting(item, value, info) VALUES('maintenance_mode', 'false', '开启后网站将暂停访问')");
 }
 $database->exec("CREATE TABLE IF NOT EXISTS api(id INTEGER, name TEXT, version TEXT, author TEXT, method TEXT, profile TEXT, request TEXT, response TEXT, class TEXT, url_path TEXT, file_path TEXT, type TEXT, top TEXT, status TEXT, time BIGINT, PRIMARY KEY (name, type))");
-$database->exec("CREATE TABLE IF NOT EXISTS access_log(time TEXT, ip TEXT, url TEXT, referer TEXT, param TEXT)");
+$database->exec("CREATE TABLE IF NOT EXISTS access_log(time TEXT, ip TEXT, url TEXT, name TEXT, referer TEXT, param TEXT)");
 
 function UpdateOrCreate($pdo, $table, $data = []) {
     global $sqlite_mode;
