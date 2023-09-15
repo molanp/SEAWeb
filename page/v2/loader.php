@@ -17,12 +17,13 @@ if($data==null) {
     $url = "/api".$plugin_path ?? "Unknown";
     $referer = $_SERVER['HTTP_REFERER'] ?? "Unknown";
     $param = json($_REQUEST);
-    $stmt = $database->prepare("INSERT INTO access_log (time, ip, url, referer, param) VALUES (?, ?, ?, ?, ?)");
+    $stmt = $database->prepare("INSERT INTO access_log (time, ip, url, referer, param, name) VALUES (?, ?, ?, ?, ?, ?)");
     $stmt->bindParam(1, $time);
     $stmt->bindParam(2, $ip);
     $stmt->bindParam(3, $url);
     $stmt->bindParam(4, $referer);
     $stmt->bindParam(5, $param);
+    $stmt->bindParam(6, $data["name"]);
     $stmt->execute();
     
     include_once($data["file_path"]);
