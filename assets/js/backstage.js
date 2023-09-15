@@ -1,8 +1,27 @@
 window.onload = function() {
-    load();
-    mdui.mutation();
+    $.get(
+        url='/v2/info',
+        data={
+        "for":"setting",
+        'apikey':getCookie('token')
+        },
+        function(data,status) {
+            if (status=='success'&&data.status==200) {
+                load();
+                window.inst = new mdui.Drawer('#sider');
+                mdui.mutation();
+                RankList();
+                TrendChart();
+            } else {
+                alert("身份验证失败");
+                document.body.innerHTML = '';
+                document.cookie=`token=; expires=Thu, 01 Jan 1970 00:00:00 GMT";`;
+                document.cookie=`user=; expires=Thu, 01 Jan 1970 00:00:00 GMT";`;
+                location.reload();
+                throw new Error("非法访问");
+            }
+        })
 }
-
 window.addEventListener('DOMContentLoaded', showTab);
 window.addEventListener("hashchange", showTab);
 
@@ -36,7 +55,7 @@ function showTab() {
 
 function load() {
     $.get(
-        url=window.location.origin+'/v2/info',
+        url='/v2/info',
         data= {"for":"web"},
         function(data,status) {
             if (status=='success') {
@@ -50,17 +69,16 @@ function load() {
                 友情链接(一行一个)：示例： [链接1](http://xxx)<p><textarea style='width:75%;height: 200px;' id='links'>${data.links}</textarea></p>
                 网站keywords(逗号分隔)：<p><textarea style='width:75%;height: 200px;' id='keywords'>${data.keywords}</textarea></p>`;
                 document.getElementById('version').innerHTML = data.version;
-                mdui.mutation();
             }
         }
     );
     $.get(
-        url=window.location.origin+'/v2/info',
+        url='/v2/info',
         data={"for":"status"},
         function(data,status) {
             if (status=='success') {
                 var data = data.data;
-                var list = `<table><thead>
+                var list = `<table class="mdui-table mdui-table-hoverable mdui-table-fluid"><thead>
                 <tr><th>API Name</th>
                 <th>Status</th>
                 </tr></thead><tbody>`;
@@ -91,7 +109,7 @@ function load() {
         }
     );
     $.get(
-        url=window.location.origin+'/v2/info',
+        url='/v2/info',
         data={
         "for":"setting",
         'apikey':getCookie('token')
@@ -184,8 +202,7 @@ function save(mode) {
 }
 
 function sider() {
-    var inst = new mdui.Drawer('#sider');
-    inst.toggle();
+    window.inst.toggle();
 }
 
 function check_update () {
@@ -194,8 +211,127 @@ function check_update () {
         url="https://api.github.com/repos/molanp/seaweb/releases/latest",
         function(data,status) {
             if (status=='success') {
-                document.getElementById("latest_version").innerHTML = `<a href='${data.html_url}' target='_blank'>${data.name}<a>`;
+                $("#latest_version").html(`<a href='${data.html_url}' target='_blank'>${data.name}(点击查看)<a>`);
+                $("#update_info").html(data.body)
             }
         }
     );
+}
+
+function resetpassword() {
+    mdui.dialog({
+        title: '修改密码',
+        content: `<div class="form"><div class="mdui-textfield">
+        <input id="new" class="mdui-textfield-input" type="text" placeholder="新的密码" required />
+        <div class="mdui-textfield-error">密码不能为空</div>
+        </div>
+        <div class="mdui-textfield">
+        <input id="again" class="mdui-textfield-input" type="text" placeholder="再输一次" required />
+        <div class="mdui-textfield-error">密码不能为空</div><br\>
+        </div></div>`,
+        buttons: [{
+            text: '提交',
+            onClick: function(inst){
+                sendData('/v2/login',{
+                    'type':'pass',
+                    'token':getCookie("token"),
+                    'new':document.getElementById("new").value,
+                    'again':document.getElementById("again").value
+                },function(data,status){
+                    if (status === 'success') {
+                        if (data.status == 200) {
+                            mdui.dialog({
+                                content: data.data,
+                                buttons: [{
+                                    text: 'OK',
+                                    onClick: function(inst){
+                                        loginout();
+                                    }
+                                }]
+                            })
+                        } else {
+                            regFail(data.data)
+                        }
+                    } else {
+                        regFail(data.data);
+                    }
+                })
+            }
+        }]
+    });
+}
+
+function loginout() {
+    document.cookie=`token=; expires=Thu, 01 Jan 1970 00:00:00 GMT";`;
+    document.cookie=`user=; expires=Thu, 01 Jan 1970 00:00:00 GMT";`;
+    location.reload();
+}
+
+function RankList() {
+    $.get(url='/v2/hot')
+    .done(function(data,status) {
+        if (data.status==200) {
+            ShowRankList(data.data);
+        } else {
+            alert(JSON.stringify(data.data));
+        }
+    })
+}
+
+function TrendChart() {
+    $.get(url='/v2/hot',data={apikey: getCookie('token')})
+    .done(function(data,status) {
+        if (data.status==200) {
+            ShowTrendChart(data.data);
+        } else {
+            alert(JSON.stringify(data.data));
+        }
+    })
+}
+
+function ShowRankList(data) {
+    $('#api-rank-list').html('');
+    rankData = [];
+    for (var item in data) {
+        rankData.push({api: data[item]["name"], count: data[item]["count"], url: data[item]["url"]});
+    }
+    rankData.forEach(function(data) {
+      var itemHtml = '<li class="mdui-list-item">' +
+                       `<div class="mdui-list-item-content"><a href="${data.url.replace(/\/api/g, "")}" target="_blank">` + data.api + '</a></div>' +
+                       '<div class="mdui-list-item-text">' + data.count + '次调用</div>' +
+                     '</li>';
+      $('#api-rank-list').append(itemHtml);
+    });
+}
+
+function ShowTrendChart(data) {
+    $('#api-trend-chart').html('');
+    var trendData = [];
+    var dates = [];
+    var values = [];
+    for (var item in data) {
+        trendData.push({date: data[item]["date"], value: data[item]["count"]});
+    }
+    trendData.forEach(function(data) {
+      dates.push(data.date);
+      values.push(data.value);
+    });
+    
+    Highcharts.chart('api-trend-chart', {
+      title: {
+        text: ''
+      },
+      xAxis: {
+        categories: dates
+      },
+      yAxis: {
+        title: {
+          text: 'API调用次数'
+        }
+      },
+      series: [{
+        name: 'API调用次数',
+        data: values
+      }]
+    });
 }

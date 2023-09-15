@@ -6,16 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mdui/1.0.2/css/mdui.min.css" />
     <link rel="stylesheet" href="/assets/css/mark.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.4.17/sweetalert2.all.min.js"></script>
+    <link rel="stylesheet" href="/assets/css/style.css">
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="https://code.hcharts.cn/highcharts/highcharts.js"></script>
     <script src="/assets/js/login.js"></script>
     <script src="/assets/js/backstage.js"></script>
-    <script src="//cdn.bootcdn.net/ajax/libs/eruda/2.3.3/eruda.js"></script>
-    <script>eruda.init();</script>
     <title>后台管理</title>
 </head>
-<body class="mdui-appbar-with-toolbar mdui-drawer-body-left">
-    <div class="mdui-appbar mdui-appbar-fixed mdui-toolbar mdui-color-blue mdui-appbar-inset">
+<body class="mdui-drawer-body-left">
+    <div class="mdui-toolbar mdui-color-blue">
         <a href="/" class="mdui-btn mdui-btn-icon" mdui-tooltip="{content: 'Back Home', position: 'auto'}">
             <i class="mdui-icon material-icons">home</i>
         </a>
@@ -43,7 +42,7 @@
             </li>
         </ul>
     </div>
-    <div class="mdui-drawer mdui-drawer-close" id="sider">
+    <div class="mdui-drawer mdui-drawer-open" id="sider">
         <ul class="mdui-list">
             <li class="mdui-list-item mdui-ripple">
                 <div class="mdui-list-item-content">
@@ -60,29 +59,52 @@
                     <a href="#settings">网站设置</a>
                 </div>
             </li>
+            <li class="mdui-list-item mdui-ripple">
+                <div class="mdui-list-item-content">
+                    <a href="#edit">修改网站信息</a>
+                </div>
+            </li>
         </ul>
     </div>
     <div class="mdui-container mdui-container-fluid">
         <div class="tabs">
             <div id="home">
-                <div class="mdui-panel" mdui-panel>
-                    <div class="mdui-panel-item">
-                        <div class="mdui-panel-item-header">SEAWeb版本: <span id="version">${data.version}</span></div>
-                            <div class="mdui-panel-item-body">
-                                最新版本:<span id="latest_version"><a href="javascript:check_update()">Check Update</a></span>
-                            </div>
+                <div class="mdui-row">
+                    <div class="mdui-col-md-6">
+                    <div class="mdui-card mdui-hoverable mdui-m-y-2" style="border-radius:10px">
+                        <div class="mdui-card-content">
+                            本地SEAWeb版本: <span id="version">${data.version}</span><br/>
+                            网络版本:<span id="latest_version"><a href="javascript:check_update()">Check Update</a></span>
+                            <label class="mdui-textfield-label">更新内容</label>
+                            <pre><code id="update_info"></code></pre>
+                        </div>
                     </div>
-                </div>
-                <div class="mdui-panel" mdui-panel>
-                    <div class="mdui-panel-item mdui-panel-item-open">
-                        <div class="mdui-panel-item-header">修改网页信息</div>
-                            <div class="mdui-panel-item-body">
-                                <span id="web_info">Loading...</span>
-                            </div>
                     </div>
+                    <div class="mdui-col-md-6">
+                    <div class="mdui-card mdui-hoverable mdui-m-y-2" style="border-radius:10px">
+                        <div class="mdui-card-primary">
+                        <div class="mdui-card-primary-title">
+                        调用排行
+                        </div>
+                        </div>
+                        <div class="mdui-card-content">
+                            <span id="api-rank-list">正在加载</span>
+                        </div>
+                    </div>
+                    </div>
+                    <div class="mdui-col-md-6">
+                        <div class="mdui-card mdui-hoverable mdui-m-y-2" style="border-radius:10px">
+                            <div class="mdui-card-primary">
+                            <div class="mdui-card-primary-title">
+                            调用统计
+                            </div>
+                            </div>
+                            <div class="mdui-card-content">
+                                <span id="api-trend-chart">正在加载</span>
+                            </div>
+                        </div>
+                        </div>
                 </div>
-                <button onclick='save("web")'
-                class='login-button mdui-btn mdui-btn-raised mdui-ripple'>Save</button>
             </div>
             <div id="api_control">
                 <h3>Edit API Status</h3>
@@ -98,6 +120,19 @@
                 <span id="setting">${setting_list}</span>
                 <br>
                 <button onclick='save("setting")'
+                class='login-button mdui-btn mdui-btn-raised mdui-ripple'>Save</button>
+            </div>
+            <div id="edit">
+                <h3>修改网站信息</h3>
+                <div class="mdui-panel" mdui-panel>
+                    <div class="mdui-panel-item mdui-panel-item-open">
+                        <div class="mdui-panel-item-header">修改网页信息</div>
+                            <div class="mdui-panel-item-body">
+                                <span id="web_info">Loading...</span>
+                            </div>
+                    </div>
+                </div>
+                <button onclick='save("web")'
                 class='login-button mdui-btn mdui-btn-raised mdui-ripple'>Save</button>
             </div>
         </div>

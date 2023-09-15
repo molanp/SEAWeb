@@ -1,5 +1,5 @@
 window.onload = function() {
-    let darkMode = sessionStorage.theme;
+    let darkMode = getCookie('theme');
     if (darkMode == 1) enableDarkMode();
 
     marked.setOptions({
@@ -17,20 +17,32 @@ window.onload = function() {
     mdui.mutation();
 }
 
+function getCookie(cname)
+{
+    var name = cname + "=";
+    var ca = document.cookie.split(';');
+    for(var i=0; i<ca.length; i++) 
+    {
+        var c = ca[i].trim();
+        if (c.indexOf(name)==0) return c.substring(name.length,c.length);
+    }
+    return "";
+}
+
 function enableDarkMode() {
     var $ = mdui.$;
     $('body').addClass("mdui-theme-layout-dark");
-    sessionStorage.setItem("theme", 1);
+    document.cookie="theme=1;";
 };
 
 function disableDarkMode() {
     var $ = mdui.$;
     $('body').removeClass("mdui-theme-layout-dark");
-    sessionStorage.removeItem("theme");
+    document.cookie=`theme=0;`;
 };
 
 function changeTheme() {
-    darkMode = sessionStorage.getItem('theme');
+    darkMode = getCookie('theme');
     if (darkMode == 1) {
         disableDarkMode();
     } else {
@@ -94,9 +106,9 @@ function _api(data) {
 }
 
 function load_info() {
-    $.get(url=window.location.origin+'/v2/sitemap');
+    $.get(url='/v2/sitemap');
     $.get(
-        url=window.location.origin+'/v2/info',
+        url='/v2/info',
         data={"for":"web"},
     )
     .done(function(data,status) {
@@ -110,7 +122,7 @@ function load_info() {
         alert(`信息加载失败 code:${status}`)
     });
     $.get(
-        url=window.location.origin+'/v2/info'
+        url='/v2/info'
     )
     .done(function(data,status) {
         if (data.status==200) {
