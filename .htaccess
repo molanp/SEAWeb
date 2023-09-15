@@ -6,7 +6,7 @@
     RewriteBase /
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_URI} \..+$
-    RewriteCond %{REQUEST_URI} !\.(php|css|js|ico)$ [NC]
+    RewriteCond %{REQUEST_URI} \.(db|log|htaccess)$ [NC]
     RewriteRule ^ - [F]
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d

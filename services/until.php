@@ -86,8 +86,8 @@ function _return_($content,$status=200,$location=false) {
     header('Access-Control-Allow-Methods: POST,GET,OPTIONS,DELETE,PUT'); // 允许全部请求类型
     header('Access-Control-Allow-Credentials: true'); // 允许发送 cookies
     header('Access-Control-Allow-Headers: Content-Type,Content-Length,Accept-Encoding,X-Requested-with, Origin'); // 允许自定义请求头的字段
-    //header("HTTP/1.1 $status");
-    if ($location == false) {
+    header("HTTP/1.1 $status");
+    if ($location === false) {
         header('Content-type:text/json;charset=utf-8');
         die(json_encode(['status'=>$status,'data'=>$content,'time'=>time()],JSON_UNESCAPED_UNICODE|JSON_PRETTY_PRINT));
     } else {
@@ -228,7 +228,7 @@ function del_cache($name) {
  */
 function json($json) {
     if (is_array($json)) {
-        $encoded = json_encode($json,JSON_PRETTY_PRINT);
+        $encoded = json_encode((object)$json,JSON_PRETTY_PRINT);
         if ($encoded !== false) {
             return $encoded;
         } else {
@@ -258,7 +258,7 @@ function RequestLimit($limit,$name=null) {
     $DATA = new Config($_SERVER['DOCUMENT_ROOT'].'/data/limit');
     $requests = $DATA->get('requests',[]);
     $lastRequestTime = $DATA->get('lastRequestTime',[]);
-    $ip = $_SERVER['REMOTE_ADDR'];
+    $ip = $_SERVER['REMOTE_ADDR'] ?? "Unknown";
     $currentTime = time();
     preg_match('/(\d+)\s*\/\s*(\w+)/', $limit, $matches);
     $quantity = intval($matches[1]);

@@ -38,6 +38,7 @@ $web = $web->get("web");
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <script src="/assets/js/purify.min.js"></script>
     <script src="/assets/js/api.js"></script>
+    <script src="/assets/js/query.js"></script>
     <script src="/assets/js/notice.js"></script>
     <title><?= $data["name"]." - ".$web["index_title"]?></title>
 </head>
@@ -46,8 +47,8 @@ $web = $web->get("web");
 
     <header class="mdui-appbar-fixed mdui-appbar mdui-color-white">
         <div class="mdui-color-white mdui-toolbar">
-            <a class="mdui-typo-headline mdui-hidden-xs" href="/" id="title">title</a>
-            <span class="mdui-typo-title" id="version">version</span>
+            <a class="mdui-typo-headline" href="/" id="title">title</a>
+            <span class="mdui-typo-title mdui-hidden-xs" id="version">version</span>
             <div class="mdui-toolbar-spacer"></div>
             <button mdui-tooltip="{content: '公告', position: 'bottom'}" onclick="notice()" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons">announcement</i></button>
             <button mdui-tooltip="{content: '夜间模式', position: 'bottom'}" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons" onclick="changeTheme()">brightness_medium</i></button>
@@ -128,6 +129,57 @@ $web = $web->get("web");
                     </div>
                     <div class="mdui-card-content">
                     <span name="response">Loading...</span>
+                    </div>
+                </div>
+                </div>
+                <div class="mdui-col-md-6">
+                <div class="mdui-card mdui-hoverable mdui-m-y-2" style="border-radius:10px">
+                    <div class="mdui-card-primary">
+                    <div class="mdui-card-primary-title">
+                    <i class="mdui-icon material-icons mdui-text-color-gray">reply</i>在线测试
+                    </div>
+                    </div>
+                    <div class="mdui-card-content">
+                        <form id="requestForm">
+                            <div class="mdui-textfield">
+                            <label class="mdui-textfield-label">URL</label>
+                            <span id="urlInput">window.location.pathname</span>
+                            </div>
+
+                            <div class="mdui-textfield">
+                            <label class="mdui-textfield-label">Method</label>
+                            <select class="mdui-select" id="methodSelect">
+                                <option value="GET">GET</option>
+                                <option value="POST">POST</option>
+                                <option value="PUT">PUT</option>
+                                <option value="DELETE">DELETE</option>
+                                <option value="OPTIONS">OPTIONS</option>
+                                <option value="PATCH">PATCH</option>
+                                <!-- 可添加其他方法选项 -->
+                            </select>
+                            </div>
+
+                            <table id="paramsTable" class="mdui-table">
+                            <thead>
+                                <tr>
+                                <th>参数名</th>
+                                <th>值</th>
+                                <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- 参数行将在 JavaScript 中动态生成 -->
+                            </tbody>
+                            </table>
+                            <label class="mdui-textfield-label">响应</label>
+                            <pre><code class="language-json" id="responseTEXT"></code></pre>
+
+                            <button class="mdui-btn mdui-btn-block mdui-color-theme-accent" type="button" onclick="addParamRow()">添加参数</button>
+
+                            <div class="mdui-divider"></div>
+
+                            <button class="mdui-btn mdui-btn-block mdui-color-theme" type="button" onclick="sendRequest()">发送请求</button>
+                        </form>
                     </div>
                 </div>
                 </div>
