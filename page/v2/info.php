@@ -35,7 +35,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
             $conname = [];
             $query = $database->prepare("SELECT name, status FROM api");
             $query->execute();
-            // 遍历查询结果并将其添加到关联数组中
             while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 $conname[$row['name']] = $row['status'];
             }
@@ -84,19 +83,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
                                         )
                                     )
                                 ));
-                                // 获取状态，使用参数绑定
                                 $statusQuery = $database->prepare("SELECT status FROM api WHERE name = :name");
                                 $statusQuery->execute([':name' => $info["name"]]);
                                 $status = $statusQuery->fetchColumn();
-
-                                // 如果状态不存在，设置默认值
                                 $status = ($status === false) ? "true" : $status;
-
-                                // 获取最大ID，假设使用自增主键
                                 $maxIdQuery = $database->query("SELECT MAX(id) FROM api");
                                 $maxId = $maxIdQuery->fetchColumn();
                                 $id = ($maxId !== false) ? ($maxId + 1) : 0;
-
                                 $data = [
                                     "id" => $id,
                                     "name" => $info["name"],
@@ -120,18 +113,27 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
                         }
                     }
                 };
-                //清理过期数据
                 try {
                     $threshold = time() - (60 * 30); // 计算30分钟前的时间戳
-                    $query = "DELETE FROM access_log WHERE time < :threshold";
-                    $stmt = $database->prepare($query);
-                    $stmt->bindParam(':threshold', $threshold, PDO::PARAM_INT);
-                    $stmt->execute();
-                    $rowCount = $stmt->rowCount();
-                    (new logger())->info("已删除 $rowCount 条过期API记录。");
+                    $query_check = "SELECT COUNT(*) FROM access_log WHERE time < :threshold";
+                    $stmt_check = $database->prepare($query_check);
+                    $stmt_check->bindParam(':threshold', $threshold, PDO::PARAM_INT);
+                    $stmt_check->execute();
+                    $count = $stmt_check->fetchColumn();
+                
+                    if ($count > 0) {
+                        $query_delete = "DELETE FROM access_log WHERE time < :threshold";
+                        $stmt_delete = $database->prepare($query_delete);
+                        $stmt_delete->bindParam(':threshold', $threshold, PDO::PARAM_INT);
+                        $stmt_delete->execute();
+                        $rowCount = $stmt_delete->rowCount();
+                        (new logger())->info("已删除 $rowCount 条过期API记录。");
+                    } else {
+                        //(new logger())->info("没有过期API记录需要删除。");
+                    }
                 } catch (PDOException $e) {
                     (new logger())->error("删除过期API数据时出错: " . $e->getMessage());
-                };
+                }
                 break;
             };
             //统计调用
