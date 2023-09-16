@@ -17,7 +17,7 @@ class logger {
     function info($str) {
         $file = fopen($this->file, 'a'); 
         if(!$file) return '写入文件失败，请赋予 '.$file.' 文件写权限！'; 
-        $str = "[".date("H:i:s")." INFO]: $str\n";
+        $str = date("Y-m-d H:i:s")."[INFO] > $str\n";
         fwrite($file, $str); 
         fclose($file); 
     }
@@ -25,7 +25,7 @@ class logger {
     function warn($str) {
         $file = fopen($this->file, 'a'); 
         if(!$file) return '写入文件失败，请赋予 '.$file.' 文件写权限！'; 
-        $str = "[".date("H:i:s")." WARN]: $str\n";
+        $str = date("Y-m-d H:i:s")."[WARN] > $str\n";
         fwrite($file, $str); 
         fclose($file); 
     }
@@ -33,7 +33,7 @@ class logger {
     function debug($str) {
         $file = fopen($this->file, 'a'); 
         if(!$file) return '写入文件失败，请赋予 '.$file.' 文件写权限！'; 
-        $str = "[".date("H:i:s")." DEBUG]: $str\n";
+        $str = date("Y-m-d H:i:s")."[ DEBUG] > $str\n";
         fwrite($file, $str); 
         fclose($file); 
     }
@@ -41,7 +41,7 @@ class logger {
     function error($str) {
         $file = fopen($this->error_file, 'a'); 
         if(!$file) return '写入文件失败，请赋予 '.$file.' 文件写权限！'; 
-        $str = "[".date("H:i:s")." ERROR]: $str\n";
+        $str = date("Y-m-d H:i:s")."[ERROR] > $str\n";
         fwrite($file, $str); 
         fclose($file); 
     }
