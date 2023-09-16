@@ -14,7 +14,6 @@
 
 ![image](https://github.com/molanp/SEAWeb/assets/104612722/e353df31-9321-41b2-9d29-a41e4f79fa00)
 
-
 手机端样式
 
 ![image](https://github.com/molanp/SEAWeb/assets/104612722/5b191209-5550-43a7-9fef-407dbafd1008)
