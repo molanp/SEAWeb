@@ -58,20 +58,23 @@ function re_add($type=[],$url=[]) {
  * @param array $key 参数键和参数值数组
  * @return string 返回格式化后的 Markdown 表格
  */
-function re_par($key=[]) {
-    $table = "|Key|Info|\n|---|---|";
-    $info = array_values($key);
-    $key = array_keys($key);
-    for($i=0; $i<count($key); $i++) {
-        // 判断key是否为*xxx格式
-        if (preg_match('/^\*(\w+)$/', $key[$i], $matches)) {
-            $key[$i] = "<font color='red'>*</font>`{$matches[1]}`";
-        } else {
-            $key[$i] = "`$key[$i]`";
-        }
-        $table .= "\n|{$key[$i]}|{$info[$i]}|";
-    };
+function re_par($key = []) {
+    $table = "| Key | Info |\n| --- | --- |";
+    parseTable('', $key, $table);
     return $table;
+}
+
+function parseTable($prefix, $key, &$table) {
+    foreach ($key as $k => $v) {
+        if (is_array($v)) {
+            parseTable($prefix . "{$k}.", $v, $table);
+        } else {
+            if (preg_match('/^\*(\w+)$/', $k, $matches)) {
+                $k = "<font color='red'>*</font>`{$matches[1]}`";
+            }
+            $table .= "\n| `{$prefix}{$k}` | {$v} |";
+        }
+    }
 }
 /**
  * 返回结果

@@ -106,7 +106,6 @@ function _api(data) {
 }
 
 function load_info() {
-    $.get(url='/v2/sitemap');
     $.get(
         url='/v2/info',
         data={"for":"web"},

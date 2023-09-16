@@ -24,14 +24,6 @@ class gpt_url {
                 $default[] = $link;
             }
         }
-        /*
-        $html = requests->get('http://doc.wuguokai.cn/s/xPq1iNw_v')->json();
-        preg_match_all('/国内加速站点\d+：\s*(https?:\/\/[^\s]+)/', $html, $matches);
-        if (count($matches[1]) > 0) {
-            foreach ($matches[1] as $index => $link) {
-                $default[] = $link;
-            }
-        }*/
         _return_(['count'=>count($default),'default'=>array_values(array_unique($default))]);
     }
 }
