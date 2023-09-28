@@ -63,6 +63,7 @@ function UpdateOrCreate($pdo, $table, $data = []) {
         (new logger())->error('Database error: ' . $e->getMessage());
     }
 }
+
 function tokentime($token) {
     global $database;
     // 检查令牌是否存在于数据库中
@@ -88,6 +89,7 @@ function tokentime($token) {
         }
     }
 }
+
 function apineedupdate() {
     global $database;
     // 查询是否存在api表并且获取最后更新时间

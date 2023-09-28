@@ -1,6 +1,6 @@
 function notice() {
     $.get("/v2/notice")
-    .done(function(data,status) {
+    .done(function(data) {
         if (data.status==200) {
             data = data.data;
             mdui.dialog({
@@ -14,7 +14,7 @@ function notice() {
             alert(JSON.stringify(data.data));
         }
     })
-    .fail(function(data,status){
-        alert(`信息加载失败 code:${status}`)
+    .fail(function(data){
+        alert(`信息加载失败:${data}`)
     });
 }

@@ -11,8 +11,8 @@ function getCookie(cname)
 }
 
 function login() {
-    var username = document.getElementById("username").value;
-    var password = document.getElementById("password").value;
+    var username = $("#username").val();
+    var password = $("#password").val();
 
     if (username == "" || password == "") {
         regFail("用户名或密码不能为空");
@@ -34,7 +34,6 @@ function login() {
                         regFail(JSON.stringify(data.data.msg));
                     }
                 } else {
-                    console.error(data);
                     regFail(JSON.stringify(data.data));
                 }
             } catch {

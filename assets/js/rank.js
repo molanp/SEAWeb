@@ -18,19 +18,17 @@ window.onload = function() {
 }
 
 function enableDarkMode() {
-    var $ = mdui.$;
     $('body').addClass("mdui-theme-layout-dark");
-    sessionStorage.setItem("theme", 1);
+    document.cookie="theme=1;";
 };
 
 function disableDarkMode() {
-    var $ = mdui.$;
     $('body').removeClass("mdui-theme-layout-dark");
-    sessionStorage.removeItem("theme");
+    document.cookie=`theme=0;`;
 };
 
 function changeTheme() {
-    darkMode = sessionStorage.getItem('theme');
+    darkMode = getCookie('theme');
     if (darkMode == 1) {
         disableDarkMode();
     } else {
@@ -42,26 +40,41 @@ window
 .matchMedia("(prefers-color-scheme: dark)")
 .addListener(e=>(e.matches ? enableDarkMode() : disableDarkMode()))
 
-function _web(data) {
-    document.getElementById("title").innerHTML = data.index_title;
-    document.getElementById("version").innerHTML = "Version "+data.version+"<br/>";
-    document.getElementById("copyright").innerHTML = "&copy;" +data.copyright;
-    document.getElementById("record").innerHTML = data.record;
+function web(data) {
+    $("#title").html(data.index_title);
+    $("#version").html("Version "+data.version+"<br/>");
+    $("#copyright").html("&copy;" +data.copyright);
+    $("#record").html(data.record);
 }
 
-function _load(data) {
-    table = "";
-    num = 0
-    for (var item in data) {
-            num = num + 1;
-            table+=`<tr>
-            <td>${num}</td>
-            <td><a href="${data[item]["url"].replace(/\/api/g, "")}">${data[item]["name"]}</a></td>
-            <td>${data[item]["count"]}</td>
-        </tr>`
+function rank(data) {
+    let table = "";
+    let num = 0;
+    
+    Object.keys(data).forEach((item, index) => {
+      num++;
+      table += `
+        <tr>
+          <td>${num}</td>
+          <td><a href="${data[item].url.replace(/\/api/g, "")}">${data[item].name}</a></td>
+        <td>${data[item].count}</td>
+        </tr>
+      `;
+    });
+  
+    if (!table) {
+      table = `
+        <tr>
+          <td>1</td>
+          <td>无数据</td>
+          <td>N/A</td>
+        </tr>
+      `;
     }
-    document.getElementById("rank").innerHTML = table;
-}
+    
+    $("#rank").html(table);
+  }
+  
 
 
 function load() {
@@ -69,27 +82,27 @@ function load() {
         url='/v2/info',
         data={"for":"web"},
     )
-    .done(function(data,status) {
+    .done(function(data) {
         if (data.status==200) {
-            _web(data.data);
+            web(data.data);
         } else {
             alert(JSON.stringify(data.data));
         }
     })
-    .fail(function(data,status){
-        alert(`信息加载失败 code:${status}`)
+    .fail(function(data){
+        alert(`信息加载失败:${data}`)
     });
     $.get(
         url='/v2/hot',
     )
-    .done(function(data,status) {
+    .done(function(data) {
         if (data.status==200) {
-            _load(data.data);
+            rank(data.data);
         } else {
             alert(JSON.stringify(data.data));
         }
     })
-    .fail(function(data,status){
-        alert(`信息加载失败 code:${status}`)
+    .fail(function(data){
+        alert(`信息加载失败:${data}`)
     });
 }

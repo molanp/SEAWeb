@@ -13,7 +13,7 @@ window.onload = function() {
         mangle: false,//因warning禁用
         headerIds: false//因warning禁用
     });
-    api_info();
+    load();
     mdui.mutation();
 }
 
@@ -30,13 +30,11 @@ function getCookie(cname)
 }
 
 function enableDarkMode() {
-    var $ = mdui.$;
     $('body').addClass("mdui-theme-layout-dark");
     document.cookie="theme=1;";
 };
 
 function disableDarkMode() {
-    var $ = mdui.$;
     $('body').removeClass("mdui-theme-layout-dark");
     document.cookie=`theme=0;`;
 };
@@ -54,54 +52,54 @@ window
 .matchMedia("(prefers-color-scheme: dark)")
 .addListener(e=>(e.matches ? enableDarkMode() : disableDarkMode()))
 
-function api_info() {
+function load() {
     $.get(
     url='/v2/api_info',
     data = {"url": window.location.pathname}
     )
-    .done(function(data,status) {
+    .done(function(data) {
         if (data.status==200) {
-            _api(data.data);
+            api(data.data);
         } else {
             alert(JSON.stringify(data.data));
         }
     })
-    .fail(function(data,status){
-        alert(`信息加载失败 code:${status}`)
+    .fail(function(data){
+        alert(`信息加载失败:${data}`)
     });
     $.get(
         url='/v2/info',
         data={"for":"web"},
     )
-    .done(function(data,status) {
+    .done(function(data) {
         if (data.status==200) {
             var data = data.data;
-            _web(data);
+            web(data);
         } else {
             alert(JSON.stringify(data.data));
         }
     })
-    .fail(function(data,status){
-        alert(`信息加载失败 code:${status}`)
+    .fail(function(data){
+        alert(`信息加载失败:${data}`)
     });
 }
 
-function _web(data) {
-    document.getElementById("title").innerHTML = data.index_title;
-    document.getElementById("version").innerHTML = "Version "+data.version+"<br/>";
-    document.getElementsByName("copyright")[0].innerHTML = "&copy;" +data.copyright;
-    document.getElementsByName("record")[0].innerHTML = data.record;
+function web(data) {
+    $("#title").html(data.index_title);
+    $("#version").html("Version "+data.version+"<br/>");
+    $("#copyright").html("&copy;" +data.copyright);
+    $("#record").html(data.record);
 }
 
-function _api(api_data) {
-    document.getElementsByName("api_name")[0].innerHTML = DOMPurify.sanitize(api_data.name);
-    document.getElementsByName("api_count")[0].innerHTML = DOMPurify.sanitize(api_data.count);
-    document.getElementsByName("response")[0].innerHTML = DOMPurify.sanitize(marked.parse(api_data.response));
-    document.getElementsByName("request")[0].innerHTML = DOMPurify.sanitize(marked.parse(api_data.request));
-    document.getElementsByName("api_address")[0].innerHTML = DOMPurify.sanitize(marked.parse(`|Method|Url|\n|--|--|\n|${api_data.method}|<a target='_blank' href='/api${window.location.pathname}'>/api${window.location.pathname}</a>|`));
-    document.getElementsByName("author")[0].innerHTML = DOMPurify.sanitize(api_data.author);
-    document.getElementsByName("api_version")[0].innerHTML = DOMPurify.sanitize(api_data.version);
-    document.getElementsByName("api_profile")[0].innerHTML = DOMPurify.sanitize(marked.parse(api_data.profile));
-    document.getElementById("urlInput").textContent = '/api'+window.location.pathname;
+function api(api_data) {
+    $("#api_name").html(DOMPurify.sanitize(api_data.name));
+    $("#api_count").html(api_data.count);
+    $("#response").html(DOMPurify.sanitize(marked.parse(api_data.response)));
+    $("#request").html(DOMPurify.sanitize(marked.parse(api_data.request)));
+    $("#api_address").html(DOMPurify.sanitize(marked.parse(`|Method|Url|\n|--|--|\n|${api_data.method}|<a target='_blank' href='/api${window.location.pathname}'>/api${window.location.pathname}</a>|`)));
+    $("#author").html(DOMPurify.sanitize(api_data.author));
+    $("#api_version").html(DOMPurify.sanitize(api_data.version));
+    $("#api_profile").html(DOMPurify.sanitize(marked.parse(api_data.profile)));
+    $("#urlInput").text('/api'+window.location.pathname);
 
 }

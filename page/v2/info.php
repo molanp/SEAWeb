@@ -154,7 +154,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
                 $profile = $row['profile'];
                 $url_path = $row['url_path'];
                 $status = $row['status'];
-            
                 // 构建数组项
                 $conname[$type][$name] = [
                     'path' => $url_path,
