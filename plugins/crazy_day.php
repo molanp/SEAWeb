@@ -119,26 +119,27 @@ class crazy_day {
             'profile'=> '一键获取疯狂星期四文案',
             'method'=>'GET',
             'author'=>'molanp',
-            'request_par'=> re_par(['day' => "要疯狂的星期<br>支持以下项['月', '一', '火', '二', '水', '三', '木', '四', '金', '五', '土', '六', '日', '日']"]),
+            'request_par'=> re_par(['day' => "要疯狂的星期<br>支持以下项`'月', '一', '火', '二', '水', '三', '木', '四', '金', '五', '土', '六', '日', '日'`<br>为空默认为`四`"]),
             'return_par'=> re_par()
         ];
     }
     public function run($request) {
         $kfc = $this->kfc;
-        $day = $request["day"] ?? 0;
+        $day = $request["day"] ?? '四';
         $tb = ['月', '一', '火', '二', '水', '三', '木', '四', '金', '五', '土', '六', '日', '日'];
         if (!in_array($day, $tb)) {
             $result = '给个准确时间，OK?';
         } else {
             $idx = floor(array_search($day, $tb)/2)*2;
-            // 随机选取数组中的一个对象
-            $result = str_replace('星期四', '星期' . $tb[$idx+1], 
-                str_replace('周四', '周' . $tb[$idx+1], 
-                    str_replace('木曜日', $tb[$idx] . '曜日', 
-                        $kfc[array_rand($kfc)]
-                    )
-                )
+            $replacements = array(
+                '星期四' => '星期' . $tb[$idx+1],
+                '周四' => '周' . $tb[$idx+1],
+                '木曜日' => $tb[$idx] . '曜日'
             );
+            $result = $kfc[array_rand($kfc)];
+            foreach ($replacements as $search => $replace) {
+                $result = str_replace($search, $replace, $result);
+            }
         };
         _return_($result);
     }

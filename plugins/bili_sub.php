@@ -19,7 +19,7 @@ class bili_sub {
                     "name"=>"UP主昵称",
                     "face"=>"UP主头像"
                 ],
-                "stat"=>[
+                "status"=>[
                     "view"=>"播放数",
                     "danmaku"=>"弹幕数",
                     "reply"=>"评论数",
@@ -48,7 +48,7 @@ class bili_sub {
                             "pubdate"=>$json["pubdate"],
                             "desc"=>$json["desc"],
                             "owner"=>$json["owner"],
-                            "stat"=>[
+                            "status"=>[
                                 "view"=>$json["stat"]["view"],
                                 "danmaku"=>$json["stat"]["danmaku"],
                                 "reply"=>$json["stat"]["reply"],

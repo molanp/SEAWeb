@@ -43,15 +43,16 @@ function search_() {
                 <div class="article-title"><span class="mdui-text-color-black">${key.replace(new RegExp(inp.val(), 'g'), "<span class='mdui-text-color-theme'><b>" + inp.val() + "</b></span>")}</span></div>
                 <div class="mdui-list-item-text"><span class="mdui-text-color-black">${data[key][0].replace(new RegExp(inp.val(), 'g'), "<span class='mdui-text-color-theme'><b>" + inp.val() + "</b></span>")}</span></div>
             </div>`;
+            li.attr('data-url', data[key][1]);
             li.html(content);
-            (function(url) {
-                $('li').on('click', function() {
-                    window.location.href = $(this).data('url');
-                  });                  
-            })(data[key][1]);
             ul.append(li);
             displayedResults++;
         }
+        // 绑定点击事件
+        $('.mdui-list-item').on('click', function() {
+            var url = $(this).attr('data-url');
+            window.location.href = url;
+        });
     }
     mdui.mutation();
 }

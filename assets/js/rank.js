@@ -90,7 +90,7 @@ function load() {
         }
     })
     .fail(function(data){
-        alert(`信息加载失败:${data}`)
+        alert(data.responseJSON.data)
     });
     $.get(
         url='/v2/hot',
@@ -103,6 +103,6 @@ function load() {
         }
     })
     .fail(function(data){
-        alert(`信息加载失败:${data}`)
+        alert(data.responseJSON.data)
     });
 }
