@@ -81,20 +81,39 @@ function parseTable($prefix, $key, &$table) {
  *
  * @param mixed $content 返回的数据内容
  * @param int $status 状态码，默认为 200
- * @param bool|string $location 是否重定向，如果为字符串，则表示重定向的 URL
+ * @param bool|string $location 是否重定向，如果不为false，则重定向到$content内的链接
  * @return void
  */
 function _return_($content,$status=200,$location=false) {
-    header('Access-Control-Allow-Origin: *'); // 允许跨域请求
-    header('Access-Control-Allow-Methods: POST,GET,OPTIONS,DELETE,PUT'); // 允许全部请求类型
-    header('Access-Control-Allow-Credentials: true'); // 允许发送 cookies
-    header('Access-Control-Allow-Headers: Content-Type,Content-Length,Accept-Encoding,X-Requested-with, Origin'); // 允许自定义请求头的字段
+    /*
+    // 防止 SQL 注入
+    if (is_string($content)) {
+        $content = htmlspecialchars(mysqli_real_escape_string($conn, $content));
+    } else if (is_array($content)) {
+        foreach ($content as $key => $value) {
+            $content[$key] = htmlspecialchars(mysqli_real_escape_string($conn, $value));
+        }
+    }
+    // 防止 XSS 攻击
+    if (is_string($content)) {
+        $content = htmlspecialchars($content);
+    } else if (is_array($content)) {
+        array_walk_recursive($content, function(&$value) {
+            $value = htmlspecialchars($value);
+        });
+    }*/
+    // 设置跨域请求相关的头部字段
+    header('Access-Control-Allow-Origin: *');
+    header('Access-Control-Allow-Methods: *');
+    header('Access-Control-Allow-Headers: *');
+    header('Access-Control-Expose-Headers: *');
+    header('Access-Control-Max-Age: 3600');
     //header("HTTP/1.1 $status");
     if ($location === false) {
         header('Content-type:text/json;charset=utf-8');
         die(json_encode(['status'=>$status,'data'=>$content,'time'=>time()],JSON_UNESCAPED_UNICODE|JSON_PRETTY_PRINT));
     } else {
-        die(header("Location: $location"));
+        die(header("Location: $content"));
     }
 }
 /**
@@ -104,8 +123,11 @@ function _return_($content,$status=200,$location=false) {
  */
 function handle_check($name) {
     include_once("connect.php");
-    global $database;
-    if ($database->query("SELECT status FROM api WHERE name = '".$name."'")->fetchColumn() == 'false' || $database->query("SELECT value FROM setting WHERE item = 'maintenance_mode'")->fetchColumn() == 'true') {
+    $query = DATABASE->prepare("SELECT status FROM api WHERE name = ?");
+    $query->bindParam(1, $name, PDO::PARAM_STR);
+    $query->execute();
+    $status = $query->fetchColumn();
+    if ($status == 'false' || DATABASE->query("SELECT value FROM setting WHERE item = 'maintenance_mode'")->fetchColumn() == 'true') {
         header("HTTP/1.1 406");
         _return_("API already closed",406);
     } else {

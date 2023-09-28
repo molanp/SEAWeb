@@ -13,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         case 'setting':
             if (isset($_GET['apikey']) && tokentime($_GET['apikey'])) {
                 $conname = [];
-                $query = $database->prepare("SELECT item, value, info FROM setting");
+                $query = DATABASE->prepare("SELECT item, value, info FROM setting");
                 $query->execute();
                 // 遍历查询结果并将其添加到关联数组中
                 while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
@@ -33,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
             break;
         case 'status':
             $conname = [];
-            $query = $database->prepare("SELECT name, status FROM api");
+            $query = DATABASE->prepare("SELECT name, status FROM api");
             $query->execute();
             while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 $conname[$row['name']] = $row['status'];
@@ -83,11 +83,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
                                         )
                                     )
                                 ));
-                                $statusQuery = $database->prepare("SELECT status FROM api WHERE name = :name");
+                                $statusQuery = DATABASE->prepare("SELECT status FROM api WHERE name = :name");
                                 $statusQuery->execute([':name' => $info["name"]]);
                                 $status = $statusQuery->fetchColumn();
                                 $status = ($status === false) ? "true" : $status;
-                                $maxIdQuery = $database->query("SELECT MAX(id) FROM api");
+                                $maxIdQuery = DATABASE->query("SELECT MAX(id) FROM api");
                                 $maxId = $maxIdQuery->fetchColumn();
                                 $id = ($maxId !== false) ? ($maxId + 1) : 0;
                                 $data = [
@@ -106,7 +106,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
                                     "status" => (string) $status,
                                     "time" => $time
                                 ];
-                                UpdateOrCreate($database, "api", $data);
+                                UpdateOrCreate(DATABASE, "api", $data);
                             } else {
                                 (new logger())->error("插件类缺少 getInfo() 方法，文件路径：$pluginFilePath ，文件名：$file");
                             }
@@ -116,14 +116,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
                 try {
                     $threshold = time() - (60 * 30); // 计算30分钟前的时间戳
                     $query_check = "SELECT COUNT(*) FROM access_log WHERE time < :threshold";
-                    $stmt_check = $database->prepare($query_check);
+                    $stmt_check = DATABASE->prepare($query_check);
                     $stmt_check->bindParam(':threshold', $threshold, PDO::PARAM_INT);
                     $stmt_check->execute();
                     $count = $stmt_check->fetchColumn();
                 
                     if ($count > 0) {
                         $query_delete = "DELETE FROM access_log WHERE time < :threshold";
-                        $stmt_delete = $database->prepare($query_delete);
+                        $stmt_delete = DATABASE->prepare($query_delete);
                         $stmt_delete->bindParam(':threshold', $threshold, PDO::PARAM_INT);
                         $stmt_delete->execute();
                         $rowCount = $stmt_delete->rowCount();
@@ -139,13 +139,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
             //统计调用
             $count = [];
             $query = "SELECT url, COUNT(*) AS count FROM access_log GROUP BY url";
-            $stmt = $database->prepare($query);
+            $stmt = DATABASE->prepare($query);
             $stmt->execute();
             while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                 $count[$row['url']] = $row['count'];
             }
 
-            $query = $database->prepare("SELECT * FROM api ORDER BY name");//id
+            $query = DATABASE->prepare("SELECT * FROM api ORDER BY name");//id
             $query->execute();
             $conname = [];
             while ($row = $query->fetch(PDO::FETCH_ASSOC)) {

@@ -4,11 +4,11 @@ include_once($_SERVER['DOCUMENT_ROOT'].'/services/until.php');
 load();
 
 include_once($_SERVER['DOCUMENT_ROOT'].'/services/connect.php');
-if ($database->query("SELECT value FROM setting WHERE item = 'maintenance_mode'")->fetchColumn() == 'true') {
+if (DATABASE->query("SELECT value FROM setting WHERE item = 'maintenance_mode'")->fetchColumn() == 'true') {
     die(include_once('maintenance.html'));
 };
 $sql = "SELECT name, profile FROM api WHERE url_path = :urlPath";
-$statement = $database->prepare($sql);
+$statement = DATABASE->prepare($sql);
 $statement->execute([":urlPath" => $_SERVER['REQUEST_URI']]);
 $data = $statement->fetch(PDO::FETCH_ASSOC);
 if($data==null) {

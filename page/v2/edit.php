@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             if (tokentime($token)) {
                 foreach ($_POST["data"] as $key => $value) {
                     foreach($value as $key => $value) {
-                        $database->exec("UPDATE setting SET value='".strval($value)."' WHERE item='".$key."'");
+                        DATABASE->exec("UPDATE setting SET value='".strval($value)."' WHERE item='".$key."'");
                     }
                 };
                 _return_("修改成功");
@@ -44,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $data = array_values($_POST["data"]);
                 $i = 0;
                 for ($i;$i<count($data);$i++) {
-                    $database->exec("UPDATE api SET status='".$data[$i]."' WHERE name='".$keys[$i]."'");
+                    DATABASE->exec("UPDATE api SET status='".$data[$i]."' WHERE name='".$keys[$i]."'");
                 }
                 _return_("修改成功");
             } else {

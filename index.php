@@ -4,7 +4,7 @@ include_once('services/Config.class.php');
 
 load();
 include_once('services/connect.php');
-if ($database->query("SELECT value FROM setting WHERE item = 'maintenance_mode'")->fetchColumn() == 'true') {
+if (DATABASE->query("SELECT value FROM setting WHERE item = 'maintenance_mode'")->fetchColumn() == 'true') {
     die(include_once('page/maintenance.html'));
 };
 $web = new Config($_SERVER['DOCUMENT_ROOT'].'/data/web');
@@ -40,7 +40,7 @@ $web = $web->get("web");
         <div class="mdui-center">
             <br/>
             <span class="mdui-typo-display-3 title">title</span>
-            <span id="index_description">Loading...</span>
+            <span id="index_description">description</span>
             <p><small>友情链接<span id="links"></span></small></p>
         </div>
     </div>
@@ -74,11 +74,9 @@ $web = $web->get("web");
         </div>
     </noscript>
     <div id="app_api">
-        <div class="mdui-row">
-            尚未任何接口
-            <div class="description">
-                添加接口后，将显示在这里
-            </div>
+        <div style="text-align: center;margin-top: 10%;">
+            <h4>尚未有任何接口</h4>
+            <p>添加接口后，将显示在这里</p>
         </div>
     </div>
 </div>

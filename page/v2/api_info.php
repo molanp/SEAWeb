@@ -10,7 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     $sql = "SELECT name, version, author, method, profile, request, response, type, status FROM api WHERE url_path = :urlPath";
     
     // 使用预处理语句执行查询
-    $statement = $database->prepare($sql);
+    $statement = DATABASE->prepare($sql);
     $statement->execute([":urlPath" => $urlPath]);
     
     // 获取查询结果
@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         //统计调用
         $count = [];
         $query = "SELECT url, COUNT(*) AS count FROM access_log GROUP BY url";
-        $stmt = $database->prepare($query);
+        $stmt = DATABASE->prepare($query);
         $stmt->execute();
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $count[$row['url']] = $row['count'];
