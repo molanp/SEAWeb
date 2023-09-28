@@ -60,15 +60,15 @@ function load() {
         function(data,status) {
             if (status=='success') {
                 var data = data.data;
-                document.getElementById('web_info').innerHTML = `
+                $('#web_info').html(`
                 网站标题：<p><textarea style='width:75%;height: 200px;' id='index_title'>${data.index_title}</textarea></p>
                 网站简介信息：<p><textarea style='width:75%;height: 200px;' id='index_description'>${data.index_description}</textarea></p>
                 网站公告：<p><textarea style='width:75%;height: 200px;' id='notice'>${data.notice.data}</textarea></p>
                 网站底部版权信息：<p><textarea style='width:75%;height: 200px;' id='copyright'>${data.copyright}</textarea></p>
                 网页备案号：<p><textarea style='width:75%;height: 200px;' id='record'>${data.record}</textarea></p>
                 友情链接(一行一个)：示例： [链接1](http://xxx)<p><textarea style='width:75%;height: 200px;' id='links'>${data.links}</textarea></p>
-                网站keywords(逗号分隔)：<p><textarea style='width:75%;height: 200px;' id='keywords'>${data.keywords}</textarea></p>`;
-                document.getElementById('version').innerHTML = data.version;
+                网站keywords(逗号分隔)：<p><textarea style='width:75%;height: 200px;' id='keywords'>${data.keywords}</textarea></p>`);
+                $('#version').html(data.version);
             }
         }
     );
@@ -104,7 +104,7 @@ function load() {
                     }
                 };
                 list += "</tbody></table>"
-                document.getElementById('api_list').innerHTML = list;
+                $('#api_list').html(list);
             }
         }
     );
@@ -138,7 +138,7 @@ function load() {
                         </div>`;
                     }
                 }
-                document.getElementById('setting').innerHTML = setting;
+                $('#setting').html(setting);
             }
         }
     )
@@ -146,100 +146,114 @@ function load() {
 
 function save(mode) {
     if (mode == "setting") {
-        var setting = document.querySelectorAll('#setting [id]');
-        var setting_list = [];
-    
-        for (var i = 0; i < setting.length; i++) {
-            var id = setting[i].getAttribute("id");
-            var status = setting[i].checked;
-            var settingObj = {};
-            settingObj[id] = status;
-            setting_list.push(settingObj);
-        }
-        var send = {
-            'for':'setting',
-            'apikey':getCookie('token'),
-            'data':setting_list
-        };
+      var setting_list = [];
+      $('#setting [id]').each(function() {
+        var id = $(this).attr('id');
+        var status = $(this).prop('checked');
+        var settingObj = {};
+        settingObj[id] = status;
+        setting_list.push(settingObj);
+      });
+      var send = {
+        'for': 'setting',
+        'apikey': getCookie('token'),
+        'data': setting_list
+      };
     } else if (mode == "web") {
-        var send = {
-            'for':'web',
-            'apikey':getCookie('token'),
-            'record':document.getElementById("record").value,
-            'index_title':document.getElementById("index_title").value,
-            'copyright':document.getElementById("copyright").value,
-            'index_description':document.getElementById("index_description").value,
-            'notice':document.getElementById("notice").value,
-            'keywords':document.getElementById("keywords").value,
-            'links':document.getElementById("links").value,
-        };
-    } else if(mode == "status") {
-        var checkboxes = document.querySelectorAll("#api_control [name='checkbox']");
-        var checkboxStatus = {};
-    
-        for (var i = 0; i < checkboxes.length; i++) {
-        var checkbox = checkboxes[i];
-        checkboxStatus[checkbox.id] = checkbox.checked;
-        }
-        console.log(checkboxStatus)
-        var send = {
-            'for':'status',
-            'apikey':getCookie('token'),
-            'data':checkboxStatus
-        };
+      var send = {
+        'for': 'web',
+        'apikey': getCookie('token'),
+        'record': $('#record').val(),
+        'index_title': $('#index_title').val(),
+        'copyright': $('#copyright').val(),
+        'index_description': $('#index_description').val(),
+        'notice': $('#notice').val(),
+        'keywords': $('#keywords').val(),
+        'links': $('#links').val()
+      };
+    } else if (mode == "status") {
+      var checkboxStatus = {};
+      $('#api_control [name="checkbox"]').each(function() {
+        var checkbox = $(this);
+        checkboxStatus[checkbox.attr('id')] = checkbox.prop('checked');
+      });
+      var send = {
+        'for': 'status',
+        'apikey': getCookie('token'),
+        'data': checkboxStatus
+      };
     }
     sendData("/v2/edit", send, function(data, status) {
-        if (status === 'success') {
-            if (data.status == 200) {
-                regsuc(data.data);
-            } else {
-                regFail(data.data);
-            }
+      if (status === 'success') {
+        if (data.status == 200) {
+          regsuc(data.data);
         } else {
-            regFail("连接服务器失败");
+          regFail(data.data);
         }
+      } else {
+        regFail("连接服务器失败");
+      }
     });
-}
+  }  
 
 function sider() {
     window.inst.toggle();
 }
 
-function check_update () {
-    document.getElementById("latest_version").innerHTML = `Loading...`;
-    $.get(
-        url="https://api.github.com/repos/molanp/seaweb/releases/latest",
-        function(data,status) {
-            if (status=='success') {
-                $("#latest_version").html(`<a href='${data.html_url}' target='_blank'>${data.name}(点击查看)<a>`);
-                $("#update_info").html(data.body)
+function check_update() {
+    $("#latest_version").html("Loading...");
+    $.ajax({
+        url: "https://api.github.com/repos/molanp/seaweb/releases/latest",
+        method: "GET",
+        success: function(data, status) {
+            if (status === "success") {
+                $("#latest_version").html(`<a href="${data.html_url}" target="_blank">${data.name}(点击查看)</a>`);
+                $("#update_info").html(data.body);
             }
+        },
+        error: function() {
+            $("#latest_version").html("Error loading latest version.");
         }
-    );
+    });
 }
 
+
 function resetpassword() {
+    var content = `
+        <div class="form">
+            <div class="mdui-textfield">
+                <input id="new" class="mdui-textfield-input" type="password" placeholder="新的密码" required />
+                <div class="mdui-textfield-error">密码不能为空</div>
+            </div>
+            <div class="mdui-textfield">
+                <input id="again" class="mdui-textfield-input" type="password" placeholder="再输一次" required />
+                <div class="mdui-textfield-error">密码不能为空</div>
+            </div>
+        </div>
+    `;
+
     mdui.dialog({
         title: '修改密码',
-        content: `<div class="form"><div class="mdui-textfield">
-        <input id="new" class="mdui-textfield-input" type="text" placeholder="新的密码" required />
-        <div class="mdui-textfield-error">密码不能为空</div>
-        </div>
-        <div class="mdui-textfield">
-        <input id="again" class="mdui-textfield-input" type="text" placeholder="再输一次" required />
-        <div class="mdui-textfield-error">密码不能为空</div><br\>
-        </div></div>`,
+        content: content,
         buttons: [{
             text: '提交',
             onClick: function(inst){
-                sendData('/v2/login',{
-                    'type':'pass',
-                    'token':getCookie("token"),
-                    'new':document.getElementById("new").value,
-                    'again':document.getElementById("again").value
-                },function(data,status){
+                var newPassword = $('#new').val();
+                var newPasswordAgain = $('#again').val();
+
+                if (newPassword === '' || newPasswordAgain === '') {
+                    mdui.alert('密码不能为空');
+                    return;
+                }
+
+                sendData('/v2/login', {
+                    'type': 'pass',
+                    'token': getCookie("token"),
+                    'new': newPassword,
+                    'again': newPasswordAgain
+                }, function(data, status) {
                     if (status === 'success') {
-                        if (data.status == 200) {
+                        if (data.status === 200) {
                             mdui.dialog({
                                 content: data.data,
                                 buttons: [{
@@ -248,14 +262,14 @@ function resetpassword() {
                                         loginout();
                                     }
                                 }]
-                            })
+                            });
                         } else {
-                            regFail(data.data)
+                            regFail(data.data);
                         }
                     } else {
-                        regFail(data.data);
+                        regFail("连接服务器失败");
                     }
-                })
+                });
             }
         }]
     });

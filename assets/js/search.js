@@ -9,12 +9,13 @@ function output() {
             text: '关闭',
         }],
         onOpened: function() {
-            document.getElementById('search').addEventListener('input', search_);
+            $('#search').on('input', search_);
         }
     })
 }
+
 function search_() {
-    search_data = {};
+    var search_data = {};
     var search = window.search;
     for (var type in search) {
         for (var plugin_name in search[type]) {
@@ -24,32 +25,31 @@ function search_() {
     var data = search_data;
     var maxResults = 100;
     var displayedResults = 0;
-    var ul = document.getElementById('search_result');
-    var inp = document.getElementById('search');
-    if (inp.value == "") {
-        ul.innerHTML = '';
+    var ul = $('#search_result');
+    var inp = $('#search');
+    if (inp.val() == "") {
+        ul.html('');
         return;
     }
-    ul.innerHTML = '';
+    ul.html('');
     displayedResults = 0;
     for (var key in data) {
         if (displayedResults >= maxResults) {
             break;
         }
-        if ((key.includes(inp.value) || data[key][0].includes(inp.value)) && data[key][0] !== "") {
-            var li = document.createElement('li');
-            li.classList.add('mdui-list-item');
-            var content = "<div class='mdui-list-item-content'>";
-            var title = "<span class='mdui-text-color-black'>" + key.replace(new RegExp(inp.value, 'g'), "<span class='mdui-text-color-theme'><b>" + inp.value + "</b></span>") + "</span>";
-            var text = "<span class='mdui-text-color-black'>" + data[key][0].replace(new RegExp(inp.value, 'g'), "<span class='mdui-text-color-theme'><b>" + inp.value + "</b></span>") + "</span>";
-            content += "<div class='article-title'>" + title + "</div><div class='mdui-list-item-text'>" + text + "</div>";
-            li.innerHTML = content;
+        if ((key.includes(inp.val()) || data[key][0].includes(inp.val())) && data[key][0] !== "") {
+            var li = $('<li></li>').addClass('mdui-list-item');
+            var content = `<div class="mdui-list-item-content">
+                <div class="article-title"><span class="mdui-text-color-black">${key.replace(new RegExp(inp.val(), 'g'), "<span class='mdui-text-color-theme'><b>" + inp.val() + "</b></span>")}</span></div>
+                <div class="mdui-list-item-text"><span class="mdui-text-color-black">${data[key][0].replace(new RegExp(inp.val(), 'g'), "<span class='mdui-text-color-theme'><b>" + inp.val() + "</b></span>")}</span></div>
+            </div>`;
+            li.html(content);
             (function(url) {
-                li.addEventListener('click', function () {
-                window.location.href = url;
-                });
+                $('li').on('click', function() {
+                    window.location.href = $(this).data('url');
+                  });                  
             })(data[key][1]);
-            ul.appendChild(li);
+            ul.append(li);
             displayedResults++;
         }
     }

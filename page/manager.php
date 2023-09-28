@@ -28,12 +28,11 @@ $web = $web->get("web");
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="keywords" content="<?=$web["keywords"]?>">
     <meta name="description" content="<?= str_replace("\n", "", strip_tags($data['profile']))?>">
-    <link rel="stylesheet" href="https://font.sec.miui.com/font/css?family=MiSans:400,500,600,700:Chinese_Simplify,Latin,Chinese_Traditional&amp;display=swap">
     <link rel="Shortcut Icon" href="/favicon.ico">
     <link rel="bookmark" href="/favicon.ico" type="image/x-icon" /> 
     <link rel="stylesheet" href="/assets/css/style.css">
     <link rel="stylesheet" href="/assets/css/mark.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mdui/1.0.2/css/mdui.min.css" />
+    <link rel="stylesheet" href="/assets/css/mdui.min.css" />
     <script src="https://cdn.bootcss.com/marked/5.0.4/marked.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <script src="/assets/js/purify.min.js"></script>
@@ -68,19 +67,19 @@ $web = $web->get("web");
             <noscript>
                 <div style="text-align: center;margin-top: 10%;">
                     <h4>Sorry, the web page requires a Javascript runtime environment, please allow you to run scripts or use a new version of the modern browser.</h4>
-                    <p>It is recommended to use <a href="https://www.google.cn/chrome/">Chrome</a> modern browser.</p>
+                    <p>It is recommended to use <a href="https://www.microsoft.com/edge/download">Edge</a> modern browser.</p>
                 </div>
             </noscript>
-            <div class="mdui-typo-display-1"><span name="api_name">Loading...</span></div>
+            <div class="mdui-typo-display-1"><span id="api_name">Loading...</span></div>
             <br/>
             <div class="mdui-chip" mdui-tooltip="{content: 'API Version', position: 'top'}">
-                <span class="mdui-chip-title"><i class="mdui-icon material-icons mdui-text-color-blue">info_outline</i><span name="api_version">Loading...</span></span>
+                <span class="mdui-chip-title"><i class="mdui-icon material-icons mdui-text-color-blue">info_outline</i><span id="api_version">Loading...</span></span>
             </div>
             <div class="mdui-chip" mdui-tooltip="{content: 'API Author', position: 'top'}">
-                <span class="mdui-chip-title"><i class="mdui-icon material-icons mdui-text-color-blue">account_circle</i><span name="author">Loading...</span></span>
+                <span class="mdui-chip-title"><i class="mdui-icon material-icons mdui-text-color-blue">account_circle</i><span id="author">Loading...</span></span>
             </div>
             <div class="mdui-chip" mdui-tooltip="{content: 'API Count', position: 'top'}">
-                <span class="mdui-chip-title"><i class="mdui-icon material-icons mdui-text-color-blue">equalizer</i><span name="api_count">Loading...</span> times</span>
+                <span class="mdui-chip-title"><i class="mdui-icon material-icons mdui-text-color-blue">equalizer</i><span id="api_count">Loading...</span> times</span>
             </div>
         </div>
         <div class="mdui-container">
@@ -93,7 +92,7 @@ $web = $web->get("web");
                     </div>
                     </div>
                     <div class="mdui-card-content">
-                    <span name="api_profile">Loading...</span>
+                    <span id="api_profile">Loading...</span>
                     </div>
                 </div>
                 </div>
@@ -105,7 +104,7 @@ $web = $web->get("web");
                     </div>
                     </div>
                     <div class="mdui-card-content mdui-table-fluid">
-                    <table name="api_address" class="mdui-table mdui-table-hoverable"></table>
+                    <table id="api_address" class="mdui-table mdui-table-hoverable"></table>
                     </div>
                 </div>
                 </div>
@@ -117,7 +116,7 @@ $web = $web->get("web");
                     </div>
                     </div>
                     <div class="mdui-card-content mdui-table-fluid">
-                    <table name="request" class="mdui-table mdui-table-hoverable"></table>
+                    <table id="request" class="mdui-table mdui-table-hoverable"></table>
                     </div>
                 </div>
                 </div>
@@ -129,7 +128,7 @@ $web = $web->get("web");
                     </div>
                     </div>
                     <div class="mdui-card-content mdui-table-fluid">
-                    <table name="response" class="mdui-table mdui-table-hoverable"></table>
+                    <table id="response" class="mdui-table mdui-table-hoverable"></table>
                     </div>
                 </div>
                 </div>
@@ -188,8 +187,8 @@ $web = $web->get("web");
         </div>
     </div>
     <footer class="foot mdui-text-center mdx-footer-morden">
-        <span name="record"></span>  
-        <span name="copyright"></span>                
+        <span id="record"></span>  
+        <span id="copyright"></span>                
     </footer>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mdui/1.0.2/js/mdui.min.js"></script>
 </body>

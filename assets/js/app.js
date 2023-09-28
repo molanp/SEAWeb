@@ -13,7 +13,7 @@ window.onload = function() {
         mangle: false,//因warning禁用
         headerIds: false//因warning禁用
     });
-    load_info();
+    load();
     mdui.mutation();
 }
 
@@ -54,25 +54,27 @@ window
 .matchMedia("(prefers-color-scheme: dark)")
 .addListener(e=>(e.matches ? enableDarkMode() : disableDarkMode()))
 
-function _web(data) {
-    document.getElementsByName("title")[0].innerHTML = data.index_title;
-    document.getElementsByName("title")[1].innerHTML = data.index_title;
-    document.getElementsByName("index_description")[0].innerHTML = DOMPurify.sanitize(marked.parse(data.index_description));
+function web(data) {
+    $(".title").html(data.index_title);
+    $("#index_description").html(DOMPurify.sanitize(marked.parse(data.index_description)));;
     var link_list = '';
-    links = data.links.split(/[\r\n]+/);
-    for (var link in links) {
-        link_list += `<div class="mdui-chip">
-        <img class="mdui-chip-icon" src="/favicon.ico">
-        <span class="mdui-chip-title">${marked.parse(links[link]).match(/<p>(.*?)<\/p>/)[1]}</span>
-        </div>`;
-    }
-    document.getElementsByName("links")[0].innerHTML = link_list;
-    document.getElementsByName("version")[0].innerHTML = "Version "+data.version+"<br/>";
-    document.getElementsByName("copyright")[0].innerHTML = "&copy;" +data.copyright;
-    document.getElementsByName("record")[0].innerHTML = data.record;
+    var links = data.links.split(/[\r\n]+/);
+    for (var i = 0; i < links.length; i++) {
+        var title = marked.parse(links[i]).match(/<p>(.*?)<\/p>/)[1];
+        link_list += `
+            <div class="mdui-chip">
+                <img class="mdui-chip-icon" src="/favicon.ico">
+                <span class="mdui-chip-title">${title}</span>
+            </div>
+        `;
+    }    
+    $("#links").html(link_list);;
+    $("#version").html("Version "+data.version+"<br/>");;
+    $("#copyright").html("&copy;" +data.copyright);;
+    $("#record").html(data.record);;
 }
 
-function _api(data) {
+function api(data) {
     window.search = data;
     item = '';
     for (var type in data) {
@@ -102,35 +104,35 @@ function _api(data) {
         </div>`
         }
     }
-    document.getElementById("app_api").innerHTML = item;
+    $("#app_api").html(item);
 }
 
-function load_info() {
+function load() {
     $.get(
         url='/v2/info',
         data={"for":"web"},
     )
-    .done(function(data,status) {
+    .done(function(data) {
         if (data.status==200) {
-            _web(data.data);
+            web(data.data);
         } else {
             alert(JSON.stringify(data.data));
         }
     })
-    .fail(function(data,status){
-        alert(`信息加载失败 code:${status}`)
+    .fail(function(data){
+        alert(`信息加载失败:${data}`)
     });
     $.get(
         url='/v2/info'
     )
-    .done(function(data,status) {
+    .done(function(data) {
         if (data.status==200) {
-            _api(data.data);
+            api(data.data);
         } else {
             alert(JSON.stringify(data.data));
         }
     })
-    .fail(function(data,status){
-        alert(`信息加载失败 code:${status}`)
+    .fail(function(data){
+        alert(`信息加载失败:${data}`)
     });
 }
