@@ -23,7 +23,7 @@ function login() {
             'username':username,
             'password':password
         };
-        sendData("/v2/login", send, function(data, status) {
+        sendData("/v2/auth/login", send, function(data, status) {
             try {
                 if (status === 'success') {
                     if (data.data.login == 'success') {

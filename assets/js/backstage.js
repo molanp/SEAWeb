@@ -217,7 +217,6 @@ function check_update() {
     });
 }
 
-
 function resetpassword() {
     var content = `
         <div class="form">
@@ -246,7 +245,7 @@ function resetpassword() {
                     return;
                 }
 
-                sendData('/v2/login', {
+                sendData('/v2/auth/login', {
                     'type': 'pass',
                     'token': getCookie("token"),
                     'new': newPassword,
@@ -348,4 +347,14 @@ function ShowTrendChart(data) {
         data: values
       }]
     });
+}
+
+function up_sys() {
+  $.get(url="/v2/auth/sys_update",
+  data={'apikey':getCookie('token')}
+  )
+  .done(function(data,) {
+        alert(JSON.stringify(data.data));
+    }
+  )
 }

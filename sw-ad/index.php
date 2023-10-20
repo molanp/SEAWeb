@@ -17,9 +17,9 @@ if (isset($_COOKIE['token'],$_COOKIE['user']) && DATABASE->query("SELECT token F
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
         <link rel="Shortcut Icon" href="/favicon.ico">
         <link rel="bookmark" href="/favicon.ico" type="image/x-icon" />   
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mdui/1.0.2/css/mdui.min.css" />
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/mdui/1.0.2/js/mdui.min.js"></script>
-        <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+        <link rel="stylesheet" href="/assets/css/mdui.min.css" />
+        <script src="/assets/js/mdui.min.js"></script>
+        <script src="/assets/js/jquery.min.js"></script>
         <script src="/assets/js/login.js"></script>
         <title>登录</title>
         <style>

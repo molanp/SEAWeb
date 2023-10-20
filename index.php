@@ -1,8 +1,10 @@
 <?php
+if (file_exists("install.php")) {
+    die(include("install.php"));
+}
 include_once('services/until.php');
 include_once('services/Config.class.php');
 
-load();
 include_once('services/connect.php');
 if (DATABASE->query("SELECT value FROM setting WHERE item = 'maintenance_mode'")->fetchColumn() == 'true') {
     die(include_once('page/maintenance.html'));

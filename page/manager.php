@@ -1,8 +1,6 @@
 <?php
 include_once($_SERVER['DOCUMENT_ROOT'].'/services/until.php');
 
-load();
-
 include_once($_SERVER['DOCUMENT_ROOT'].'/services/connect.php');
 if (DATABASE->query("SELECT value FROM setting WHERE item = 'maintenance_mode'")->fetchColumn() == 'true') {
     die(include_once('maintenance.html'));

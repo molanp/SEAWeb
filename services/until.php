@@ -168,31 +168,6 @@ function find_files($dirs, $file = '.php', $prefix = '') {
     return $relative_paths;
 }
 
-
-/**
- * 初始化函数
- *
- * @return void
- */
-function load() {
-    $DATA = new Config($_SERVER['DOCUMENT_ROOT'].'/data/web');
-    if(!file_exists($_SERVER['DOCUMENT_ROOT'].'/data')) {
-        mkdir($_SERVER['DOCUMENT_ROOT'].'/data');
-        $DATA->set("web",[
-            "record"=>"",
-            "index_title"=>"SEAWeb",
-            "copyright"=>"",
-            "index_description"=>"这是网站简介，这里支持*MarkDown*语法",
-            "notice"=>[
-                "data"=>"> **这里也支持markdown语法**\n\n欢迎使用SEAWeb，本模板由[molanp](https://github.com/molanp)开发与维护。目前正在不断完善~\n如果你觉得这个API有什么不完善的地方或者说你有什么更好的想法，可以在[issues](https://github.com/molanp/easyapi_wesbite/issues)上提出建议",
-                "latesttime"=>date('Y-m-d')],
-            "keywords"=>"API,api",
-            "links"=>"[GitHub](https://github.com/molanp/SEAWeb)\n[Issues](https://github.com/molanp/SEAWeb/issues)\n[开发指南](https://molanp.github.io/SEAWeb_docs)"])->save();
-    };
-    //数据迁移
-    $DATA->delete("account");
-    $DATA->delete("setting");
-}
 /**
  * 缓存函数
  *
