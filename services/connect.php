@@ -6,21 +6,11 @@ include_once("logger.php");
 if ($sqlite_mode === true) {
     define('DATABASE', new PDO("sqlite:".$_SERVER["DOCUMENT_ROOT"]."/data/main.db"));
 } elseif ($sqlite_mode === false) {
-    define('DATABASE', new PDO($bind));
+    define('DATABASE', new PDO($bind, $mysql_username, $mysql_password));
 } else {
     throw new Exception("数据库配置未填写，请前往configs/config.php填写！");
 };
 DATABASE->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
- DATABASE->exec("CREATE TABLE IF NOT EXISTS users(username TEXT, password TEXT, token TEXT, apikey TEXT, permission INTEGER, regtime TEXT, logtime BIGINT)");
- if (DATABASE->query("SELECT COUNT(*) FROM users")->fetchColumn() <= 0) {
-    DATABASE->exec("INSERT INTO users(username, password, regtime, permission) VALUES('admin', '".hash('sha256', 'password')."', '".date("Y-m-d H:i:s")."', 9)");
-}
-DATABASE->exec("CREATE TABLE IF NOT EXISTS setting(item TEXT, value TEXT, info TEXT)");
-if (DATABASE->query("SELECT COUNT(*) FROM setting")->fetchColumn() <= 0) {
-    DATABASE->exec("INSERT INTO setting(item, value, info) VALUES('maintenance_mode', 'false', '开启后网站将暂停访问')");
-}
-DATABASE->exec("CREATE TABLE IF NOT EXISTS api(id INTEGER, name TEXT, version TEXT, author TEXT, method TEXT, profile TEXT, request TEXT, response TEXT, class TEXT, url_path TEXT, file_path TEXT, type TEXT, top TEXT, status TEXT, time BIGINT, PRIMARY KEY (name, type))");
-DATABASE->exec("CREATE TABLE IF NOT EXISTS access_log(time TEXT, ip TEXT, url TEXT, name TEXT, referer TEXT, param TEXT)");
 
 function UpdateOrCreate($pdo, $table, $data = []) {
     global $sqlite_mode;
@@ -64,7 +54,8 @@ function UpdateOrCreate($pdo, $table, $data = []) {
     }
 }
 
-function tokentime($token) {
+function tokentime($token=123456) {
+    $token = $token ?: 123456;
     // 检查令牌是否存在于数据库中
     $stmt = DATABASE->query("SELECT logtime, username FROM users WHERE token = '$token'");
     $row = $stmt->fetch(PDO::FETCH_ASSOC);

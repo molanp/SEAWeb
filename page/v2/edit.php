@@ -5,7 +5,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     include_once($_SERVER['DOCUMENT_ROOT'].'/services/connect.php');
 
     $for = $_POST['for'] ?? NULL;
-    $token = $_POST['apikey'] ?? 123456;
+    $token = $_POST['apikey'];
     switch($for) {
         case 'web':
             if (tokentime($token)) {
