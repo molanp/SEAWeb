@@ -96,10 +96,11 @@ function api(api_data) {
     $("#api_count").html(api_data.count);
     $("#response").html(DOMPurify.sanitize(marked.parse(api_data.response)));
     $("#request").html(DOMPurify.sanitize(marked.parse(api_data.request)));
-    $("#api_address").html(DOMPurify.sanitize(marked.parse(`|Method|Url|\n|--|--|\n|${api_data.method}|<a target='_blank' href='/api${window.location.pathname}'>/api${window.location.pathname}</a>|`)));
+    path = window.location.pathname.match(/\/docs(.*)\//)[1];
+    $("#api_address").html(DOMPurify.sanitize(marked.parse(`|Method|Url|\n|--|--|\n|${api_data.method}|<a target='_blank' href='/api${path}'>/api${path}</a>|`)));
     $("#author").html(DOMPurify.sanitize(api_data.author));
     $("#api_version").html(DOMPurify.sanitize(api_data.version));
     $("#api_profile").html(DOMPurify.sanitize(marked.parse(api_data.profile)));
-    $("#urlInput").text('/api'+window.location.pathname);
+    $("#urlInput").text('/api'+path);
 
 }

@@ -5,12 +5,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     include_once($_SERVER['DOCUMENT_ROOT'].'/services/connect.php');
     // 假设 $urlPath 是你要查询的 URL 路径
     $urlPath = $_GET["url"];
-    
+    preg_match('#/docs/(.*)/#', $urlPath, $urlPath);
+    $urlPath = addSlashIfNeeded($urlPath[1]);
     // 构建查询的 SQL 语句
     $sql = "SELECT name, version, author, method, profile, request, response, type, status FROM api WHERE url_path = :urlPath";
     
     // 使用预处理语句执行查询
-    $statement = DATABASE->prepare($sql);
+    $statement = $DATABASE->prepare($sql);
     $statement->execute([":urlPath" => $urlPath]);
     
     // 获取查询结果
@@ -28,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         //统计调用
         $count = [];
         $query = "SELECT url, COUNT(*) AS count FROM access_log GROUP BY url";
-        $stmt = DATABASE->prepare($query);
+        $stmt = $DATABASE->prepare($query);
         $stmt->execute();
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $count[$row['url']] = $row['count'];

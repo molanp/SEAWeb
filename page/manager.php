@@ -2,12 +2,12 @@
 include_once($_SERVER['DOCUMENT_ROOT'].'/services/until.php');
 
 include_once($_SERVER['DOCUMENT_ROOT'].'/services/connect.php');
-if (DATABASE->query("SELECT value FROM setting WHERE item = 'maintenance_mode'")->fetchColumn() == 'true') {
+if ($DATABASE->query("SELECT value FROM setting WHERE item = '维护模式'")->fetchColumn() == 'true') {
     die(include_once('maintenance.html'));
 };
 $sql = "SELECT name, profile FROM api WHERE url_path = :urlPath";
-$statement = DATABASE->prepare($sql);
-$statement->execute([":urlPath" => $_SERVER['REQUEST_URI']]);
+$statement = $DATABASE->prepare($sql);
+$statement->execute([":urlPath" => addSlashIfNeeded($_GET["path"])]);
 $data = $statement->fetch(PDO::FETCH_ASSOC);
 if($data==null) {
     die(include_once($_SERVER['DOCUMENT_ROOT'].'/404.php'));
@@ -32,7 +32,7 @@ $web = $web->get("web");
     <link rel="stylesheet" href="/assets/css/mark.css">
     <link rel="stylesheet" href="/assets/css/mdui.min.css" />
     <script src="https://cdn.bootcss.com/marked/5.0.4/marked.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="/assets/js/jquery.min.js"></script>
     <script src="/assets/js/purify.min.js"></script>
     <script src="/assets/js/api.js"></script>
     <script src="/assets/js/query.js"></script>
@@ -188,6 +188,6 @@ $web = $web->get("web");
         <span id="record"></span>  
         <span id="copyright"></span>                
     </footer>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mdui/1.0.2/js/mdui.min.js"></script>
+    <script src="/assets/js/mdui.min.js"></script>
 </body>
 </html>

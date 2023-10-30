@@ -56,7 +56,7 @@ function rank(data) {
       table += `
         <tr>
           <td>${num}</td>
-          <td><a href="${data[item].url.replace(/\/api/g, "")}">${data[item].name}</a></td>
+          <td><a href="/docs${data[item].url.replace(/\/api/, "")}">${data[item].name}</a></td>
         <td>${data[item].count}</td>
         </tr>
       `;

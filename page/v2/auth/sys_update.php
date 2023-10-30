@@ -5,7 +5,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (tokentime($_POST['apikey'])) {
         include_once($_SERVER['DOCUMENT_ROOT']."/services/update.php");
         $dbData = [];
-        $stmt = DATABASE->query("SELECT item FROM setting");
+        $stmt = $DATABASE->query("SELECT item FROM setting");
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $dbData[] = $row['item'];
         }
@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         if (!empty($itemsToAdd)) {
             $sqlAdd = "INSERT INTO setting (item, value, info) VALUES (:item, :value, :info)";
-            $stmtAdd = DATABASE->prepare($sqlAdd);
+            $stmtAdd = $DATABASE->prepare($sqlAdd);
             foreach ($itemsToAdd as $item) {
                 $stmtAdd->bindParam(':item', $item);
                 $stmtAdd->bindValue(':value', UP_SYS[$item]['value']);
@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         if (!empty($itemsToDelete)) {
             $sqlDelete = "DELETE FROM setting WHERE item = :item";
-            $stmtDelete = DATABASE->prepare($sqlDelete);
+            $stmtDelete = $DATABASE->prepare($sqlDelete);
             foreach ($itemsToDelete as $item) {
                 $stmtDelete->bindParam(':item', $item);
                 $stmtDelete->execute();
