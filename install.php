@@ -1,4 +1,8 @@
 <?php
+if(file_exists("configs")) {
+    echo '<p>安装成功</p><p><a href="/sw-ad/">管理员登录</a></p><p><a href="/">主页</a></p>';
+    die(unlink("install.php"));
+}
 include_once($_SERVER['DOCUMENT_ROOT']."/services/update.php");
 if (isset($_POST["action"]) && $_POST["action"]=="install") {
     mkdir("configs");
