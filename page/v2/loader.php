@@ -3,10 +3,10 @@ include_once($_SERVER['DOCUMENT_ROOT'].'/services/until.php');
 include_once($_SERVER['DOCUMENT_ROOT'].'/services/path.php');
 include_once($_SERVER['DOCUMENT_ROOT'].'/services/connect.php');
 
-$plugin_path = addSlashIfNeeded(preg_replace('/api\//',"",explode('?', $_SERVER['REQUEST_URI'])[0]));
+$plugin_path = addSlashIfNeeded($_GET["path"]);
 include_once($_SERVER['DOCUMENT_ROOT'].'/services/connect.php');
 $sql = "SELECT name, class, method, url_path, file_path FROM api WHERE url_path = :urlPath";
-$statement = DATABASE->prepare($sql);
+$statement = $DATABASE->prepare($sql);
 $statement->execute([":urlPath" => $plugin_path]);
 $data = $statement->fetch(PDO::FETCH_ASSOC);
 if($data==null) {
@@ -17,7 +17,7 @@ if($data==null) {
     $url = "/api".$plugin_path ?? "Unknown";
     $referer = $_SERVER['HTTP_REFERER'] ?? "Unknown";
     $param = json($_REQUEST);
-    $stmt = DATABASE->prepare("INSERT INTO access_log (time, ip, url, referer, param, name) VALUES (?, ?, ?, ?, ?, ?)");
+    $stmt = $DATABASE->prepare("INSERT INTO access_log (time, ip, url, referer, param, name) VALUES (?, ?, ?, ?, ?, ?)");
     $stmt->bindParam(1, $time);
     $stmt->bindParam(2, $ip);
     $stmt->bindParam(3, $url);

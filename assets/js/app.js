@@ -95,10 +95,10 @@ function api(data) {
                         <i class="mdui-icon material-icons" style="font-size:12px;">folder</i>分类：${type}</div>
                     </div>
                 </div>
-                <div class="mdui-card-content">${marked.parse(data[type][name].api_profile)}</div>
+                <div class="mdui-card-content" id="content">${marked.parse(data[type][name].api_profile)}</div>
                 <div class="mdui-card-actions">
                     <a class="mdui-btn mdui-ripple mdui-text-color-theme-accent mdui-float-right"
-                        target="_blank" href="${data[type][name].path}">More</a>
+                        target="_blank" href="docs${data[type][name].path}">More</a>
                 </div>
             </div>
         </div>`

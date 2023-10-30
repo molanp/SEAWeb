@@ -310,7 +310,7 @@ function ShowRankList(data) {
     }
     rankData.forEach(function(data) {
       var itemHtml = '<li class="mdui-list-item">' +
-                       `<div class="mdui-list-item-content"><a href="${data.url.replace(/\/api/g, "")}" target="_blank">` + data.api + '</a></div>' +
+                       `<div class="mdui-list-item-content"><a href="docs${data.url.replace(/\/api/g, "")}" target="_blank">` + data.api + '</a></div>' +
                        '<div class="mdui-list-item-text">' + data.count + '次调用</div>' +
                      '</li>';
       $('#api-rank-list').append(itemHtml);
@@ -350,7 +350,7 @@ function ShowTrendChart(data) {
 }
 
 function up_sys() {
-  $.get(url="/v2/auth/sys_update",
+  $.post(url="/v2/auth/sys_update",
   data={'apikey':getCookie('token')}
   )
   .done(function(data,) {

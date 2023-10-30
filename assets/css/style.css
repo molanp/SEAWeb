@@ -3,7 +3,7 @@
 }
 
 html {
-    margin:0 auto;
+    margin: 0 auto;
 }
 
 body {
@@ -13,7 +13,7 @@ body {
     background-attachment: fixed;
     background-repeat: no-repeat;
     padding-bottom: 100px;
-    margin:0 auto;
+    margin: 0 auto;
     background-color: #FFFFFF;
     color: black;
 }
@@ -35,19 +35,47 @@ body {
     padding-right: 5px;
 }
 
+#content {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+}
+
 a {
     color: #fdabb8;
     text-decoration: none;
 }
 
 a:active {
-    text-decoration:blink
+    text-decoration: blink
 }
 
 a:hover {
-    text-decoration:underline;
-} 
+    text-decoration: underline;
+}
 
 a:visited {
     text-decoration: none;
+}
+
+.string {
+    color: green;
+}
+
+.number {
+    color: darkorange;
+}
+
+.boolean {
+    color: blue;
+}
+
+.null {
+    color: magenta;
+}
+
+.key {
+    color: red;
 }

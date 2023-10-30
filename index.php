@@ -6,7 +6,7 @@ include_once('services/until.php');
 include_once('services/Config.class.php');
 
 include_once('services/connect.php');
-if (DATABASE->query("SELECT value FROM setting WHERE item = 'maintenance_mode'")->fetchColumn() == 'true') {
+if ($DATABASE->query("SELECT value FROM setting WHERE item = '维护模式'")->fetchColumn() == 'true') {
     die(include_once('page/maintenance.html'));
 };
 $web = new Config($_SERVER['DOCUMENT_ROOT'].'/data/web');
@@ -30,7 +30,7 @@ $web = $web->get("web");
     <link rel="stylesheet" href="/assets/css/mark.css">
     <link rel="stylesheet" href="/assets/css/mdui.min.css" />
     <script src="https://cdn.bootcss.com/marked/5.0.4/marked.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="/assets/js/jquery.min.js"></script>
     <script src="/assets/js/purify.min.js"></script>
     <script src="/assets/js/app.js"></script>
     <script src="/assets/js/notice.js"></script>
@@ -91,6 +91,6 @@ $web = $web->get("web");
     <span id="copyright"></span>
     <p>本站内容由网友上传(或整理自网络)，原作者已无法考证，版权归原作者所有。仅供学习参考，其观点不代表本站立场，网站接口数据均收集互联网。</p>
 </footer>
-     <script src="https://cdnjs.cloudflare.com/ajax/libs/mdui/1.0.2/js/mdui.min.js"></script>
+<script src="/assets/js/mdui.min.js"></script>
 </body>
 </html>

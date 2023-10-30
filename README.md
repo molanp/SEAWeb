@@ -10,6 +10,10 @@
 - 2. 访问`http://{your_website_url}`进行初次配置
 - 3. Run!
 
+### 开发测试环境
+
+phpstudy + php7.3.4 + apache + mysql
+
 电脑端样式
 
 ![image](https://github.com/molanp/SEAWeb/assets/104612722/e353df31-9321-41b2-9d29-a41e4f79fa00)

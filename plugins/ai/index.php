@@ -4,7 +4,7 @@ class ai {
         return [
             'name' => 'AI回复',
             'version' => '1.0',
-            'profile'=> '搭载青云客ai与本地词库，相对智能的ai.与ai普普通通的对话吧！_~~或许词库有点二次元?~~_',
+            'profile'=> '搭载青云客ai与本地词库，相对智能的ai.与ai普普通通的对话吧！<br/>_~~或许词库有点二次元?~~_',
             'method'=>'GET',
             'author'=>'molanp',
             'request_par'=> re_par(['*msg'=>'你要对ai说的话']),
@@ -58,7 +58,7 @@ class ai {
             }
         }
         if (empty($data)) {
-            $result = requests->get("http://api.qingyunke.com/api.php",["key"=>"free","appid"=>0,"msg"=>$msg])->json();
+            $result = $requests->get("http://api.qingyunke.com/api.php",["key"=>"free","appid"=>0,"msg"=>$msg])->json();
             if ($result["result"]==0) {
                 $data = $result["content"];
                 str_ireplace("菲菲","咱",$data);

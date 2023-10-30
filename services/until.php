@@ -1,9 +1,10 @@
 <?php
+ini_set('date.timezone','Asia/Shanghai');
 include_once('Config.class.php');
 include_once('requests.php');
 include_once('watchdog.php');
 
-define('requests', new requests());
+$requests = new requests();
 
 /**
  * 在给定的字符串末尾添加斜杠("/")，如果它尚未以斜杠结尾。
@@ -12,6 +13,9 @@ define('requests', new requests());
  * @return string 处理后的字符串，确保以斜杠结尾
  */
 function addSlashIfNeeded($inputString) {
+    if (substr($inputString, 0, 1) !== '/') {
+        $inputString = '/' . $inputString;
+    }
     if (substr($inputString, -1) !== '/') {
         $inputString .= '/';
     }
@@ -122,12 +126,13 @@ function _return_($content,$status=200,$location=false) {
  * @return bool 返回是否需要处理 API 请求
  */
 function handle_check($name) {
+    global $DATABASE;
     include_once("connect.php");
-    $query = DATABASE->prepare("SELECT status FROM api WHERE name = ?");
+    $query = $DATABASE->prepare("SELECT status FROM api WHERE name = ?");
     $query->bindParam(1, $name, PDO::PARAM_STR);
     $query->execute();
     $status = $query->fetchColumn();
-    if ($status == 'false' || DATABASE->query("SELECT value FROM setting WHERE item = 'maintenance_mode'")->fetchColumn() == 'true') {
+    if ($status == 'false' || $DATABASE->query("SELECT value FROM setting WHERE item = 'maintenance_mode'")->fetchColumn() == 'true') {
         header("HTTP/1.1 406");
         _return_("API already closed",406);
     } else {

@@ -3,61 +3,39 @@ include_once($_SERVER["DOCUMENT_ROOT"]."/configs/config.php");
 include_once("watchdog.php");
 include_once("logger.php");
 
-if ($sqlite_mode === true) {
-    define('DATABASE', new PDO("sqlite:".$_SERVER["DOCUMENT_ROOT"]."/data/main.db"));
-} elseif ($sqlite_mode === false) {
-    define('DATABASE', new PDO($bind, $mysql_username, $mysql_password));
+if ($bind) {
+    $DATABASE = new PDO($bind, $mysql_username, $mysql_password);
 } else {
     throw new Exception("数据库配置未填写，请前往configs/config.php填写！");
 };
-DATABASE->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+$DATABASE->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-function UpdateOrCreate($pdo, $table, $data = []) {
-    global $sqlite_mode;
-    try {
-        $pdo->beginTransaction();
-        if($sqlite_mode===true) {
-            $insertSql = 'INSERT OR REPLACE INTO ' . $table . ' (';
-            $insertValues = '';
-            $insertParams = [];
-            foreach ($data as $key => $value) {
-                $insertSql .= $key . ', ';
-                $insertValues .= ':' . $key . ', ';
-                $insertParams[':' . $key] = $value;
-            }
-            $insertSql = rtrim($insertSql, ', ');
-            $insertValues = rtrim($insertValues, ', ');
-            $insertSql .= ') VALUES (' . $insertValues . ')';
+function UpdateOrCreate($pdo, $table, $data)
+{
+    $columnNames = implode(", ", array_keys($data));
+    $placeholders = ":" . implode(", :", array_keys($data));
 
-            $insertStmt = $pdo->prepare($insertSql);
-            $insertStmt->execute($insertParams);
-        } else {
-            $insertSql = 'INSERT INTO ' . $table . ' (';
-            $insertValues = '';
-            $insertParams = [];
-            foreach ($data as $key => $value) {
-                $insertSql .= $key . ', ';
-                $insertValues .= ':' . $key . ', ';
-                $insertParams[':' . $key] = $value;
-            }
-            $insertSql = rtrim($insertSql, ', ');
-            $insertValues = rtrim($insertValues, ', ');
-            $insertSql .= ') VALUES (' . $insertValues . ') ON DUPLICATE KEY UPDATE ';
+    $insertSql = "INSERT INTO {$table} ({$columnNames}) VALUES ({$placeholders}) ";
+    $updateSql = "";
 
-            $insertStmt = $pdo->prepare($insertSql);
-            $insertStmt->execute($insertParams);
-        }
-        $pdo->commit();
-    } catch (PDOException $e) {
-        $pdo->rollBack();
-        (new logger())->error('Database error: ' . $e->getMessage());
+    foreach ($data as $key => $value) {
+        $updateSql .= "{$key} = :{$key}, ";
     }
+    $updateSql = rtrim($updateSql, ", ");
+
+    $insertSql .= "ON DUPLICATE KEY UPDATE {$updateSql}";
+
+    $stmt = $pdo->prepare($insertSql);
+    $stmt->execute($data);
 }
 
+
 function tokentime($token=123456) {
+    global $DATABASE;
+
     $token = $token ?: 123456;
     // 检查令牌是否存在于数据库中
-    $stmt = DATABASE->query("SELECT logtime, username FROM users WHERE token = '$token'");
+    $stmt = $DATABASE->query("SELECT logtime, username FROM users WHERE token = '$token'");
     $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if ($row) {
@@ -69,7 +47,7 @@ function tokentime($token=123456) {
         }
     } else {
         // 检查令牌是否存在作为API密钥
-        $stmt = DATABASE->query("SELECT username FROM users WHERE apikey = '$token'");
+        $stmt = $DATABASE->query("SELECT username FROM users WHERE apikey = '$token'");
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($row) {
@@ -81,8 +59,10 @@ function tokentime($token=123456) {
 }
 
 function apineedupdate() {
+    global $DATABASE;
+
     // 查询是否存在api表并且获取最后更新时间
-    $stmt = DATABASE->query("SELECT MAX(time) FROM api");
+    $stmt = $DATABASE->query("SELECT MAX(time) FROM api");
     $lastUpdateTime = $stmt->fetchColumn();
 
     if ($lastUpdateTime !== false) {

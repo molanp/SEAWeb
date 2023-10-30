@@ -2,9 +2,8 @@
 if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     include_once($_SERVER['DOCUMENT_ROOT'].'/services/until.php');
     include_once($_SERVER['DOCUMENT_ROOT'].'/services/connect.php');
-    if(tokentime($_GET["apikey"]??123456)) {
-        //if ($_POST[])
-        $result = DATABASE->query("SELECT SUBSTR(time, 1, 10) AS date, COUNT(*) AS count FROM access_log GROUP BY SUBSTR(time, 1, 10) ORDER BY date ASC LIMIT 5");
+    if(tokentime($_GET["apikey"])) {
+        $result = $DATABASE->query("SELECT SUBSTR(time, 1, 10) AS date, COUNT(*) AS count FROM access_log GROUP BY SUBSTR(time, 1, 10) ORDER BY date ASC LIMIT 5");
         $data = [];
     
         while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
@@ -13,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
             array_push($data, ["date"=>$date, "count"=>$count]);
         }
     } else {
-        $result = DATABASE->query("SELECT name, url, COUNT(*) AS count FROM access_log GROUP BY name, url ORDER BY count DESC LIMIT 10");
+        $result = $DATABASE->query("SELECT name, url, COUNT(*) AS count FROM access_log GROUP BY name, url ORDER BY count DESC LIMIT 10");
         $data = [];
         while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
             $data[] = [

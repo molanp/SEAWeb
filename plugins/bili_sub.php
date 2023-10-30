@@ -37,7 +37,7 @@ class bili_sub {
         if (isset($request["url"])) {
             preg_match('/BV(\w+)/', $request["url"], $matches);
             if (isset($matches[1])) {
-                $json = requests->get("https://api.bilibili.com/x/web-interface/view",["bvid"=>"BV".$matches[1]])->json();
+                $json = $requests->get("https://api.bilibili.com/x/web-interface/view",["bvid"=>"BV".$matches[1]])->json();
                 if ($json["message"]==0) {
                     $json = $json["data"];
                     $data = [

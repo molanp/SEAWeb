@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 if ($pwd !== hash('sha256',$data["again"])) {
                     _return_('两次输入密码不同',400);
                 } else {
-                    DATABASE->exec("UPDATE users SET password = '$pwd' WHERE token = '$token'");
+                    $DATABASE->exec("UPDATE users SET password = '$pwd' WHERE token = '$token'");
                     _return_('密码已修改，请重新登录');
                 }
             } else {
@@ -26,9 +26,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             if (isset($data['password']) && isset($data['username'])) {
                 $usr = $data["username"];
                 $pwd = hash('sha256',$data["password"]);
-                if (DATABASE->query("SELECT password FROM users WHERE username = '$usr'")->fetchColumn()==$pwd) {
+                if ($DATABASE->query("SELECT password FROM users WHERE username = '$usr'")->fetchColumn()==$pwd) {
                     $token = uniqid("swb_");
-                    DATABASE->exec("UPDATE users SET token = '$token', logtime = ".time()." WHERE username = '$usr'");
+                    $DATABASE->exec("UPDATE users SET token = '$token', logtime = ".time()." WHERE username = '$usr'");
                     _return_([
                         "login"=>"success",
                         "user"=>$data["username"],
