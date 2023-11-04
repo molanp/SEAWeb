@@ -3,7 +3,7 @@ class tian {
     public function getInfo() {
         return [
             'name' => '舔狗日记',
-            'version' => '20230929',
+            'version' => '20231104',
             'profile'=> '一键获取舔狗日记',
             'method'=>'GET',
             'author'=>'molanp',

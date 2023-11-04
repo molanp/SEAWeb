@@ -2,7 +2,7 @@
 include_once($_SERVER['DOCUMENT_ROOT']."/services/connect.php");
 include_once($_SERVER['DOCUMENT_ROOT']."/services/until.php");
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    if (tokentime($_POST['apikey'])) {
+    if (tokentime($_POST)) {
         include_once($_SERVER['DOCUMENT_ROOT']."/services/update.php");
         $dbData = [];
         $stmt = $DATABASE->query("SELECT item FROM setting");

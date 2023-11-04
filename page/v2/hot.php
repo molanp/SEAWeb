@@ -2,7 +2,7 @@
 if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     include_once($_SERVER['DOCUMENT_ROOT'].'/services/until.php');
     include_once($_SERVER['DOCUMENT_ROOT'].'/services/connect.php');
-    if(tokentime($_GET["apikey"])) {
+    if(tokentime($_GET)) {
         $result = $DATABASE->query("SELECT SUBSTR(time, 1, 10) AS date, COUNT(*) AS count FROM access_log GROUP BY SUBSTR(time, 1, 10) ORDER BY date ASC LIMIT 5");
         $data = [];
     

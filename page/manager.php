@@ -30,8 +30,9 @@ $web = $web->get("web");
     <link rel="bookmark" href="/favicon.ico" type="image/x-icon" /> 
     <link rel="stylesheet" href="/assets/css/style.css">
     <link rel="stylesheet" href="/assets/css/mark.css">
-    <link rel="stylesheet" href="/assets/css/mdui.min.css" />
-    <script src="https://cdn.bootcss.com/marked/5.0.4/marked.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/mdui@2.0.1/mdui.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="/assets/js/marked.min.js"></script>
     <script src="/assets/js/jquery.min.js"></script>
     <script src="/assets/js/purify.min.js"></script>
     <script src="/assets/js/api.js"></script>
@@ -40,154 +41,110 @@ $web = $web->get("web");
     <title><?= $data["name"]." - ".$web["index_title"]?></title>
 </head>
 
-<body class="mdui-appbar-with-toolbar mdui-theme-primary-light-blue mdui-theme-accent-light-blue" id="top">
-
-    <header class="mdui-appbar-fixed mdui-appbar mdui-color-white">
-        <div class="mdui-color-white mdui-toolbar">
-            <a class="mdui-typo-headline" href="/" id="title">title</a>
-            <span class="mdui-typo-title mdui-hidden-xs" id="version">version</span>
-            <div class="mdui-toolbar-spacer"></div>
-            <button mdui-tooltip="{content: '调用排行', position: 'bottom'}" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons" onclick="window.location.href='/page/rank.html'">equalizer</i></button>
-            <button mdui-tooltip="{content: '公告', position: 'bottom'}" onclick="notice()" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons">announcement</i></button>
-            <button mdui-tooltip="{content: '夜间模式', position: 'bottom'}" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons" onclick="changeTheme()">brightness_medium</i></button>
-            <button mdui-menu="{target: '#main-menu'}" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons">more_vert</i></button>
-            <ul class="mdui-menu" id="main-menu">
-                <li class="mdui-menu-item" mdui-dialog="{target: '#login'}">
-                    <a href="/sw-ad" class="mdui-ripple">
-                        <i class="mdui-menu-item-icon mdui-icon material-icons">person</i> 后台登录
-                    </a>
-                </li>
-            </ul>
+<body>
+    <mdui-top-app-bar scroll-behavior="elevate">
+        <mdui-top-app-bar-title>
+            <span id="title">title</span>
+            <span id="version" style="font-size: 1rem">version</span>
+        </mdui-top-app-bar-title>
+        <div style="flex-grow: 1"></div>       
+        <mdui-button-icon onclick="output_search()" icon="search"></mdui-button-icon>
+        <mdui-tooltip content="调用排行">
+            <mdui-button-icon onclick="window.location.href='/page/rank.html'" icon="equalizer"></mdui-button-icon>
+        </mdui-tooltip>
+        <mdui-tooltip content="公告">
+            <mdui-button-icon mdui-tooltip="{content: '公告', position: 'bottom'}" onclick="notice()" icon="announcement"></mdui-button-icon>
+        </mdui-tooltip>
+        <mdui-tooltip content="夜间模式">
+            <mdui-button-icon onclick="changeTheme()" icon="brightness_medium"></mdui-button-icon>
+        </mdui-tooltip>
+        <mdui-dropdown>
+            <mdui-button-icon slot="trigger" icon="more_vert"></mdui-button-icon>
+            <mdui-menu>
+                <mdui-menu-item>
+                    <mdui-button href="/sw-ad" icon="person">登录</mdui-button>
+                </mdui-menu-item>
+            </mdui-menu>
+        </mdui-dropdown>
+    </mdui-top-app-bar>
+    <noscript>
+        <div style="text-align: center;margin-top: 10%;">
+            <h4>Sorry, the web page requires a Javascript runtime environment, please allow you to run scripts or use a new version of the modern browser.</h4>
+            <p>It is recommended to use <a href="https://www.microsoft.com/edge/download">Edge</a> modern browser.</p>
         </div>
-    </header>
-    <div class="mdui-m-b-2" id="doc">
-        <div class="mdui-text-center mdui-color-theme-a200 mdui-text-color-white mdui-m-b-2" style="padding-top:80px;padding-bottom:80px;">
-            <noscript>
-                <div style="text-align: center;margin-top: 10%;">
-                    <h4>Sorry, the web page requires a Javascript runtime environment, please allow you to run scripts or use a new version of the modern browser.</h4>
-                    <p>It is recommended to use <a href="https://www.microsoft.com/edge/download">Edge</a> modern browser.</p>
-                </div>
-            </noscript>
-            <div class="mdui-typo-display-1"><span id="api_name">Loading...</span></div>
-            <br/>
-            <div class="mdui-chip" mdui-tooltip="{content: 'API Version', position: 'top'}">
-                <span class="mdui-chip-title"><i class="mdui-icon material-icons mdui-text-color-blue">info_outline</i><span id="api_version">Loading...</span></span>
-            </div>
-            <div class="mdui-chip" mdui-tooltip="{content: 'API Author', position: 'top'}">
-                <span class="mdui-chip-title"><i class="mdui-icon material-icons mdui-text-color-blue">account_circle</i><span id="author">Loading...</span></span>
-            </div>
-            <div class="mdui-chip" mdui-tooltip="{content: 'API Count', position: 'top'}">
-                <span class="mdui-chip-title"><i class="mdui-icon material-icons mdui-text-color-blue">equalizer</i><span id="api_count">Loading...</span> times</span>
-            </div>
-        </div>
-        <div class="mdui-container">
-            <div class="mdui-row">
-                <div class="mdui-col-md-6">
-                <div class="mdui-card mdui-hoverable mdui-m-y-2" style="border-radius:10px">
-                    <div class="mdui-card-primary">
-                    <div class="mdui-card-primary-title">
-                    <i class="mdui-icon material-icons mdui-text-color-blue">language</i>简介
-                    </div>
-                    </div>
-                    <div class="mdui-card-content">
-                    <span id="api_profile">Loading...</span>
-                    </div>
-                </div>
-                </div>
-                <div class="mdui-col-md-6">
-                <div class="mdui-card mdui-hoverable mdui-m-y-2" style="border-radius:10px">
-                    <div class="mdui-card-primary">
-                    <div class="mdui-card-primary-title">
-                    <i class="mdui-icon material-icons mdui-text-color-orange">view_compact</i>API 地址
-                    </div>
-                    </div>
-                    <div class="mdui-card-content mdui-table-fluid">
-                    <table id="api_address" class="mdui-table mdui-table-hoverable"></table>
-                    </div>
-                </div>
-                </div>
-                <div class="mdui-col-md-6">
-                <div class="mdui-card mdui-hoverable mdui-m-y-2" style="border-radius:10px">
-                    <div class="mdui-card-primary">
-                    <div class="mdui-card-primary-title">
-                    <i class="mdui-icon material-icons mdui-text-color-purple">vpn_key</i>参数列表 (打<code>*</code>是必填项)
-                    </div>
-                    </div>
-                    <div class="mdui-card-content mdui-table-fluid">
-                    <table id="request" class="mdui-table mdui-table-hoverable"></table>
-                    </div>
-                </div>
-                </div>
-                <div class="mdui-col-md-6">
-                <div class="mdui-card mdui-hoverable mdui-m-y-2" style="border-radius:10px">
-                    <div class="mdui-card-primary">
-                    <div class="mdui-card-primary-title">
-                    <i class="mdui-icon material-icons mdui-text-color-gray">reply</i>返回的数据
-                    </div>
-                    </div>
-                    <div class="mdui-card-content mdui-table-fluid">
-                    <table id="response" class="mdui-table mdui-table-hoverable"></table>
-                    </div>
-                </div>
-                </div>
-                <div class="mdui-col-md-6">
-                <div class="mdui-card mdui-hoverable mdui-m-y-2" style="border-radius:10px">
-                    <div class="mdui-card-primary">
-                    <div class="mdui-card-primary-title">
-                    <i class="mdui-icon material-icons mdui-text-color-teal-a400">build</i>在线测试
-                    </div>
-                    </div>
-                    <div class="mdui-card-content">
-                        <form id="requestForm">
-                            <div class="mdui-textfield">
-                            <label class="mdui-textfield-label">URL</label>
-                            <span id="urlInput">window.location.pathname</span>
-                            </div>
-
-                            <div class="mdui-textfield">
-                            <label class="mdui-textfield-label">Method</label>
-                            <select class="mdui-select" id="methodSelect">
-                                <option value="GET">GET</option>
-                                <option value="POST">POST</option>
-                                <option value="PUT">PUT</option>
-                                <option value="DELETE">DELETE</option>
-                                <option value="OPTIONS">OPTIONS</option>
-                                <option value="PATCH">PATCH</option>
-                                <!-- 可添加其他方法选项 -->
-                            </select>
-                            </div>
-
-                            <table id="paramsTable" class="mdui-table">
-                            <thead>
-                                <tr>
-                                <th>参数名</th>
-                                <th>值</th>
-                                <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <!-- 参数行将在 JavaScript 中动态生成 -->
-                            </tbody>
-                            </table>
-                            <label class="mdui-textfield-label">响应</label>
-                            <pre><code class="language-json" id="responseTEXT"></code></pre>
-
-                            <button class="mdui-btn mdui-btn-block mdui-color-theme-accent" type="button" onclick="addParamRow()">添加参数</button>
-
-                            <div class="mdui-divider"></div>
-
-                            <button class="mdui-btn mdui-btn-block mdui-color-theme" type="button" onclick="sendRequest()">发送请求</button>
-                        </form>
-                    </div>
-                </div>
-                </div>
-            </div>
-        </div>
+    </noscript>
+    <div style="text-align:center;">
+        <br />
+        <h3 id="api_name">Loading...</h3>
+        <mdui-tooltip content="API Version">
+            <mdui-chip icon="info_outline"><span id="api_version">Loading...</span></mdui-chip>
+        </mdui-tooltip>
+        <mdui-tooltip content="API Author">
+            <mdui-chip icon="account_circle"><span id="author">Loading...</span></mdui-chip>
+        </mdui-tooltip>
+        <mdui-tooltip content="API Count">
+            <mdui-chip icon="equalizer"><span id="api_count">Loading...</span>&nbsp;times</mdui-chip>
+        </mdui-tooltip>
     </div>
-    <footer class="foot mdui-text-center mdx-footer-morden">
-        <span id="record"></span>  
-        <span id="copyright"></span>                
+    <mdui-card style="width:48%;margin:0.5rem;min-height:200px;">
+        <h3><i class="mdui-icon material-icons mdui-text-color-blue">language</i>简介</h3>
+        <span id="api_profile" class="mdui-prose">Loading...</span>
+    </mdui-card>
+    <mdui-card style="width:48%;margin:0.5rem;min-height:200px;">
+        <h3><i class="mdui-icon material-icons mdui-text-color-orange">view_compact</i>API 地址</h3>
+        <div class="mdui-table">
+            <table id="api_address"></table>
+        </div>
+    </mdui-card>
+    <mdui-card style="width:48%;margin:0.5rem;min-height:200px;">
+        <h3><i class="mdui-icon material-icons mdui-text-color-purple">vpn_key</i>参数列表 (打<code>*</code>是必填项)</h3>
+        <div class="mdui-table">
+            <table id="request"></table>
+        </div>
+    </mdui-card>
+    <mdui-card style="width:48%;margin:0.5rem;min-height:200px;">
+        <h3><i class="mdui-icon material-icons mdui-text-color-gray">reply</i>返回的数据</h3>
+        <div class="mdui-table">
+            <table id="response"></table>
+        </div>
+    </mdui-card>
+    <mdui-card style="width:48%;margin:0.5rem;min-height:200px;">
+        <h3><i class="mdui-icon material-icons mdui-text-color-teal-a400">build</i>在线测试</h3>
+        <form id="requestForm">
+            <mdui-text-field readonly label="URL" id="urlInput"></mdui-text-field>
+            <mdui-select class="mdui-select" id="methodSelect" value="GET" label="Method">
+                <mdui-menu-item value="GET">GET</mdui-menu-item>
+                <mdui-menu-item value="POST">POST</mdui-menu-item>
+                <mdui-menu-item value="PUT">PUT</mdui-menu-item>
+                <mdui-menu-item value="DELETE">DELETE</mdui-menu-item>
+                <mdui-menu-item value="OPTIONS">OPTIONS</mdui-menu-item>
+                <mdui-menu-item value="PATCH">PATCH</mdui-menu-item>
+                <!-- 可添加其他方法选项 -->
+            </mdui-select>
+            </div>
+            <table id="paramsTable" class="mdui-table">
+                <thead>
+                    <tr>
+                        <th>参数名</th>
+                        <th>值</th>
+                        <th><a href="javascript:addParamRow()">添加参数</a></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- 参数行将在 JavaScript 中动态生成 -->
+                </tbody>
+            </table>
+            <label>响应</label>
+            <pre class="language-json" id="responseTEXT">
+            </pre>
+            <mdui-button onclick="sendRequest()">发送请求</mdui-button>
+        </form>
+    </mdui-card>
+    <footer style="text-align: center;margin-top: 10%;">
+        <span id="record"></span>
+        <span id="copyright"></span>
+        <p>本站内容由网友上传(或整理自网络)，原作者已无法考证，版权归原作者所有。仅供学习参考，其观点不代表本站立场，网站接口数据均收集互联网。</p>
     </footer>
-    <script src="/assets/js/mdui.min.js"></script>
+    <script src="https://unpkg.com/mdui@2.0.1/mdui.global.js"></script>
 </body>
 </html>

@@ -5,7 +5,7 @@
 
 ## 简单配置
 
-- 要求：PHP>=5.1.0 Apache
+- 要求：PHP>=7.0 Apache
 - 1. 上传文件至服务器
 - 2. 访问`http://{your_website_url}`进行初次配置
 - 3. Run!
@@ -13,6 +13,8 @@
 ### 开发测试环境
 
 phpstudy + php7.3.4 + apache + mysql
+
+### 样式(0.1.3-beta)
 
 电脑端样式
 

@@ -34,7 +34,6 @@ if (isset($_POST["action"]) && $_POST["action"]=="install") {
         "keywords"=>"API,api",
         "links"=>"[GitHub](https://github.com/molanp/SEAWeb)\n[Issues](https://github.com/molanp/SEAWeb/issues)\n[开发指南](https://molanp.github.io/SEAWeb_docs)"
         ])->save();
-    //数据迁移
     $DATA->delete("account");
     $DATA->delete("setting");
 
@@ -80,28 +79,30 @@ if (isset($_POST["action"]) && $_POST["action"]=="install") {
     echo '<p>安装成功</p><p><a href="/sw-ad/">管理员登录</a></p><p><a href="/">主页</a></p>';
     die(unlink("install.php"));
 } else {
-    echo '<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>安装SEAWeb</title>';
-    echo '<link rel="stylesheet" href="/assets/css/mdui.min.css"/>';
-    echo '<div class="mdui-container">';
-    echo '<div class="mdui-card">';
-    echo '<div class="mdui-card-content">';
-    echo '<div class="mdui-progress">
-    <div class="mdui-progress-indeterminate"></div>
-  </div>';
-    echo '<h1>欢迎使用SEAWeb</h1>';
-    echo '<p>项目使用GPL3许可证</p>';
+    echo '<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>安装SEAWeb</title>
+    <link rel="stylesheet" href="/assets/css/mdui.css"/>
+    <link rel="stylesheet" href="/assets/css/style.css"/>
+    </head>
+    <body class="mdui-theme-auto">
+    <div style="text-align:center;" class="mdui-prose">';
+    echo '<br/><br/>';
+    echo '<mdui-card>';
+    echo '<h3>欢迎使用SEAWeb</h3>';
+    echo '<p>请输入以下内容来完成安装程序</p>';
     echo '<form action="install.php" method="post">
     <input type="hidden" name="action" value="install">
     <p>管理员用户名：<input type="text" name="usr" value="admin" required></p>
     <p>管理员密码：<input type="text" name="pwd" required></p>
-    <br/>
     <p>mysql服务器地址：<input type="input" name="mysql_host" value="127.0.0.1:3306"></p>
     <p>mysql用户名：<input type="input" name="mysql_username" value="root"></p>
     <p>mysql密码：<input type="input" name="mysql_password"></p>
     <p>mysql数据库名：<input type="input" name="mysql_database"></p>
     <input type="submit">
     </form>';
-    echo '</div></div></div>';
-    echo '<script src="/assets/js/mdui.min.js"></script>';
+    echo '</mdui-card></div>';
+    echo '<script src="https://unpkg.com/mdui@2.0.1/mdui.global.js"></script>';
 }
 ?>

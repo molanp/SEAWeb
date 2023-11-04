@@ -17,45 +17,20 @@ if (isset($_COOKIE['token'],$_COOKIE['user']) && $DATABASE->query("SELECT token 
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
         <link rel="Shortcut Icon" href="/favicon.ico">
         <link rel="bookmark" href="/favicon.ico" type="image/x-icon" />   
-        <link rel="stylesheet" href="/assets/css/mdui.min.css" />
-        <script src="/assets/js/mdui.min.js"></script>
+        <link rel="stylesheet" href="https://unpkg.com/mdui@2.0.1/mdui.css">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <script src="https://unpkg.com/mdui@2.0.1/mdui.global.js"></script>
         <script src="/assets/js/jquery.min.js"></script>
         <script src="/assets/js/login.js"></script>
         <title>登录</title>
-        <style>
-            body {
-            background-image: url('https://pic3.zhimg.com/v2-866187288d288e98779843e36fc0207e_r.jpg');
-            background-size: cover;
-            background-repeat: no-repeat;
-            background-position: center;
-            }
-            .login-container {
-            width: 300px;
-            margin: 0 auto;
-            margin-top: 150px;
-            background-color: rgba(255, 255, 255, 0.8);
-            padding: 20px;
-            border-radius: 10px;
-            }
-        </style>
     </head>
     
-    <body>
-        <div class="mdui-container">
-            <div class="mdui-card login-container">
-                <form id="login-form">
-                    <div class="mdui-textfield">
-                    <label class="mdui-textfield-label">账号</label>
-                    <input class="mdui-textfield-input" type="text" id="username" />
-                    </div>
-                    <div class="mdui-textfield">
-                    <label class="mdui-textfield-label">密码</label>
-                    <input class="mdui-textfield-input" type="password" id="password" />
-                    </div>
-                    <button class="mdui-btn mdui-btn-raised mdui-ripple mdui-color-theme-accent" type="button" onclick="login()">登录</button>
-                    <button class="mdui-btn mdui-btn-raised mdui-ripple" type="reset">清空</button>
-                </form>
-            </div>
-        </div>
+    <body style="text-align:center;" class="mdui-theme-auto">
+        <mdui-card style="width: 70%;height: 400px">
+            <h2>登录</h2>
+            <mdui-text-field label="账号" id="username" clearable></mdui-text-field>
+            <mdui-text-field label="密码" id="password" type="password" toggle-password clearable></mdui-text-field>
+            <mdui-button onclick="login()">登录</mdui-button>
+        </mdui-card>
     </body>
     </html><?php }?>

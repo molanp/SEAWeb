@@ -1,11 +1,9 @@
-function getCookie(cname)
-{
+function getCookie(cname) {
     var name = cname + "=";
     var ca = document.cookie.split(';');
-    for(var i=0; i<ca.length; i++) 
-    {
+    for (var i = 0; i < ca.length; i++) {
         var c = ca[i].trim();
-        if (c.indexOf(name)==0) return c.substring(name.length,c.length);
+        if (c.indexOf(name) == 0) return c.substring(name.length, c.length);
     }
     return "";
 }
@@ -15,59 +13,50 @@ function login() {
     var password = $("#password").val();
 
     if (username == "" || password == "") {
-        regFail("用户名或密码不能为空");
+        message("用户名或密码不能为空");
         return;
     }
-    else{
+    else {
         var send = {
-            'username':username,
-            'password':password
+            'username': username,
+            'password': password
         };
-        sendData("/v2/auth/login", send, function(data, status) {
+        sendData("/v2/auth/login", send, function (data, status) {
             try {
                 if (status === 'success') {
                     if (data.data.login == 'success') {
-                        document.cookie=`user=${data.data.user};`;
-                        document.cookie=`token=${data.data.token};`;
+                        document.cookie = `user=${data.data.user};`;
+                        document.cookie = `token=${data.data.token};`;
                         location.reload();
                     } else {
-                        regFail(JSON.stringify(data.data.msg));
+                        message(data.data.msg);
                     }
                 } else {
-                    regFail(JSON.stringify(data.data));
+                    message(data.data);
                 }
             } catch {
-                regFail(JSON.stringify(data));
-              }
+                message(data);
+            }
         })
     }
 }
 
 function sendData(url, data, callback) {
     try {
-      $.post(url, data, function(data, status) {
-        callback(data, status);
-      });
-    } catch(error) {
-      regFail("TimeOutError");
+        $.post(url, data, function (data, status) {
+            callback(data, status);
+        });
+    } catch (error) {
+        message(error);
     }
-  }
+}
 
-function regFail(reason) {
+function message(data) {
     mdui.dialog({
-        content: reason,
-        buttons: [{
+        body: data,
+        actions: [{
             text: '确定',
         }]
     });
 }
-
-function regsuc(data) {
-    mdui.dialog({
-        content: data,
-        buttons: [{
-            text: '确定',
-        }]
-    });
-    }
 
