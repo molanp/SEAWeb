@@ -1,4 +1,4 @@
-window.onload = function() {
+window.onload = function () {
     let darkMode = getCookie('theme');
     if (darkMode == 1) enableDarkMode();
 
@@ -14,31 +14,26 @@ window.onload = function() {
         headerIds: false//因warning禁用
     });
     load();
-    mdui.mutation();
 }
 
-function getCookie(cname)
-{
+function getCookie(cname) {
     var name = cname + "=";
     var ca = document.cookie.split(';');
-    for(var i=0; i<ca.length; i++) 
-    {
+    for (var i = 0; i < ca.length; i++) {
         var c = ca[i].trim();
-        if (c.indexOf(name)==0) return c.substring(name.length,c.length);
+        if (c.indexOf(name) == 0) return c.substring(name.length, c.length);
     }
     return "";
 }
 
 function enableDarkMode() {
-    var $ = mdui.$;
-    $('body').addClass("mdui-theme-layout-dark");
-    document.cookie="theme=1;";
+    mdui.$('body').addClass("mdui-theme-dark");
+    document.cookie = "theme=1;";
 };
 
 function disableDarkMode() {
-    var $ = mdui.$;
-    $('body').removeClass("mdui-theme-layout-dark");
-    document.cookie=`theme=0;`;
+    mdui.$('body').removeClass("mdui-theme-dark");
+    document.cookie = `theme=0;`;
 };
 
 function changeTheme() {
@@ -51,8 +46,8 @@ function changeTheme() {
 };
 
 window
-.matchMedia("(prefers-color-scheme: dark)")
-.addListener(e=>(e.matches ? enableDarkMode() : disableDarkMode()))
+    .matchMedia("(prefers-color-scheme: dark)")
+    .addListener(e => (e.matches ? enableDarkMode() : disableDarkMode()))
 
 function web(data) {
     $(".title").html(data.index_title);
@@ -60,17 +55,13 @@ function web(data) {
     var link_list = '';
     var links = data.links.split(/[\r\n]+/);
     for (var i = 0; i < links.length; i++) {
-        var title = marked.parse(links[i]).match(/<p>(.*?)<\/p>/)[1];
-        link_list += `
-            <div class="mdui-chip">
-                <img class="mdui-chip-icon" src="/favicon.ico">
-                <span class="mdui-chip-title">${title}</span>
-            </div>
-        `;
-    }    
+        var title = links[i].match(/\[(.*?)\]/)[1];
+        var link = marked.parse(links[i]).match(/\"(.*?)\"/)[1];
+        link_list += `<mdui-chip href="${link}" target="_blank" style="margin-right:5px;" elevated>${title}</mdui-chip>`;
+    }
     $("#links").html(link_list);;
-    $("#version").html("Version "+data.version+"<br/>");;
-    $("#copyright").html("&copy;" +data.copyright);;
+    $("#version").html("Version " + data.version + "<br/>");;
+    $("#copyright").html("&copy;" + data.copyright);;
     $("#record").html(data.record);;
 }
 
@@ -80,28 +71,20 @@ function api(data) {
     for (var type in data) {
         for (var name in data[type]) {
             if (data[type][name].status === 'false') {
-                status = `<div class="mdui-badge mdui-color-red-400 mdui-text-color-white">维护</div>`
+                status = `<mdui-badge style="background-color:red">维护</mdui-badge>`
             } else {
-                status = `<div class="mdui-badge mdui-color-green-400 mdui-text-color-white">正常</div>`
+                status = `<mdui-badge style="background-color:green">正常</mdui-badge>`
             }
-            item += `<div class="mdui-col-sm-6 mdui-col-md-4">
-            <div class="mdui-card mdui-hoverable mdui-m-y-2" style="border-radius:10px">
-                <div class="mdui-card-primary">
-                    <div class="mdui-card-primary-title">
-                        ${name}${status}
-                        <div class="mdui-card-primary-subtitle" style="font-size:12px;">
-                        <i class="mdui-icon material-icons" style="font-size:12px;">equalizer</i>累计调用：${data[type][name].count}次
-                            <br/>
-                        <i class="mdui-icon material-icons" style="font-size:12px;">folder</i>分类：${type}</div>
-                    </div>
-                </div>
-                <div class="mdui-card-content" id="content">${marked.parse(data[type][name].api_profile)}</div>
-                <div class="mdui-card-actions">
-                    <a class="mdui-btn mdui-ripple mdui-text-color-theme-accent mdui-float-right"
-                        target="_blank" href="docs${data[type][name].path}">More</a>
-                </div>
-            </div>
-        </div>`
+            item += `
+            <mdui-card style="width:32%;margin:0.5rem;height:200px;" target="_blank" href="docs${data[type][name].path}">
+                <h3>${name}${status}</h3>
+                <small>
+                <i class="material-icons" style="font-size:12px;">equalizer</i>累计调用：${data[type][name].count}次|
+                <i class="material-icons" style="font-size:12px;">folder</i>分类：${type}
+                </small>
+                <br/>
+                <p>${marked.parse(data[type][name].api_profile)}</p>
+        </mdui-card>`
         }
     }
     $("#app_api").html(item);
@@ -109,30 +92,58 @@ function api(data) {
 
 function load() {
     $.get(
-        url='/v2/info',
-        data={"for":"web"},
+        url = '/v2/info',
+        data = { "for": "web" },
     )
-    .done(function(data) {
-        if (data.status==200) {
-            web(data.data);
-        } else {
-            alert(JSON.stringify(data.data));
-        }
-    })
-    .fail(function(data){
-        alert(data.responseJSON.data)
-    });
+        .done(function (data) {
+            if (data.status == 200) {
+                web(data.data);
+            } else {
+                mdui.dialog({
+                    body: data.data,
+                    actions: [
+                        {
+                            text: "OK"
+                        }
+                    ]
+                });
+            }
+        })
+        .fail(function (data) {
+            mdui.dialog({
+                body: data.responseJSON.data,
+                actions: [
+                    {
+                        text: "OK"
+                    }
+                ]
+            });
+        });
     $.get(
-        url='/v2/info'
+        url = '/v2/info'
     )
-    .done(function(data) {
-        if (data.status==200) {
-            api(data.data);
-        } else {
-            alert(JSON.stringify(data.data));
-        }
-    })
-    .fail(function(data){
-        alert(data.responseJSON.data)
-    });
+        .done(function (data) {
+            if (data.status == 200) {
+                api(data.data);
+            } else {
+                mdui.dialog({
+                    body: data.data,
+                    actions: [
+                        {
+                            text: "OK"
+                        }
+                    ]
+                });
+            }
+        })
+        .fail(function (data) {
+            mdui.dialog({
+                body: data.responseJSON.data,
+                actions: [
+                    {
+                        text: "OK"
+                    }
+                ]
+            });
+        });
 }

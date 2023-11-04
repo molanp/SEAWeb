@@ -1,4 +1,4 @@
-window.onload = function() {
+window.onload = function () {
     let darkMode = sessionStorage.theme;
     if (darkMode == 1) enableDarkMode();
 
@@ -14,17 +14,16 @@ window.onload = function() {
         headerIds: false//因warning禁用
     });
     load();
-    mdui.mutation();
 }
 
 function enableDarkMode() {
     $('body').addClass("mdui-theme-layout-dark");
-    document.cookie="theme=1;";
+    document.cookie = "theme=1;";
 };
 
 function disableDarkMode() {
     $('body').removeClass("mdui-theme-layout-dark");
-    document.cookie=`theme=0;`;
+    document.cookie = `theme=0;`;
 };
 
 function changeTheme() {
@@ -37,23 +36,23 @@ function changeTheme() {
 };
 
 window
-.matchMedia("(prefers-color-scheme: dark)")
-.addListener(e=>(e.matches ? enableDarkMode() : disableDarkMode()))
+    .matchMedia("(prefers-color-scheme: dark)")
+    .addListener(e => (e.matches ? enableDarkMode() : disableDarkMode()))
 
 function web(data) {
     $("#title").html(data.index_title);
-    $("#version").html("Version "+data.version+"<br/>");
-    $("#copyright").html("&copy;" +data.copyright);
+    $("#version").html("Version " + data.version + "<br/>");
+    $("#copyright").html("&copy;" + data.copyright);
     $("#record").html(data.record);
 }
 
 function rank(data) {
     let table = "";
     let num = 0;
-    
+
     Object.keys(data).forEach((item, index) => {
-      num++;
-      table += `
+        num++;
+        table += `
         <tr>
           <td>${num}</td>
           <td><a href="/docs${data[item].url.replace(/\/api/, "")}">${data[item].name}</a></td>
@@ -61,9 +60,9 @@ function rank(data) {
         </tr>
       `;
     });
-  
+
     if (!table) {
-      table = `
+        table = `
         <tr>
           <td>1</td>
           <td>无数据</td>
@@ -71,38 +70,38 @@ function rank(data) {
         </tr>
       `;
     }
-    
+
     $("#rank").html(table);
-  }
-  
+}
+
 
 
 function load() {
     $.get(
-        url='/v2/info',
-        data={"for":"web"},
+        url = '/v2/info',
+        data = { "for": "web" },
     )
-    .done(function(data) {
-        if (data.status==200) {
-            web(data.data);
-        } else {
-            alert(JSON.stringify(data.data));
-        }
-    })
-    .fail(function(data){
-        alert(data.responseJSON.data)
-    });
+        .done(function (data) {
+            if (data.status == 200) {
+                web(data.data);
+            } else {
+                alert(JSON.stringify(data.data));
+            }
+        })
+        .fail(function (data) {
+            alert(data.responseJSON.data)
+        });
     $.get(
-        url='/v2/hot',
+        url = '/v2/hot',
     )
-    .done(function(data) {
-        if (data.status==200) {
-            rank(data.data);
-        } else {
-            alert(JSON.stringify(data.data));
-        }
-    })
-    .fail(function(data){
-        alert(data.responseJSON.data)
-    });
+        .done(function (data) {
+            if (data.status == 200) {
+                rank(data.data);
+            } else {
+                alert(JSON.stringify(data.data));
+            }
+        })
+        .fail(function (data) {
+            alert(data.responseJSON.data)
+        });
 }

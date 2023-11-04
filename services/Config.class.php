@@ -299,7 +299,7 @@ class Config {
 
         $file_strm = fopen($this->file, 'w'); 
 
-        if(!$file_strm) return '写入文件失败，请赋予 '.$file.' 文件写权限！'; 
+        if(!$file_strm) return '写入文件失败，请赋予 '.$this->file.' 文件写权限！'; 
 
         fwrite($file_strm, $buffer); 
 

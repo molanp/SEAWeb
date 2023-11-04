@@ -1,4 +1,4 @@
-window.onload = function() {
+window.onload = function () {
     let darkMode = getCookie('theme');
     if (darkMode == 1) enableDarkMode();
 
@@ -14,29 +14,26 @@ window.onload = function() {
         headerIds: false//因warning禁用
     });
     load();
-    mdui.mutation();
 }
 
-function getCookie(cname)
-{
+function getCookie(cname) {
     var name = cname + "=";
     var ca = document.cookie.split(';');
-    for(var i=0; i<ca.length; i++) 
-    {
+    for (var i = 0; i < ca.length; i++) {
         var c = ca[i].trim();
-        if (c.indexOf(name)==0) return c.substring(name.length,c.length);
+        if (c.indexOf(name) == 0) return c.substring(name.length, c.length);
     }
     return "";
 }
 
 function enableDarkMode() {
-    $('body').addClass("mdui-theme-layout-dark");
-    document.cookie="theme=1;";
+    $('body').addClass("mdui-theme-dark");
+    document.cookie = "theme=1;";
 };
 
 function disableDarkMode() {
-    $('body').removeClass("mdui-theme-layout-dark");
-    document.cookie=`theme=0;`;
+    $('body').removeClass("mdui-theme-dark");
+    document.cookie = `theme=0;`;
 };
 
 function changeTheme() {
@@ -49,45 +46,73 @@ function changeTheme() {
 };
 
 window
-.matchMedia("(prefers-color-scheme: dark)")
-.addListener(e=>(e.matches ? enableDarkMode() : disableDarkMode()))
+    .matchMedia("(prefers-color-scheme: dark)")
+    .addListener(e => (e.matches ? enableDarkMode() : disableDarkMode()))
 
 function load() {
     $.get(
-    url='/v2/api_info',
-    data = {"url": window.location.pathname}
+        url = '/v2/api_info',
+        data = { "url": window.location.pathname }
     )
-    .done(function(data) {
-        if (data.status==200) {
-            api(data.data);
-        } else {
-            alert(JSON.stringify(data.data));
-        }
-    })
-    .fail(function(data){
-        alert(data.responseJSON.data)
-    });
+        .done(function (data) {
+            if (data.status == 200) {
+                api(data.data);
+            } else {
+                mdui.dialog({
+                    body: data.data,
+                    actions: [
+                        {
+                            text: "OK"
+                        }
+                    ]
+                });
+            }
+        })
+        .fail(function (data) {
+            mdui.dialog({
+                body: data.responseJSON.data,
+                actions: [
+                    {
+                        text: "OK"
+                    }
+                ]
+            });
+        });
     $.get(
-        url='/v2/info',
-        data={"for":"web"},
+        url = '/v2/info',
+        data = { "for": "web" },
     )
-    .done(function(data) {
-        if (data.status==200) {
-            var data = data.data;
-            web(data);
-        } else {
-            alert(JSON.stringify(data.data));
-        }
-    })
-    .fail(function(data){
-        alert(data.responseJSON.data)
-    });
+        .done(function (data) {
+            if (data.status == 200) {
+                var data = data.data;
+                web(data);
+            } else {
+                mdui.dialog({
+                    body: data.data,
+                    actions: [
+                        {
+                            text: "OK"
+                        }
+                    ]
+                });
+            }
+        })
+        .fail(function (data) {
+            mdui.dialog({
+                body: data.responseJSON.data,
+                actions: [
+                    {
+                        text: "OK"
+                    }
+                ]
+            });
+        });
 }
 
 function web(data) {
     $("#title").html(data.index_title);
-    $("#version").html("Version "+data.version+"<br/>");
-    $("#copyright").html("&copy;" +data.copyright);
+    $("#version").html("Version " + data.version + "<br/>");
+    $("#copyright").html("&copy;" + data.copyright);
     $("#record").html(data.record);
 }
 
@@ -101,6 +126,5 @@ function api(api_data) {
     $("#author").html(DOMPurify.sanitize(api_data.author));
     $("#api_version").html(DOMPurify.sanitize(api_data.version));
     $("#api_profile").html(DOMPurify.sanitize(marked.parse(api_data.profile)));
-    $("#urlInput").text('/api'+path);
-
+    $("#urlInput").attr('value', window.location.host + '/api' + path);
 }

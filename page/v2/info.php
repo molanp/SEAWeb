@@ -11,11 +11,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     $for = $_GET['for'] ?? NULL;
     switch($for) {
         case 'setting':
-            if (isset($_GET['apikey']) && tokentime($_GET['apikey'])) {
+            if (tokentime($_GET)) {
                 $conname = [];
                 $query = $DATABASE->prepare("SELECT item, value, info FROM setting");
                 $query->execute();
-                // 遍历查询结果并将其添加到关联数组中
                 while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                     $conname[$row['item']] = [$row['value'], $row["info"]];
                 }
@@ -89,7 +88,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
                                 $status = ($status === false) ? "true" : $status;
                                 $maxIdQuery = $DATABASE->query("SELECT MAX(id) FROM api");
                                 $maxId = $maxIdQuery->fetchColumn();
-                                $id = ($maxId !== false) ? ($maxId + 1) : 0;
+                                $id = 0;
                                 $data = [
                                     "id" => $id,
                                     "name" => $info["name"],
@@ -136,7 +135,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
                 }
                 break;
             };
-            //统计调用
             $count = [];
             $query = "SELECT url, COUNT(*) AS count FROM access_log GROUP BY url";
             $stmt = $DATABASE->prepare($query);
@@ -154,7 +152,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
                 $profile = $row['profile'];
                 $url_path = $row['url_path'];
                 $status = $row['status'];
-                // 构建数组项
                 $conname[$type][$name] = [
                     'path' => $url_path,
                     'count' => $count["/api".$url_path] ?? 0,

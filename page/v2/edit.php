@@ -5,7 +5,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     include_once($_SERVER['DOCUMENT_ROOT'].'/services/connect.php');
 
     $for = $_POST['for'] ?? NULL;
-    $token = $_POST['apikey'];
+    $token = $_POST;
     switch($for) {
         case 'web':
             if (tokentime($token)) {
@@ -20,7 +20,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         "latesttime"=>date('Y-m-d')],
                     "keywords"=>$_POST["keywords"],
                     "links"=>$_POST["links"]])->save();
-
                 _return_("修改成功");
             } else {
                 _return_("身份验证失败",403);

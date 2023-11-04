@@ -1,14 +1,16 @@
-function output() {
+function output_search() {
     mdui.dialog({
-        title: '<input class="mdui-textfield-input" type="text" placeholder="搜索api名称" id="search"/>',
-        content: `<div class="mdui-panel mdui-panel-scrollable" style="min-height: 200px;">
-            <ul class="mdui-list" id="search_result">
-            </ul>
+        headline: '搜索..',
+        body: `
+        <mdui-text-field variant="outlined" label="输入API名称" id="search"></mdui-text-field>
+        <div class="mdui-panel mdui-panel-scrollable" style="min-height: 200px;">
+            <mdui-list id="search_result">
+            </mdui-list>
         </div>`,
-        buttons: [{
+        actions: [{
             text: '关闭',
         }],
-        onOpened: function() {
+        onOpened: function () {
             $('#search').on('input', search_);
         }
     })
@@ -38,21 +40,13 @@ function search_() {
             break;
         }
         if ((key.includes(inp.val()) || data[key][0].includes(inp.val())) && data[key][0] !== "") {
-            var li = $('<li></li>').addClass('mdui-list-item');
-            var content = `<div class="mdui-list-item-content">
-                <div class="article-title"><span class="mdui-text-color-black">${key.replace(new RegExp(inp.val(), 'g'), "<span class='mdui-text-color-theme'><b>" + inp.val() + "</b></span>")}</span></div>
-                <div class="mdui-list-item-text"><span class="mdui-text-color-black">${data[key][0].replace(new RegExp(inp.val(), 'g'), "<span class='mdui-text-color-theme'><b>" + inp.val() + "</b></span>")}</span></div>
-            </div>`;
-            li.attr('data-url', data[key][1]);
+            var li = $('<span></span>');
+            var content = `
+            <mdui-list-item description="${data[key][0]}" description-line="2" target="_blank" href="/docs${data[key][1]}">${key}</mdui-list-item>
+            `;
             li.html(content);
             ul.append(li);
             displayedResults++;
         }
-        // 绑定点击事件
-        $('.mdui-list-item').on('click', function() {
-            var url = $(this).attr('data-url');
-            window.location.href = url;
-        });
     }
-    mdui.mutation();
 }

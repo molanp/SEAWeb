@@ -1,5 +1,4 @@
 <?php
-include_once($_SERVER['DOCUMENT_ROOT'].'/services/Config.class.php');
 include_once($_SERVER['DOCUMENT_ROOT'].'/services/until.php');
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -11,7 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         case 'pass':
             $token = $data['token'];
             $pwd = hash('sha256', $data["new"]);
-            if (tokentime($token)) {
+            if (tokentime($data)) {
                 if ($pwd !== hash('sha256',$data["again"])) {
                     _return_('两次输入密码不同',400);
                 } else {
