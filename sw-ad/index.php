@@ -3,8 +3,17 @@ include_once($_SERVER['DOCUMENT_ROOT'].'/services/Config.class.php');
 include_once($_SERVER['DOCUMENT_ROOT'].'/services/connect.php');
 include_once($_SERVER['DOCUMENT_ROOT'].'/services/until.php');
 
-if (isset($_COOKIE['token'],$_COOKIE['user']) && $DATABASE->query("SELECT token FROM users WHERE username = '".$_COOKIE["user"]."'")->fetchColumn() == $_COOKIE['token']) {
-    die(include_once($_SERVER['DOCUMENT_ROOT'].'/page/backstage.html'));
+if (isset($_COOKIE['token'], $_COOKIE['user'])) {
+    $stmt = $DATABASE->prepare("SELECT token FROM users WHERE username = :username");
+    $stmt->bindParam(':username', $_COOKIE["user"]);
+    $stmt->execute();
+    $storedToken = $stmt->fetchColumn();
+
+    if ($storedToken && $storedToken === $_COOKIE['token']) {
+        die(include_once($_SERVER['DOCUMENT_ROOT'] . '/page/backstage.html'));
+    } else {
+        exit;
+    }
 } else {?>
     <!DOCTYPE html>
     <html lang="zh-CN">

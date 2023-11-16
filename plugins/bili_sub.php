@@ -1,5 +1,6 @@
 <?php
 class bili_sub {
+    $requests = $GLOBALS["requests"];
     public function getInfo() {
         return [
             'name' => 'bilibili视频解析',

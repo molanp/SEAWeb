@@ -17,7 +17,9 @@
 </head>
 
 <body>
-    <mdui-top-app-bar>
+    <mdui-top-app-bar
+    scroll-behavior="hide"
+    scroll-threshold="30">
         <mdui-buutton-icon icon="home"></mdui-buutton-icon>
         <mdui-top-app-bar-title>Web管理</mdui-top-app-bar-title>
         <div style="flex-grow: 1"></div>
@@ -37,70 +39,63 @@
             </mdui-menu>
         </mdui-dropdown>
     </mdui-top-app-bar>
-    <div style="position: relative">
-        <mdui-navigation-rail divider contained>
+    <div style="position: relative;">
+        <mdui-navigation-rail contained divider>
             <mdui-navigation-rail-item icon="dashboard" href="#">主面板</mdui-navigation-rail-item>
             <mdui-navigation-rail-item icon="api" href="#api_control">API管理</mdui-navigation-rail-item>
             <mdui-navigation-rail-item icon="settings" href="#settings">设置</mdui-navigation-rail-item>
             <mdui-navigation-rail-item icon="edit_note" href="#edit">修改信息</mdui-navigation-rail-item>
-
         </mdui-navigation-rail>
         <div class="tabs">
-            <div id="home">
-                <mdui-card style="width:48%;min-height:200px">
+            <div id="home" class="container">
+                <mdui-card class="item">
                     本地SEAWeb版本: <span id="version">
                         <mdui-chip loading></mdui-chip>
-                    </span><br />
+                    </span><br>
                     网络版本:<span id="latest_version"><a href="javascript:check_update()">检查更新</a></span>
                     <p>更新内容</p>
                     <pre><code id="update_info"></code></pre>
                 </mdui-card>
-                <mdui-card style="width:48%;min-height:200px">
+                <mdui-card class="item">
                     <mdui-list-subheader>调用排行</mdui-list-subheader>
                     <mdui-list id="api-rank-list">
-                        <br />
+                        <br>
                         <mdui-circular-progress></mdui-circular-progress>
                     </mdui-list>
                 </mdui-card>
-                <mdui-card style="width:48%;min-height:200px">
+                <mdui-card class="item">
                     调用统计
                     <canvas id="api-trend-chart">
-                        <br />
+                        <br>
                         <mdui-circular-progress></mdui-circular-progress>
                     </canvas>
                 </mdui-card>
             </div>
             <div id="api_control">
-                <h3>Edit API Status</h3>
-                <br>
-                <span id="api_list">
-                    <br />
+                <div id="api_list" class="mdui-table">
+                    <br>
                     <mdui-circular-progress></mdui-circular-progress>
-                </span>
+                </div>
                 <br>
                 <mdui-button onclick='save("status")' class='login-button mdui-btn mdui-btn-raised mdui-ripple'>Save</mdui-button>
             </div>
             <div id="settings">
-                <h3>网站设置</h3>
-                <br>
                 <mdui-button onclick="up_sys()">更新设置列表</mdui-button>
-                <span id="setting">
-                    <br />
+                <div id="setting" class="mdui-table">
+                    <br>
                     <mdui-circular-progress></mdui-circular-progress>
-                </span>
+                </div>
                 <br>
                 <mdui-button onclick='save("setting")' class='login-button mdui-btn mdui-btn-raised mdui-ripple'>Save</mdui-button>
             </div>
             <div id="edit">
-                <h3>修改网站信息</h3>
                 <span id="web_info">
-                    <br />
+                    <br>
                     <mdui-circular-progress></mdui-circular-progress>
                 </span>
+                <mdui-button onclick='save("web")'>Save</mdui-button>
             </div>
-            <mdui-button onclick='save("web")'>Save</mdui-button>
         </div>
-    </div>
     </div>
     <script src="https://unpkg.com/mdui@2.0.1/mdui.global.js"></script>
 </body>

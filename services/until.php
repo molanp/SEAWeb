@@ -4,7 +4,7 @@ include_once('Config.class.php');
 include_once('requests.php');
 include_once('watchdog.php');
 
-$requests = new requests();
+$GLOBALS["requests"] = new requests();
 
 /**
  * 在给定的字符串末尾添加斜杠("/")，如果它尚未以斜杠结尾。
@@ -74,12 +74,13 @@ function parseTable($prefix, $key, &$table) {
             parseTable($prefix . "{$k}.", $v, $table);
         } else {
             if (preg_match('/^\*(\w+)$/', $k, $matches)) {
-                $k = "<font color='red'>*</font>`{$matches[1]}`";
+                $k = "<font color='red'>`" . $matches[1] . "`</font>";
             }
-            $table .= "\n| `{$prefix}{$k}` | {$v} |";
+            $table .= "\n| {$prefix}{$k} | {$v} |";
         }
     }
 }
+
 /**
  * 返回结果
  *
