@@ -60,7 +60,7 @@ function web(data) {
         link_list += `<mdui-chip href="${link}" target="_blank" style="margin-right:5px;" elevated>${title}</mdui-chip>`;
     }
     $("#links").html(link_list);;
-    $("#version").html("Version " + data.version + "<br/>");;
+    $("#version").html("Version " + data.version + "<br>");;
     $("#copyright").html("&copy;" + data.copyright);;
     $("#record").html(data.record);;
 }
@@ -76,13 +76,13 @@ function api(data) {
                 status = `<mdui-badge style="background-color:green">正常</mdui-badge>`
             }
             item += `
-            <mdui-card style="width:32%;margin:0.5rem;height:200px;" target="_blank" href="docs${data[type][name].path}">
+            <mdui-card class="item" target="_blank" href="docs${data[type][name].path}">
                 <h3>${name}${status}</h3>
                 <small>
                 <i class="material-icons" style="font-size:12px;">equalizer</i>累计调用：${data[type][name].count}次|
                 <i class="material-icons" style="font-size:12px;">folder</i>分类：${type}
                 </small>
-                <br/>
+                <br>
                 <p>${marked.parse(data[type][name].api_profile)}</p>
         </mdui-card>`
         }

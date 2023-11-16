@@ -1,5 +1,6 @@
 <?php
 class zhihu_yx {
+    $requests = $GLOBALS["requests"];
     function getInfo() {
         return [
             'name' => '知乎盐选',

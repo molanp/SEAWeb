@@ -111,7 +111,7 @@ function load() {
 
 function web(data) {
     $("#title").html(data.index_title);
-    $("#version").html("Version " + data.version + "<br/>");
+    $("#version").html("Version " + data.version + "<br>");
     $("#copyright").html("&copy;" + data.copyright);
     $("#record").html(data.record);
 }

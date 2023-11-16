@@ -66,10 +66,10 @@ $web = $web->get("web");
         </mdui-dropdown>
     </mdui-top-app-bar>
     <div style="text-align:center;">
-        <br/>
+        <br>
         <h3 class="title"></h3>
         <span id="index_description"><mdui-circular-progress></mdui-circular-progress></span>
-        <br/>
+        <br>
         <span id="links"></span>
     </div>
     <mdui-linear-progress></mdui-linear-progress>
@@ -79,8 +79,8 @@ $web = $web->get("web");
             <p>It is recommended to use <a href="https://www.microsoft.com/edge/">Edge</a> modern browser.</p>
         </div>
     </noscript>
-    <div id="app_api" style="text-align:center">
-        <br/>
+    <div id="app_api" class="container">
+        <br>
         <mdui-circular-progress></mdui-circular-progress>
     </div>
 

@@ -36,9 +36,18 @@ if (isset($_POST["action"]) && $_POST["action"]=="install") {
         ])->save();
     $DATA->delete("account");
     $DATA->delete("setting");
-
-    $DATABASE->exec("CREATE TABLE users (username TEXT, password TEXT, token TEXT, apikey TEXT, permission INTEGER, regtime TEXT, logtime BIGINT)");
+    $DATABASE->exec("CREATE TABLE IF NOT EXISTS users (
+        username TEXT UNIQUE,
+        password TEXT,
+        token TEXT,
+        apikey TEXT,
+        permission INTEGER,
+        regtime TEXT,
+        logtime BIGINT
+    )");
+    
     $DATABASE->exec("DELETE FROM users");
+    
     $sql = "INSERT INTO users (username, password, regtime, permission) VALUES (:username, :password, :regtime, :permission)";
     $stmt = $DATABASE->prepare($sql);
     $stmt->bindParam(':username', $_POST['usr']);
@@ -46,15 +55,22 @@ if (isset($_POST["action"]) && $_POST["action"]=="install") {
     $stmt->bindValue(':regtime', date("Y-m-d H:i:s"));
     $stmt->bindValue(':permission', 9);
     $stmt->execute();
-    $DATABASE->exec("CREATE TABLE setting (item TEXT, value TEXT, info TEXT)");
+    
+    $DATABASE->exec("CREATE TABLE IF NOT EXISTS setting (
+        item TEXT UNIQUE,
+        value TEXT,
+        info TEXT
+    )");
+    
     $dbData = [];
     $stmt = $DATABASE->query("SELECT item FROM setting");
     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
         $dbData[] = $row['item'];
     }
+    
     $itemsToAdd = array_diff(array_keys(UP_SYS), $dbData);
     $itmsToDelete = array_diff($dbData, array_keys(UP_SYS));
-
+    
     if (!empty($itemsToAdd)) {
         $sqlAdd = "INSERT INTO setting (item, value, info) VALUES (:item, :value, :info)";
         $stmtAdd = $DATABASE->prepare($sqlAdd);
@@ -65,7 +81,7 @@ if (isset($_POST["action"]) && $_POST["action"]=="install") {
             $stmtAdd->execute();
         }
     }
-
+    
     if (!empty($itemsToDelete)) {
         $sqlDelete = "DELETE FROM setting WHERE item = :item";
         $stmtDelete = $DATABASE->prepare($sqlDelete);
@@ -74,8 +90,38 @@ if (isset($_POST["action"]) && $_POST["action"]=="install") {
             $stmtDelete->execute();
         }
     }
-    $DATABASE->exec("CREATE TABLE access_log (time TEXT, ip TEXT, url TEXT, name TEXT, referer TEXT, param TEXT)");
-    $DATABASE->exec("CREATE TABLE api (id INTEGER, name TEXT, version TEXT, author TEXT, method TEXT, profile TEXT, request TEXT, response TEXT, class TEXT, url_path TEXT, file_path TEXT, type TEXT, top TEXT, status TEXT, time BIGINT)");
+    
+    $DATABASE->exec("CREATE TABLE IF NOT EXISTS access_log (
+        time TEXT,
+        ip TEXT,
+        url TEXT,
+        name TEXT,
+        referer TEXT,
+        param TEXT
+    )");
+    
+    $DATABASE->exec("CREATE TABLE IF NOT EXISTS api (
+        id INTEGER,
+        name TEXT,
+        version TEXT,
+        author TEXT,
+        method TEXT,
+        profile TEXT,
+        request TEXT,
+        response TEXT,
+        class TEXT,
+        url_path TEXT,
+        file_path TEXT,
+        type TEXT,
+        top TEXT,
+        status TEXT,
+        time BIGINT
+    )");
+    $DATABASE->exec("CREATE INDEX idx_username ON users (username)");
+    $DATABASE->exec("CREATE INDEX idx_apiname ON api (name)");
+    $DATABASE->exec("CREATE INDEX idx_apiprofile ON api (profile)");
+    $DATABASE->exec("CREATE INDEX idx_item ON setting (item)");
+    
     echo '<p>安装成功</p><p><a href="/sw-ad/">管理员登录</a></p><p><a href="/">主页</a></p>';
     die(unlink("install.php"));
 } else {
@@ -88,7 +134,7 @@ if (isset($_POST["action"]) && $_POST["action"]=="install") {
     </head>
     <body class="mdui-theme-auto">
     <div style="text-align:center;" class="mdui-prose">';
-    echo '<br/><br/>';
+    echo '<br><br>';
     echo '<mdui-card>';
     echo '<h3>欢迎使用SEAWeb</h3>';
     echo '<p>请输入以下内容来完成安装程序</p>';

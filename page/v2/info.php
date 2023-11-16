@@ -50,6 +50,27 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
                 $time = time();
                 $conname = [];
                 $pluginFiles = str_replace(['/','\\'], [DIRECTORY_SEPARATOR,DIRECTORY_SEPARATOR], find_files(PLUGIN_FOLDERS,'.php'));
+                                try {
+                    $threshold = time() - (60 * 30); // 计算30分钟前的时间戳
+                    $query_check = "SELECT COUNT(*) FROM api WHERE time < :threshold";
+                    $stmt_check = $DATABASE->prepare($query_check);
+                    $stmt_check->bindParam(':threshold', $threshold, PDO::PARAM_INT);
+                    $stmt_check->execute();
+                    $count = $stmt_check->fetchColumn();
+                
+                    if ($count > 0) {
+                        $query_delete = "DELETE FROM api WHERE time < :threshold";
+                        $stmt_delete = $DATABASE->prepare($query_delete);
+                        $stmt_delete->bindParam(':threshold', $threshold, PDO::PARAM_INT);
+                        $stmt_delete->execute();
+                        $rowCount = $stmt_delete->rowCount();
+                        (new logger())->info("已删除 $rowCount 条过期API记录。");
+                    } else {
+                        //(new logger())->info("没有过期API记录需要删除。");
+                    }
+                } catch (PDOException $e) {
+                    (new logger())->error("删除过期API数据时出错: " . $e->getMessage());
+                }
                 if (count($pluginFiles) > 0) {
                     foreach ($pluginFiles as $pluginFilePath) {
                         include_once $_SERVER['DOCUMENT_ROOT'].DIRECTORY_SEPARATOR.$pluginFilePath;
@@ -88,7 +109,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
                                 $status = ($status === false) ? "true" : $status;
                                 $maxIdQuery = $DATABASE->query("SELECT MAX(id) FROM api");
                                 $maxId = $maxIdQuery->fetchColumn();
-                                $id = 0;
+                                $id = $maxId + 1 ?? 0;
                                 $data = [
                                     "id" => $id,
                                     "name" => $info["name"],
@@ -111,27 +132,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
                             }
                         }
                     }
-                };
-                try {
-                    $threshold = time() - (60 * 30); // 计算30分钟前的时间戳
-                    $query_check = "SELECT COUNT(*) FROM api WHERE time < :threshold";
-                    $stmt_check = $DATABASE->prepare($query_check);
-                    $stmt_check->bindParam(':threshold', $threshold, PDO::PARAM_INT);
-                    $stmt_check->execute();
-                    $count = $stmt_check->fetchColumn();
-                
-                    if ($count > 0) {
-                        $query_delete = "DELETE FROM api WHERE time < :threshold";
-                        $stmt_delete = $DATABASE->prepare($query_delete);
-                        $stmt_delete->bindParam(':threshold', $threshold, PDO::PARAM_INT);
-                        $stmt_delete->execute();
-                        $rowCount = $stmt_delete->rowCount();
-                        (new logger())->info("已删除 $rowCount 条过期API记录。");
-                    } else {
-                        //(new logger())->info("没有过期API记录需要删除。");
-                    }
-                } catch (PDOException $e) {
-                    (new logger())->error("删除过期API数据时出错: " . $e->getMessage());
                 }
                 break;
             };

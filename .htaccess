@@ -6,7 +6,7 @@
     RewriteRule ^ - [F]
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteRule ^api/(.*)$ page/v2/loader.php?path=$1 [QSA,L]
-    RewriteRule ^v2/(.*)$ page/v2/$1.php [QSA,L]
-    RewriteRule ^docs/(.*)$ page/manager.php?path=$1 [QSA,L]
+    RewriteRule ^v2/(.*)$ page/v2/$1.php 
+    RewriteRule ^api/(.*)$ page/v2/loader.php?__=$1 [QSA,L]
+    RewriteRule ^docs/(.*)$ page/manager.php?__=$1 [QSA,L]
 </IfModule>

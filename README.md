@@ -12,7 +12,8 @@
 
 ### 开发测试环境
 
-phpstudy + php7.3.4 + apache + mysql
+- phpstudy + php7.3.4 + apache + mysql
+- apache + php8.2.6 + mysql5.7.34
 
 ### 样式(0.1.3-beta)
 

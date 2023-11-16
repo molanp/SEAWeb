@@ -18,7 +18,7 @@ class wbtop {
         ];
     }
     public function run() {
-        $wbtop = $requests->get("https://weibo.com/ajax/side/hotSearch")->json()['data']['realtime'];
+        $wbtop = $GLOBALS["requests"]->get("https://weibo.com/ajax/side/hotSearch")->json()['data']['realtime'];
         $i = 0;
         $top = [];
         for($i;$i<count($wbtop);$i++) {

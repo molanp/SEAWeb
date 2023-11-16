@@ -7,7 +7,7 @@ if ($DATABASE->query("SELECT value FROM setting WHERE item = '维护模式'")->f
 };
 $sql = "SELECT name, profile FROM api WHERE url_path = :urlPath";
 $statement = $DATABASE->prepare($sql);
-$statement->execute([":urlPath" => addSlashIfNeeded($_GET["path"])]);
+$statement->execute([":urlPath" => addSlashIfNeeded($_GET["__"])]);
 $data = $statement->fetch(PDO::FETCH_ASSOC);
 if($data==null) {
     die(include_once($_SERVER['DOCUMENT_ROOT'].'/404.php'));
@@ -86,60 +86,62 @@ $web = $web->get("web");
             <mdui-chip icon="equalizer"><span id="api_count">Loading...</span>&nbsp;times</mdui-chip>
         </mdui-tooltip>
     </div>
-    <mdui-card style="width:48%;margin:0.5rem;min-height:200px;">
-        <h3><i class="mdui-icon material-icons mdui-text-color-blue">language</i>简介</h3>
-        <span id="api_profile" class="mdui-prose">Loading...</span>
-    </mdui-card>
-    <mdui-card style="width:48%;margin:0.5rem;min-height:200px;">
-        <h3><i class="mdui-icon material-icons mdui-text-color-orange">view_compact</i>API 地址</h3>
-        <div class="mdui-table">
-            <table id="api_address"></table>
-        </div>
-    </mdui-card>
-    <mdui-card style="width:48%;margin:0.5rem;min-height:200px;">
-        <h3><i class="mdui-icon material-icons mdui-text-color-purple">vpn_key</i>参数列表 (打<code>*</code>是必填项)</h3>
-        <div class="mdui-table">
-            <table id="request"></table>
-        </div>
-    </mdui-card>
-    <mdui-card style="width:48%;margin:0.5rem;min-height:200px;">
-        <h3><i class="mdui-icon material-icons mdui-text-color-gray">reply</i>返回的数据</h3>
-        <div class="mdui-table">
-            <table id="response"></table>
-        </div>
-    </mdui-card>
-    <mdui-card style="width:48%;margin:0.5rem;min-height:200px;">
-        <h3><i class="mdui-icon material-icons mdui-text-color-teal-a400">build</i>在线测试</h3>
-        <form id="requestForm">
-            <mdui-text-field readonly label="URL" id="urlInput"></mdui-text-field>
-            <mdui-select class="mdui-select" id="methodSelect" value="GET" label="Method">
-                <mdui-menu-item value="GET">GET</mdui-menu-item>
-                <mdui-menu-item value="POST">POST</mdui-menu-item>
-                <mdui-menu-item value="PUT">PUT</mdui-menu-item>
-                <mdui-menu-item value="DELETE">DELETE</mdui-menu-item>
-                <mdui-menu-item value="OPTIONS">OPTIONS</mdui-menu-item>
-                <mdui-menu-item value="PATCH">PATCH</mdui-menu-item>
-                <!-- 可添加其他方法选项 -->
-            </mdui-select>
+    <div class="container">
+        <mdui-card class="item">
+            <h3><i class="mdui-icon material-icons mdui-text-color-blue">language</i>简介</h3>
+            <span id="api_profile" class="mdui-prose">Loading...</span>
+        </mdui-card>
+        <mdui-card class="item">
+            <h3><i class="mdui-icon material-icons mdui-text-color-orange">view_compact</i>API 地址</h3>
+            <div class="mdui-table">
+                <table id="api_address"></table>
             </div>
-            <table id="paramsTable" class="mdui-table">
-                <thead>
-                    <tr>
-                        <th>参数名</th>
-                        <th>值</th>
-                        <th><a href="javascript:addParamRow()">添加参数</a></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- 参数行将在 JavaScript 中动态生成 -->
-                </tbody>
-            </table>
-            <label>响应</label>
-            <pre class="language-json" id="responseTEXT">
-            </pre>
-            <mdui-button onclick="sendRequest()">发送请求</mdui-button>
-        </form>
-    </mdui-card>
+        </mdui-card>
+        <mdui-card class="item">
+            <h3><i class="mdui-icon material-icons mdui-text-color-purple">vpn_key</i>参数列表 (红色是必填项)</h3>
+            <div class="mdui-table">
+                <table id="request"></table>
+            </div>
+        </mdui-card>
+        <mdui-card class="item">
+            <h3><i class="mdui-icon material-icons mdui-text-color-gray">reply</i>返回的数据</h3>
+            <div class="mdui-table">
+                <table id="response"></table>
+            </div>
+        </mdui-card>
+        <mdui-card class="item">
+            <h3><i class="mdui-icon material-icons mdui-text-color-teal-a400">build</i>在线测试</h3>
+            <form id="requestForm">
+                <mdui-text-field readonly label="URL" id="urlInput"></mdui-text-field>
+                <mdui-select class="mdui-select" id="methodSelect" value="GET" label="Method">
+                    <mdui-menu-item value="GET">GET</mdui-menu-item>
+                    <mdui-menu-item value="POST">POST</mdui-menu-item>
+                    <mdui-menu-item value="PUT">PUT</mdui-menu-item>
+                    <mdui-menu-item value="DELETE">DELETE</mdui-menu-item>
+                    <mdui-menu-item value="OPTIONS">OPTIONS</mdui-menu-item>
+                    <mdui-menu-item value="PATCH">PATCH</mdui-menu-item>
+                    <!-- 可添加其他方法选项 -->
+                </mdui-select>
+                </div>
+                <table id="paramsTable" class="mdui-table">
+                    <thead>
+                        <tr>
+                            <th>参数名</th>
+                            <th>值</th>
+                            <th><a href="javascript:addParamRow()">添加参数</a></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- 参数行将在 JavaScript 中动态生成 -->
+                    </tbody>
+                </table>
+                <label>响应</label>
+                <pre class="language-json" id="responseTEXT">
+                </pre>
+                <mdui-button onclick="sendRequest()">发送请求</mdui-button>
+            </form>
+        </mdui-card>
+    </div>
     <footer style="text-align: center;margin-top: 10%;">
         <span id="record"></span>
         <span id="copyright"></span>

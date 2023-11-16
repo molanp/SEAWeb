@@ -11,8 +11,6 @@ window.onload = function () {
         RankList();
         TrendChart();
       } else {
-        alert("身份验证失败");
-        document.body.innerHTML = '';
         document.cookie = `token=; expires=Thu, 01 Jan 1970 00:00:00 GMT";`;
         document.cookie = `user=; expires=Thu, 01 Jan 1970 00:00:00 GMT";`;
         location.reload();
@@ -67,19 +65,17 @@ function load() {
     function (data, status) {
       if (status == 'success') {
         var data = data.data;
-        var list = `<table class="mdui-table"><thead>
+        var list = `<table><thead>
                 <tr><th>API Name</th>
                 <th>Status</th>
                 </tr></thead><tbody>`;
         for (var key in data) {
           if (data[key] == "true") {
             list += `<tr><td>${key}</td><td>
-                        <label class="mdui-switch">
                           <mdui-switch id="${key}" name="checkbox" checked></mdui-switch>
                         </td></tr>`;
           } else {
             list += `<tr><td>${key}</td><td>
-                        <label class="mdui-switch">
                           <mdui-switch id="${key}" name="checkbox"></mdui-switch>
                         </td></tr>`;
           }
@@ -97,7 +93,7 @@ function load() {
     },
     function (data, status) {
       if (status == 'success') {
-        var setting = `<table class="mdui-table"><thead>
+        var setting = `<table><thead>
         <tr><th>Name</th>
         <th>Description</th>
         <th>-</th>
@@ -110,7 +106,6 @@ function load() {
             <tr><td>${key}</td>
             <td>${data[key][1]}</td>
             <td>
-            <label class="mdui-switch">
               <mdui-switch id="${key}" name="checkbox" checked></mdui-switch>
             </td></tr>`;
           } else if (value === "false") {
@@ -118,7 +113,6 @@ function load() {
             <tr><td>${key}</td>
             <td>${data[key][1]}</td>
             <td>
-            <label class="mdui-switch">
               <mdui-switch id="${key}" name="checkbox"></mdui-switch>
             </td></tr>`;
           }
