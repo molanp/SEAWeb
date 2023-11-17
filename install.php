@@ -44,7 +44,8 @@ if (isset($_POST["action"]) && $_POST["action"] == "install") {
             apikey TEXT,
             permission INTEGER,
             regtime TEXT,
-            logtime BIGINT
+            logtime BIGINT,
+            INDEX idx_username (username(50))
         )");
 
         $sql = "REPLACE INTO users (username, password, regtime, permission) VALUES (:username, :password, :regtime, :permission)";
@@ -58,7 +59,8 @@ if (isset($_POST["action"]) && $_POST["action"] == "install") {
         $DATABASE->exec("CREATE TABLE IF NOT EXISTS setting (
             item TEXT,
             value TEXT,
-            info TEXT
+            info TEXT,
+            INDEX idx_setting (item(50))
         )");
 
         $dbData = [];
@@ -96,7 +98,8 @@ if (isset($_POST["action"]) && $_POST["action"] == "install") {
             url TEXT,
             name TEXT,
             referer TEXT,
-            param TEXT
+            param TEXT,
+            INDEX idx_access (time(50), ip(50), url(50), name(50), referer(50))
         )");
 
         $DATABASE->exec("CREATE TABLE IF NOT EXISTS api (
@@ -114,12 +117,9 @@ if (isset($_POST["action"]) && $_POST["action"] == "install") {
             type TEXT,
             top TEXT,
             status TEXT,
-            time BIGINT
+            time BIGINT,
+            INDEX idx_api (name(50), profile(50))
         )");
-        $DATABASE->exec("CREATE INDEX idx_username ON users (username)");
-        $DATABASE->exec("CREATE INDEX idx_apiname ON api (name)");
-        $DATABASE->exec("CREATE INDEX idx_apiprofile ON api (profile)");
-        $DATABASE->exec("CREATE INDEX idx_item ON setting (item)");
 
         echo '<p>安装成功</p><p><a href="/sw-ad/">管理员登录</a></p><p><a href="/">主页</a></p>';
         die(unlink("install.php"));
