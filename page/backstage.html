@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="/assets/css/mark.css">
     <link rel="stylesheet" href="/assets/css/style.css">
     <script src="/assets/js/jquery.min.js"></script>
+    <script src="/assets/js/marked.min.js"></script>
     <script src="/assets/js/login.js"></script>
     <script src="/assets/js/cookie.js"></script>
     <script src="/assets/js/theme.js"></script>
@@ -50,7 +51,7 @@
         </mdui-navigation-rail>
         <div class="tabs">
             <div id="home" class="container">
-                <mdui-card class="item">
+                <mdui-card class="item" variant="outlined">
                     本地SEAWeb版本: <span id="version">
                         <mdui-chip loading></mdui-chip>
                     </span><br>
@@ -58,14 +59,14 @@
                     <p>更新内容</p>
                     <pre><code id="update_info"></code></pre>
                 </mdui-card>
-                <mdui-card class="item">
+                <mdui-card class="item" variant="outlined">
                     <mdui-list-subheader>调用排行</mdui-list-subheader>
                     <mdui-list id="api-rank-list">
                         <br>
                         <mdui-circular-progress></mdui-circular-progress>
                     </mdui-list>
                 </mdui-card>
-                <mdui-card class="item">
+                <mdui-card class="item" variant="outlined">
                     调用统计
                     <canvas id="api-trend-chart">
                         <br>
@@ -82,7 +83,6 @@
                 <mdui-button onclick='save("status")' class='login-button mdui-btn mdui-btn-raised mdui-ripple'>Save</mdui-button>
             </div>
             <div id="settings">
-                <mdui-button onclick="up_sys()">更新设置列表</mdui-button>
                 <div id="setting" class="mdui-table">
                     <br>
                     <mdui-circular-progress></mdui-circular-progress>

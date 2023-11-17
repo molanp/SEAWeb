@@ -17,20 +17,9 @@ body {
 }
 
 a {
-    color: #fdabb8;
     text-decoration: none;
-}
-
-a:active {
-    text-decoration: blink
-}
-
-a:hover {
-    text-decoration: underline;
-}
-
-a:visited {
-    text-decoration: none;
+    outline: 0;
+    color: rgb(var(--mdui-color-primary));
 }
 
 .string {
@@ -65,7 +54,7 @@ mdui-card {
 .container {
         display: grid;
         text-align: center;
-        grid-template-columns: repeat(auto-fit, minmax(22%, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(25%, 1fr));
         gap: 20px;
         padding: 20px;
 }
@@ -91,7 +80,6 @@ mdui-card {
 }
 
 .item {
-    background-color: #f2f2f2;
     padding: 20px;
     text-align: center;
 }

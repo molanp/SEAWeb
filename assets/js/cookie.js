@@ -11,7 +11,7 @@ function getCookie(name) {
 }
 
 // 设置Cookie，expires单位分钟
-function setCookie(name, value, expires, path = '/') {
+function setCookie(name, value, expires = 0, path = '/') {
   let cookie = `${name}=${encodeURIComponent(value)}`;
   if (expires) {
     const date = new Date();

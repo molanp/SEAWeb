@@ -1,24 +1,15 @@
-window.onload = function () {
-    let darkMode = getCookie('theme');
-    if (darkMode == 1) enableDarkMode();
-
+$(function () {
     marked.setOptions({
-        gfm: true,//默认为true。 允许 Git Hub标准的markdown.
-        tables: true,//默认为true。 允许支持表格语法。该选项要求 gfm 为true。
-        breaks: true,//默认为false。 允许回车换行。该选项要求 gfm 为true。
-        pedantic: false,//默认为false。 尽可能地兼容 markdown.pl的晦涩部分。不纠正原始模型任何的不良行为和错误。
-        sanitize: false,//对输出进行过滤（清理）
-        smartLists: true,
-        smartypants: false,//使用更为时髦的标点，比如在引用语法中加入破折号。
-        mangle: false,//因warning禁用
-        headerIds: false//因warning禁用
+        gfm: true,
+        tables: true,
+        breaks: true,
+        pedantic: false,
+        sanitize: false,
+        smartypants: true,
+        headerIds: false
     });
     load();
-}
-
-window
-    .matchMedia("(prefers-color-scheme: dark)")
-    .addListener(e => (e.matches ? enableDarkMode() : disableDarkMode()))
+})
 
 function load() {
     $.get(
@@ -82,7 +73,7 @@ function load() {
 
 function web(data) {
     $("#title").html(data.index_title);
-    $("#version").html("Version " + data.version + "<br>");
+    $("#version").html("Version " + data.version);
     $("#copyright").html("&copy;" + data.copyright);
     $("#record").html(data.record);
 }

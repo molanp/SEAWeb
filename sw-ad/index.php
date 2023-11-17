@@ -28,9 +28,11 @@ if (isset($_COOKIE['token'], $_COOKIE['user'])) {
         <link rel="bookmark" href="/favicon.ico" type="image/x-icon" />   
         <link rel="stylesheet" href="https://unpkg.com/mdui@2.0.1/mdui.css">
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-        <script src="https://unpkg.com/mdui@2.0.1/mdui.global.js"></script>
+        <link rel="stylesheet" href="/assets/css/style.css">
         <script src="/assets/js/jquery.min.js"></script>
         <script src="/assets/js/login.js"></script>
+        <script src="/assets/js/cookie.js"></script>
+        <script src="/assets/js/theme.js"></script>
         <title>登录</title>
     </head>
     
@@ -40,6 +42,9 @@ if (isset($_COOKIE['token'], $_COOKIE['user'])) {
             <mdui-text-field label="账号" id="username" clearable></mdui-text-field>
             <mdui-text-field label="密码" id="password" type="password" toggle-password clearable></mdui-text-field>
             <mdui-button onclick="login()">登录</mdui-button>
+            <br>
+            <a href="/">返回</a>
         </mdui-card>
+    <script src="https://unpkg.com/mdui@2.0.1/mdui.global.js"></script>
     </body>
     </html><?php }?>
