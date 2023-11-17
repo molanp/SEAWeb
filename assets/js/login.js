@@ -41,8 +41,9 @@ function sendData(url, data, callback) {
     }
 }
 
-function message(data) {
+function message(data, title='') {
     mdui.dialog({
+        headline: title,
         body: data,
         actions: [{
             text: '确定',

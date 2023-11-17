@@ -1,4 +1,4 @@
-window.onload = function () {
+$(function () {
   $.get(
     url = '/v2/info',
     data = {
@@ -16,9 +16,16 @@ window.onload = function () {
         location.reload();
       }
     })
-}
-window.addEventListener('DOMContentLoaded', showTab);
-window.addEventListener("hashchange", showTab);
+})
+
+$(document).ready(function () {
+  showTab();
+});
+
+$(window).on("hashchange", function () {
+  showTab();
+});
+
 
 function showTab() {
   var hash = window.location.hash;
@@ -49,11 +56,19 @@ function load() {
         var data = data.data;
         $('#web_info').html(`
         <mdui-text-field autosize label="网站标题" value="${data.index_title}" id="index_title"></mdui-text-field>
+        <hr>
+        <a href="javascript:preview('index_description')">预览简介</a>
         <mdui-text-field autosize label="网站简介" value="${data.index_description}" id="index_description"></mdui-text-field>
+        <hr>
+        <a href="javascript:preview('notice')">预览公告</a>
         <mdui-text-field autosize label="网站公告" value="${data.notice.data}" id="notice"></mdui-text-field>
+        <hr>
         <mdui-text-field autosize label="网站底部版权信息" value="${data.copyright}" id="copyright"></mdui-text-field>
+        <hr>
         <mdui-text-field autosize label="网页备案号" value="${data.record}" id="record"></mdui-text-field>
+        <hr>
         <mdui-text-field autosize label="友情链接" helper="例如[链接1](http://xxx)，一行一个" value="${data.links}" id="links"></mdui-text-field>
+        <hr>
         <mdui-text-field autosize label="网站关键词" helper="英文逗号分隔" value="${data.keywords}" id=""keywords></mdui-text-field>`);
         $('#version').html(data.version);
       }
@@ -96,7 +111,7 @@ function load() {
         var setting = `<table><thead>
         <tr><th>Name</th>
         <th>Description</th>
-        <th>-</th>
+        <th><mdui-button onclick="up_sys()">更新设置列表</mdui-button></th>
         </tr></thead><tbody>`;
         var data = data.data;
         for (var key in data) {
@@ -241,7 +256,7 @@ function resetpassword() {
 function loginout() {
   sendData('/v2/auth/logout',
     { "token": getCookie("token") },
-    function () {})
+    function () { })
   deleteCookie("user");
   deleteCookie("token");
   location.reload();
@@ -312,4 +327,9 @@ function up_sys() {
     function (responseData) {
       message(responseData.data);
     });
+}
+
+function preview(id) {
+  content = marked.parse($("#"+id).val());
+  message(content, "预览内容");
 }

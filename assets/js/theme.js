@@ -1,18 +1,21 @@
-function enableDarkMode() {
-    mdui.$('body').addClass("mdui-theme-dark");
-    setCookie("theme", 1, 0);
-};
+$(function () {
+    mdui.setColorScheme('#39c5bc');
+    if (getCookie('theme') == 1) mdui.setTheme('dark');
+});
 
-function disableDarkMode() {
-    mdui.$('body').removeClass("mdui-theme-dark");
-    setCookie("theme", 0, 0);
-};
+
+
+window
+    .matchMedia("(prefers-color-scheme: dark)")
+    .addListener(e => (e.matches ? mdui.setTheme('dark') : mdui.setTheme('light')))
 
 function changeTheme() {
     darkMode = getCookie('theme');
     if (darkMode == 1) {
-        disableDarkMode();
+        deleteCookie("theme");
+        mdui.setTheme('light');
     } else {
-        enableDarkMode();
+        mdui.setTheme('dark');
+        setCookie("theme", 1)
     }
 };

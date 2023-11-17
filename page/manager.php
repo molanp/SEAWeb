@@ -1,7 +1,7 @@
 <?php
-include_once($_SERVER['DOCUMENT_ROOT'].'/services/until.php');
+include_once($_SERVER['DOCUMENT_ROOT'] . '/services/until.php');
 
-include_once($_SERVER['DOCUMENT_ROOT'].'/services/connect.php');
+include_once($_SERVER['DOCUMENT_ROOT'] . '/services/connect.php');
 if ($DATABASE->query("SELECT value FROM setting WHERE item = '维护模式'")->fetchColumn() == 'true') {
     die(include_once('maintenance.html'));
 };
@@ -9,25 +9,26 @@ $sql = "SELECT name, profile FROM api WHERE url_path = :urlPath";
 $statement = $DATABASE->prepare($sql);
 $statement->execute([":urlPath" => addSlashIfNeeded($_GET["__"])]);
 $data = $statement->fetch(PDO::FETCH_ASSOC);
-if($data==null) {
-    die(include_once($_SERVER['DOCUMENT_ROOT'].'/404.php'));
+if ($data == null) {
+    die(include_once($_SERVER['DOCUMENT_ROOT'] . '/404.php'));
 }
-$web = new Config($_SERVER['DOCUMENT_ROOT'].'/data/web');
+$web = new Config($_SERVER['DOCUMENT_ROOT'] . '/data/web');
 $web = $web->get("web");
 ?>
 
 <!DOCTYPE html>
 <html>
+
 <head>
-<meta charset="utf-8" />
+    <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" />
     <meta name="renderer" content="webkit" />
     <meta name="force-rendering" content="webkit" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-    <meta name="keywords" content="<?=$web["keywords"]?>">
-    <meta name="description" content="<?= str_replace("\n", "", strip_tags($data['profile']))?>">
+    <meta name="keywords" content="<?= $web["keywords"] ?>">
+    <meta name="description" content="<?= str_replace("\n", "", strip_tags($data['profile'])) ?>">
     <link rel="Shortcut Icon" href="/favicon.ico">
-    <link rel="bookmark" href="/favicon.ico" type="image/x-icon" /> 
+    <link rel="bookmark" href="/favicon.ico" type="image/x-icon" />
     <link rel="stylesheet" href="/assets/css/style.css">
     <link rel="stylesheet" href="/assets/css/mark.css">
     <link rel="stylesheet" href="https://unpkg.com/mdui@2.0.1/mdui.css">
@@ -40,19 +41,20 @@ $web = $web->get("web");
     <script src="/assets/js/theme.js"></script>
     <script src="/assets/js/query.js"></script>
     <script src="/assets/js/notice.js"></script>
-    <title><?= $data["name"]." - ".$web["index_title"]?></title>
+    <title><?= $data["name"] . " - " . $web["index_title"] ?></title>
 </head>
 
 <body>
     <mdui-top-app-bar scroll-behavior="elevate">
         <mdui-top-app-bar-title>
-            <span id="title">title</span>
-            <span id="version" class="windows" style="font-size: 1rem">version</span>
+            <span id="title" onclick="window.location.href='/'">title</span>
         </mdui-top-app-bar-title>
-        <div style="flex-grow: 1"></div>       
-        <mdui-button-icon onclick="output_search()" icon="search"></mdui-button-icon>
+        <div style="flex-grow: 1"></div>
+        <mdui-tooltip content="搜索">
+            <mdui-button-icon href="javascript:output_search()" icon="search"></mdui-button-icon>
+        </mdui-tooltip>
         <mdui-tooltip content="调用排行">
-            <mdui-button-icon onclick="window.location.href='/page/rank.html'" icon="equalizer"></mdui-button-icon>
+            <mdui-button-icon href="/page/rank.html" icon="equalizer"></mdui-button-icon>
         </mdui-tooltip>
         <mdui-tooltip content="公告">
             <mdui-button-icon mdui-tooltip="{content: '公告', position: 'bottom'}" onclick="notice()" icon="announcement"></mdui-button-icon>
@@ -66,6 +68,7 @@ $web = $web->get("web");
                 <mdui-menu-item>
                     <mdui-button href="/sw-ad" icon="person">登录</mdui-button>
                 </mdui-menu-item>
+                <mdui-menu-item id="version"></mdui-menu-item>
             </mdui-menu>
         </mdui-dropdown>
     </mdui-top-app-bar>
@@ -77,43 +80,61 @@ $web = $web->get("web");
     </noscript>
     <div style="text-align:center;">
         <br />
-        <h3 id="api_name">Loading...</h3>
+        <h3 id="api_name">
+            <mdui-circular-progress></mdui-circular-progress>
+        </h3>
         <mdui-tooltip content="API Version">
-            <mdui-chip icon="info_outline"><span id="api_version">Loading...</span></mdui-chip>
+            <mdui-chip icon="info_outline">
+                <span id="api_version">
+                    <mdui-circular-progress></mdui-circular-progress>
+                </span>
+            </mdui-chip>
         </mdui-tooltip>
         <mdui-tooltip content="API Author">
-            <mdui-chip icon="account_circle"><span id="author">Loading...</span></mdui-chip>
+            <mdui-chip icon="account_circle">
+                <span id="author">
+                    <mdui-circular-progress></mdui-circular-progress>
+                </span>
+            </mdui-chip>
         </mdui-tooltip>
         <mdui-tooltip content="API Count">
-            <mdui-chip icon="equalizer"><span id="api_count">Loading...</span>&nbsp;times</mdui-chip>
+            <mdui-chip icon="equalizer">
+                <span id="api_count">
+                    <mdui-circular-progress></mdui-circular-progress>
+                </span>
+                &nbsp;times
+            </mdui-chip>
         </mdui-tooltip>
     </div>
     <div class="container">
-        <mdui-card class="item">
-            <h3><i class="mdui-icon material-icons mdui-text-color-blue">language</i>简介</h3>
-            <span id="api_profile" class="mdui-prose">Loading...</span>
+        <mdui-card class="item" variant="outlined">
+            <h3>
+                <i class="material-icons">language</i>
+                简介
+            </h3>
+            <span id="api_profile" class="mdui-prose"></span>
         </mdui-card>
-        <mdui-card class="item">
-            <h3><i class="mdui-icon material-icons mdui-text-color-orange">view_compact</i>API 地址</h3>
+        <mdui-card class="item" variant="outlined">
+            <h3><i class="material-icons">view_compact</i>API 地址</h3>
             <div class="mdui-table">
                 <table id="api_address"></table>
             </div>
         </mdui-card>
-        <mdui-card class="item">
-            <h3><i class="mdui-icon material-icons mdui-text-color-purple">vpn_key</i>参数列表 (红色是必填项)</h3>
+        <mdui-card class="item" variant="outlined">
+            <h3><i class="material-icons">vpn_key</i>参数列表 (红色是必填项)</h3>
             <div class="mdui-table">
                 <table id="request"></table>
             </div>
         </mdui-card>
-        <mdui-card class="item">
-            <h3><i class="mdui-icon material-icons mdui-text-color-gray">reply</i>返回的数据</h3>
+        <mdui-card class="item" variant="outlined">
+            <h3><i class="material-icons">reply</i>返回的数据</h3>
             <div class="mdui-table">
                 <table id="response"></table>
             </div>
         </mdui-card>
-        <mdui-card class="item">
-            <h3><i class="mdui-icon material-icons mdui-text-color-teal-a400">build</i>在线测试</h3>
-            <form id="requestForm" class="mdui-table">
+        <mdui-card class="item" variant="outlined">
+            <h3><i class="material-icons">build</i>在线测试</h3>
+            <div id="requestForm">
                 <mdui-text-field readonly label="URL" id="urlInput"></mdui-text-field>
                 <mdui-select class="mdui-select" id="methodSelect" value="GET" label="Method">
                     <mdui-menu-item value="GET">GET</mdui-menu-item>
@@ -122,9 +143,9 @@ $web = $web->get("web");
                     <mdui-menu-item value="DELETE">DELETE</mdui-menu-item>
                     <mdui-menu-item value="OPTIONS">OPTIONS</mdui-menu-item>
                     <mdui-menu-item value="PATCH">PATCH</mdui-menu-item>
-                    <!-- 可添加其他方法选项 -->
                 </mdui-select>
-                </div>
+            </div>
+            <div class="mdui-table">
                 <table id="paramsTable">
                     <thead>
                         <tr>
@@ -134,15 +155,13 @@ $web = $web->get("web");
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- 参数行将在 JavaScript 中动态生成 -->
                     </tbody>
                 </table>
-                <label>响应</label>
-                <pre class="language-json" id="responseTEXT">
-                </pre>
-                <mdui-button onclick="sendRequest()">发送请求</mdui-button>
-            </form>
-        </mdui-card>
+            </div>
+            <pre class="language-json" id="responseTEXT" style="text-align: left;"></pre>
+            <mdui-button onclick="sendRequest()">发送请求</mdui-button>
+    </div>
+    </mdui-card>
     </div>
     <footer style="text-align: center;margin-top: 10%;">
         <span id="record"></span>
@@ -151,4 +170,5 @@ $web = $web->get("web");
     </footer>
     <script src="https://unpkg.com/mdui@2.0.1/mdui.global.js"></script>
 </body>
+
 </html>

@@ -1,28 +1,20 @@
-window.onload = function () {
-    let darkMode = getCookie('theme');
-    if (darkMode == 1) enableDarkMode();
-
+$(function () {
     marked.setOptions({
-        gfm: true,//默认为true。 允许 Git Hub标准的markdown.
-        tables: true,//默认为true。 允许支持表格语法。该选项要求 gfm 为true。
-        breaks: true,//默认为false。 允许回车换行。该选项要求 gfm 为true。
-        pedantic: false,//默认为false。 尽可能地兼容 markdown.pl的晦涩部分。不纠正原始模型任何的不良行为和错误。
-        sanitize: false,//对输出进行过滤（清理）
-        smartLists: true,
-        smartypants: false,//使用更为时髦的标点，比如在引用语法中加入破折号。
-        mangle: false,//因warning禁用
-        headerIds: false//因warning禁用
+        gfm: true,
+        tables: true,
+        breaks: true,
+        pedantic: false,
+        sanitize: false,
+        smartypants: true,
+        headerIds: false
     });
     load();
-}
-
-window
-    .matchMedia("(prefers-color-scheme: dark)")
-    .addListener(e => (e.matches ? enableDarkMode() : disableDarkMode()))
+})
 
 function web(data) {
-    $(".title").html(data.index_title);
-    $("#index_description").html(DOMPurify.sanitize(marked.parse(data.index_description)));;
+    $("#title").html(data.index_title);
+    $("#title_bar").html(data.index_title);
+    $("#index_description").html(DOMPurify.sanitize(marked.parse(data.index_description)));
     var link_list = '';
     var links = data.links.split(/[\r\n]+/);
     for (var i = 0; i < links.length; i++) {
@@ -30,10 +22,10 @@ function web(data) {
         var link = marked.parse(links[i]).match(/\"(.*?)\"/)[1];
         link_list += `<mdui-chip href="${link}" target="_blank" elevated>${title}</mdui-chip>`;
     }
-    $("#links").html(link_list);;
-    $("#version").html("Version " + data.version + "<br>");;
-    $("#copyright").html("&copy;" + data.copyright);;
-    $("#record").html(data.record);;
+    $("#links").html(link_list);
+    $("#copyright").html("&copy;" + data.copyright);
+    $("#version").html("Version " + data.version);
+    $("#record").html(data.record);
 }
 
 function api(data) {
@@ -47,8 +39,8 @@ function api(data) {
                 status = `<mdui-badge style="background-color:#39C5BB;">正常</mdui-badge>`
             }
             item += `
-            <mdui-card class="item" target="_blank" href="docs${data[type][name].path}">
-                <h3>${name}${status}</h3>
+            <mdui-card variant="outlined" class="item" target="_blank" href="docs${data[type][name].path}">
+                <h3>${name}&nbsp;${status}</h3>
                 <small>
                 <i class="material-icons" style="font-size:12px;">equalizer</i>累计调用：${data[type][name].count}次|
                 <i class="material-icons" style="font-size:12px;">folder</i>分类：${type}

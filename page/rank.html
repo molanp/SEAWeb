@@ -27,13 +27,14 @@
 
     <mdui-top-app-bar scroll-behavior="elevate">
         <mdui-top-app-bar-title>
-            <span id="title">title</span>
-            <span id="version" class="windows" style="font-size: 1rem">version</span>
+            <span id="title" onclick="window.location.href='/'">title</span>
         </mdui-top-app-bar-title>
         <div style="flex-grow: 1"></div>       
-        <mdui-button-icon onclick="output_search()" icon="search"></mdui-button-icon>
+        <mdui-tooltip content="搜索">
+            <mdui-button-icon href="javascript:output_search()" icon="search"></mdui-button-icon>
+        </mdui-tooltip>
         <mdui-tooltip content="调用排行">
-            <mdui-button-icon onclick="window.location.href='/page/rank.html'" icon="equalizer"></mdui-button-icon>
+            <mdui-button-icon href="#" icon="equalizer"></mdui-button-icon>
         </mdui-tooltip>
         <mdui-tooltip content="公告">
             <mdui-button-icon mdui-tooltip="{content: '公告', position: 'bottom'}" onclick="notice()" icon="announcement"></mdui-button-icon>
@@ -47,6 +48,7 @@
                 <mdui-menu-item>
                     <mdui-button href="/sw-ad" icon="person">登录</mdui-button>
                 </mdui-menu-item>
+                <mdui-menu-item id="version"></mdui-menu-item>
             </mdui-menu>
         </mdui-dropdown>
     </mdui-top-app-bar>
