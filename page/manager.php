@@ -36,6 +36,8 @@ $web = $web->get("web");
     <script src="/assets/js/jquery.min.js"></script>
     <script src="/assets/js/purify.min.js"></script>
     <script src="/assets/js/api.js"></script>
+    <script src="/assets/js/cookie.js"></script>
+    <script src="/assets/js/theme.js"></script>
     <script src="/assets/js/query.js"></script>
     <script src="/assets/js/notice.js"></script>
     <title><?= $data["name"]." - ".$web["index_title"]?></title>
@@ -45,7 +47,7 @@ $web = $web->get("web");
     <mdui-top-app-bar scroll-behavior="elevate">
         <mdui-top-app-bar-title>
             <span id="title">title</span>
-            <span id="version" style="font-size: 1rem">version</span>
+            <span id="version" class="windows" style="font-size: 1rem">version</span>
         </mdui-top-app-bar-title>
         <div style="flex-grow: 1"></div>       
         <mdui-button-icon onclick="output_search()" icon="search"></mdui-button-icon>
@@ -111,7 +113,7 @@ $web = $web->get("web");
         </mdui-card>
         <mdui-card class="item">
             <h3><i class="mdui-icon material-icons mdui-text-color-teal-a400">build</i>在线测试</h3>
-            <form id="requestForm">
+            <form id="requestForm" class="mdui-table">
                 <mdui-text-field readonly label="URL" id="urlInput"></mdui-text-field>
                 <mdui-select class="mdui-select" id="methodSelect" value="GET" label="Method">
                     <mdui-menu-item value="GET">GET</mdui-menu-item>
@@ -123,7 +125,7 @@ $web = $web->get("web");
                     <!-- 可添加其他方法选项 -->
                 </mdui-select>
                 </div>
-                <table id="paramsTable" class="mdui-table">
+                <table id="paramsTable">
                     <thead>
                         <tr>
                             <th>参数名</th>

@@ -16,35 +16,6 @@ window.onload = function () {
     load();
 }
 
-function getCookie(cname) {
-    var name = cname + "=";
-    var ca = document.cookie.split(';');
-    for (var i = 0; i < ca.length; i++) {
-        var c = ca[i].trim();
-        if (c.indexOf(name) == 0) return c.substring(name.length, c.length);
-    }
-    return "";
-}
-
-function enableDarkMode() {
-    $('body').addClass("mdui-theme-dark");
-    document.cookie = "theme=1;";
-};
-
-function disableDarkMode() {
-    $('body').removeClass("mdui-theme-dark");
-    document.cookie = `theme=0;`;
-};
-
-function changeTheme() {
-    darkMode = getCookie('theme');
-    if (darkMode == 1) {
-        disableDarkMode();
-    } else {
-        enableDarkMode();
-    }
-};
-
 window
     .matchMedia("(prefers-color-scheme: dark)")
     .addListener(e => (e.matches ? enableDarkMode() : disableDarkMode()))

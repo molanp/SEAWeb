@@ -11,8 +11,8 @@ window.onload = function () {
         RankList();
         TrendChart();
       } else {
-        document.cookie = `token=; expires=Thu, 01 Jan 1970 00:00:00 GMT";`;
-        document.cookie = `user=; expires=Thu, 01 Jan 1970 00:00:00 GMT";`;
+        deleteCookie("user");
+        deleteCookie("token");
         location.reload();
       }
     })
@@ -242,8 +242,8 @@ function loginout() {
   sendData('/v2/auth/logout',
     { "token": getCookie("token") },
     function () {})
-  document.cookie = `token=; expires=Thu, 01 Jan 1970 00:00:00 GMT";`;
-  document.cookie = `user=; expires=Thu, 01 Jan 1970 00:00:00 GMT";`;
+  deleteCookie("user");
+  deleteCookie("token");
   location.reload();
 }
 
