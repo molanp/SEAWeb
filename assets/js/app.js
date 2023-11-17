@@ -16,35 +16,6 @@ window.onload = function () {
     load();
 }
 
-function getCookie(cname) {
-    var name = cname + "=";
-    var ca = document.cookie.split(';');
-    for (var i = 0; i < ca.length; i++) {
-        var c = ca[i].trim();
-        if (c.indexOf(name) == 0) return c.substring(name.length, c.length);
-    }
-    return "";
-}
-
-function enableDarkMode() {
-    mdui.$('body').addClass("mdui-theme-dark");
-    document.cookie = "theme=1;";
-};
-
-function disableDarkMode() {
-    mdui.$('body').removeClass("mdui-theme-dark");
-    document.cookie = `theme=0;`;
-};
-
-function changeTheme() {
-    darkMode = getCookie('theme');
-    if (darkMode == 1) {
-        disableDarkMode();
-    } else {
-        enableDarkMode();
-    }
-};
-
 window
     .matchMedia("(prefers-color-scheme: dark)")
     .addListener(e => (e.matches ? enableDarkMode() : disableDarkMode()))
@@ -57,7 +28,7 @@ function web(data) {
     for (var i = 0; i < links.length; i++) {
         var title = links[i].match(/\[(.*?)\]/)[1];
         var link = marked.parse(links[i]).match(/\"(.*?)\"/)[1];
-        link_list += `<mdui-chip href="${link}" target="_blank" style="margin-right:5px;" elevated>${title}</mdui-chip>`;
+        link_list += `<mdui-chip href="${link}" target="_blank" elevated>${title}</mdui-chip>`;
     }
     $("#links").html(link_list);;
     $("#version").html("Version " + data.version + "<br>");;
@@ -71,9 +42,9 @@ function api(data) {
     for (var type in data) {
         for (var name in data[type]) {
             if (data[type][name].status === 'false') {
-                status = `<mdui-badge style="background-color:red">维护</mdui-badge>`
+                status = `<mdui-badge style="background-color:#D80000;">维护</mdui-badge>`
             } else {
-                status = `<mdui-badge style="background-color:green">正常</mdui-badge>`
+                status = `<mdui-badge style="background-color:#39C5BB;">正常</mdui-badge>`
             }
             item += `
             <mdui-card class="item" target="_blank" href="docs${data[type][name].path}">

@@ -1,13 +1,3 @@
-function getCookie(cname) {
-    var name = cname + "=";
-    var ca = document.cookie.split(';');
-    for (var i = 0; i < ca.length; i++) {
-        var c = ca[i].trim();
-        if (c.indexOf(name) == 0) return c.substring(name.length, c.length);
-    }
-    return "";
-}
-
 function login() {
     var username = $("#username").val();
     var password = $("#password").val();
@@ -25,8 +15,8 @@ function login() {
             try {
                 if (status === 'success') {
                     if (data.data.login == 'success') {
-                        document.cookie = `user=${data.data.user};`;
-                        document.cookie = `token=${data.data.token};`;
+                        setCookie("user",data.data.user, 30);
+                        setCookie("token", data.data.token, 30);
                         location.reload();
                     } else {
                         message(data.data.msg);

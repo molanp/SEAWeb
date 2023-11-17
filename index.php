@@ -35,6 +35,8 @@ $web = $web->get("web");
     <script src="/assets/js/jquery.min.js"></script>
     <script src="/assets/js/purify.min.js"></script>
     <script src="/assets/js/app.js"></script>
+    <script src="/assets/js/cookie.js"></script>
+    <script src="/assets/js/theme.js"></script>
     <script src="/assets/js/notice.js"></script>
     <script src="/assets/js/search.js"></script>
     <title><?= $web["index_title"]?></title>
@@ -43,7 +45,7 @@ $web = $web->get("web");
     <mdui-top-app-bar scroll-behavior="elevate">
         <mdui-top-app-bar-title>
             <span class="title">title</span>
-            <span id="version" style="font-size: 1rem">version</span>
+            <span id="version" class="windows" style="font-size: 1rem">version</span>
         </mdui-top-app-bar-title>
         <div style="flex-grow: 1"></div>       
         <mdui-button-icon onclick="output_search()" icon="search"></mdui-button-icon>
