@@ -43,8 +43,8 @@
         </mdui-dropdown>
     </mdui-top-app-bar>
     <div style="position: relative;">
-        <mdui-navigation-rail contained divider>
-            <mdui-navigation-rail-item icon="dashboard" href="#">主面板</mdui-navigation-rail-item>
+        <mdui-navigation-rail value="#" contained divider>
+            <mdui-navigation-rail-item icon="dashboard" value="#" href="#">主面板</mdui-navigation-rail-item>
             <mdui-navigation-rail-item icon="api" href="#api_control">API管理</mdui-navigation-rail-item>
             <mdui-navigation-rail-item icon="settings" href="#settings">设置</mdui-navigation-rail-item>
             <mdui-navigation-rail-item icon="edit_note" href="#edit">修改信息</mdui-navigation-rail-item>
@@ -56,8 +56,7 @@
                         <mdui-chip loading></mdui-chip>
                     </span><br>
                     网络版本:<span id="latest_version"><a href="javascript:check_update()">检查更新</a></span>
-                    <p>更新内容</p>
-                    <pre><code id="update_info"></code></pre>
+                    <mdui-text-field readonly autosize label="更新内容" id="update_info"></mdui-text-field>
                 </mdui-card>
                 <mdui-card class="item" variant="outlined">
                     <mdui-list-subheader>调用排行</mdui-list-subheader>
