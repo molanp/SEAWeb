@@ -54,6 +54,7 @@ function api(data) {
 }
 
 function load() {
+    $.get("/v2/sitemap");
     $.get(
         url = '/v2/info',
         data = { "for": "web" },

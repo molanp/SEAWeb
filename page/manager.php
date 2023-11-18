@@ -29,49 +29,19 @@ $web = $web->get("web");
     <meta name="description" content="<?= str_replace("\n", "", strip_tags($data['profile'])) ?>">
     <link rel="Shortcut Icon" href="/favicon.ico">
     <link rel="bookmark" href="/favicon.ico" type="image/x-icon" />
-    <link rel="stylesheet" href="/assets/css/style.css">
-    <link rel="stylesheet" href="/assets/css/mark.css">
-    <link rel="stylesheet" href="https://unpkg.com/mdui@2.0.1/mdui.css">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://unpkg.com/mdui@2.0.1/mdui.css" rel="stylesheet">
     <script src="/assets/js/marked.min.js"></script>
     <script src="/assets/js/jquery.min.js"></script>
     <script src="/assets/js/purify.min.js"></script>
-    <script src="/assets/js/api.js"></script>
+    <script src="/assets/js/bar.js"></script>
     <script src="/assets/js/cookie.js"></script>
-    <script src="/assets/js/theme.js"></script>
+    <script src="/assets/js/api.js"></script>
     <script src="/assets/js/query.js"></script>
-    <script src="/assets/js/notice.js"></script>
     <title><?= $data["name"] . " - " . $web["index_title"] ?></title>
 </head>
 
 <body>
-    <mdui-top-app-bar scroll-behavior="elevate">
-        <mdui-top-app-bar-title>
-            <span id="title" onclick="window.location.href='/'">title</span>
-        </mdui-top-app-bar-title>
-        <div style="flex-grow: 1"></div>
-        <mdui-tooltip content="搜索">
-            <mdui-button-icon href="javascript:output_search()" icon="search"></mdui-button-icon>
-        </mdui-tooltip>
-        <mdui-tooltip content="调用排行">
-            <mdui-button-icon href="/page/rank.html" icon="equalizer"></mdui-button-icon>
-        </mdui-tooltip>
-        <mdui-tooltip content="公告">
-            <mdui-button-icon mdui-tooltip="{content: '公告', position: 'bottom'}" onclick="notice()" icon="announcement"></mdui-button-icon>
-        </mdui-tooltip>
-        <mdui-tooltip content="夜间模式">
-            <mdui-button-icon onclick="changeTheme()" icon="brightness_medium"></mdui-button-icon>
-        </mdui-tooltip>
-        <mdui-dropdown>
-            <mdui-button-icon slot="trigger" icon="more_vert"></mdui-button-icon>
-            <mdui-menu>
-                <mdui-menu-item>
-                    <mdui-button href="/sw-ad" icon="person">登录</mdui-button>
-                </mdui-menu-item>
-                <mdui-menu-item id="version"></mdui-menu-item>
-            </mdui-menu>
-        </mdui-dropdown>
-    </mdui-top-app-bar>
+    <mdui-top-app-bar scroll-behavior="elevate" id="bar"></mdui-top-app-bar>
     <noscript>
         <div style="text-align: center;margin-top: 10%;">
             <h4>Sorry, the web page requires a Javascript runtime environment, please allow you to run scripts or use a new version of the modern browser.</h4>
@@ -158,7 +128,8 @@ $web = $web->get("web");
                     </tbody>
                 </table>
             </div>
-            <pre class="language-json" id="responseTEXT" style="text-align: left;"></pre>
+            <a href="javascript:$('#responseTEXT').html('')">清空输出</a>
+            <mdui-text-field readonly autosize label="输出内容" class="language-json" id="responseTEXT"></mdui-text-field>
             <mdui-button onclick="sendRequest()">发送请求</mdui-button>
     </div>
     </mdui-card>

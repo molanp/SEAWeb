@@ -31,8 +31,8 @@ if (isset($_COOKIE['token'], $_COOKIE['user'])) {
         <link rel="stylesheet" href="/assets/css/style.css">
         <script src="/assets/js/jquery.min.js"></script>
         <script src="/assets/js/login.js"></script>
-        <script src="/assets/js/cookie.js"></script>
         <script src="/assets/js/theme.js"></script>
+        <script src="/assets/js/cookie.js"></script>
         <title>登录</title>
     </head>
     
@@ -43,7 +43,7 @@ if (isset($_COOKIE['token'], $_COOKIE['user'])) {
             <mdui-text-field label="密码" id="password" type="password" toggle-password clearable></mdui-text-field>
             <mdui-button onclick="login()">登录</mdui-button>
             <br>
-            <a href="/">返回</a>
+            <a href="javascript:window.history.back()">返回</a>
         </mdui-card>
     <script src="https://unpkg.com/mdui@2.0.1/mdui.global.js"></script>
     </body>

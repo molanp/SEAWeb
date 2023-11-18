@@ -27,50 +27,18 @@ $web = $web->get("web");
     <meta name="keywords" content="<?= $web["keywords"]; ?>">
     <link rel="Shortcut Icon" href="/favicon.ico">
     <link rel="bookmark" href="/favicon.ico" type="image/x-icon" />
-    <link rel="stylesheet" href="/assets/css/style.css">
-    <link rel="stylesheet" href="/assets/css/mark.css">
-    <link rel="stylesheet" href="https://unpkg.com/mdui@2.0.1/mdui.css">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://unpkg.com/mdui@2.0.1/mdui.css" rel="stylesheet">
     <script src="/assets/js/marked.min.js"></script>
     <script src="/assets/js/jquery.min.js"></script>
     <script src="/assets/js/purify.min.js"></script>
-    <script src="/assets/js/app.js"></script>
     <script src="/assets/js/cookie.js"></script>
-    <script src="/assets/js/theme.js"></script>
-    <script src="/assets/js/notice.js"></script>
-    <script src="/assets/js/search.js"></script>
+    <script src="/assets/js/bar.js"></script>
+    <script src="/assets/js/app.js"></script>
     <title><?= $web["index_title"] ?></title>
 </head>
 
 <body>
-    <mdui-top-app-bar scroll-behavior="elevate">
-        <mdui-top-app-bar-title style="display: inline-block;">
-            <span id="title_bar" onclick="window.location.href='/'">title</span>
-        </mdui-top-app-bar-title>
-        
-        <div style="flex-grow: 1"></div>
-        <mdui-tooltip content="搜索">
-            <mdui-button-icon href="javascript:output_search()" icon="search"></mdui-button-icon>
-        </mdui-tooltip>
-        <mdui-tooltip content="调用排行">
-            <mdui-button-icon href="/page/rank.html" icon="equalizer"></mdui-button-icon>
-        </mdui-tooltip>
-        <mdui-tooltip content="公告">
-            <mdui-button-icon mdui-tooltip="{content: '公告', position: 'bottom'}" onclick="notice()" icon="announcement"></mdui-button-icon>
-        </mdui-tooltip>
-        <mdui-tooltip content="夜间模式">
-            <mdui-button-icon onclick="changeTheme()" icon="brightness_medium"></mdui-button-icon>
-        </mdui-tooltip>
-        <mdui-dropdown>
-            <mdui-button-icon slot="trigger" icon="more_vert"></mdui-button-icon>
-            <mdui-menu>
-                <mdui-menu-item>
-                    <mdui-button href="/sw-ad" icon="person">登录</mdui-button>
-                </mdui-menu-item>
-                <mdui-menu-item id="version"></mdui-menu-item>
-            </mdui-menu>
-        </mdui-dropdown>
-    </mdui-top-app-bar>
+    <mdui-top-app-bar scroll-behavior="elevate" id="bar"></mdui-top-app-bar>
     <div style="text-align:center;">
         <br>
         <h3 id="title"></h3>

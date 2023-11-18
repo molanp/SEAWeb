@@ -198,7 +198,7 @@ function check_update() {
     success: function (data, status) {
       if (status === "success") {
         $("#latest_version").html(`<a href="${data.html_url}" target="_blank">${data.name}(点击查看)</a>`);
-        $("#update_info").html(data.body);
+        $("#update_info").val(data.body);
       }
     },
     error: function () {

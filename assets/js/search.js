@@ -2,7 +2,7 @@ function output_search() {
     mdui.dialog({
         headline: '搜索..',
         body: `
-        <mdui-text-field variant="outlined" label="输入API名称" id="search"></mdui-text-field>
+        <mdui-text-field variant="outlined" type="search" label="输入API名称" id="search"></mdui-text-field>
         <div class="mdui-panel mdui-panel-scrollable" style="min-height: 200px;">
             <mdui-list id="search_result">
             </mdui-list>
