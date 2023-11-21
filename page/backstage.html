@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://unpkg.com/mdui@2.0.1/mdui.css">
+    <link rel="stylesheet" href="https://unpkg.com/mdui@2.0.2/mdui.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="/assets/css/mark.css">
     <link rel="stylesheet" href="/assets/css/style.css">
@@ -20,36 +20,36 @@
 </head>
 
 <body>
-    <mdui-top-app-bar
-    scroll-behavior="hide"
-    scroll-threshold="30">
-        <mdui-buutton-icon icon="home"></mdui-buutton-icon>
-        <mdui-top-app-bar-title>Web管理</mdui-top-app-bar-title>
-        <div style="flex-grow: 1"></div>
-        <mdui-dropdown>
-            <mdui-button-icon slot="trigger" icon="menu"></mdui-button-icon>
-            <mdui-menu>
-                <mdui-menu-item>
-                    <i class="material-icons">account_circle</i>
-                    <?=$_COOKIE['user']?>
-                </mdui-menu-item>
-                <mdui-menu-item href="javascript:resetpassword()">
-                    <i class="material-icons">lock</i></mdui-icon>修改密码
-                </mdui-menu-item>
-                <mdui-menu-item href="javascript:loginout()">
-                    <i class="material-icons">exit_to_app</i>注销
-                </mdui-menu-item>
-            </mdui-menu>
-        </mdui-dropdown>
-    </mdui-top-app-bar>
-    <div style="position: relative;">
-        <mdui-navigation-rail value="#" contained divider>
-            <mdui-navigation-rail-item icon="dashboard" value="#" href="#">主面板</mdui-navigation-rail-item>
-            <mdui-navigation-rail-item icon="api" href="#api_control">API管理</mdui-navigation-rail-item>
-            <mdui-navigation-rail-item icon="settings" href="#settings">设置</mdui-navigation-rail-item>
-            <mdui-navigation-rail-item icon="edit_note" href="#edit">修改信息</mdui-navigation-rail-item>
-        </mdui-navigation-rail>
-        <div class="tabs">
+    <mdui-layout>
+        <mdui-top-app-bar>
+            <mdui-buutton-icon icon="home"></mdui-buutton-icon>
+            <mdui-top-app-bar-title>Web管理</mdui-top-app-bar-title>
+            <div style="flex-grow: 1"></div>
+            <mdui-dropdown>
+                <mdui-button-icon slot="trigger" icon="menu"></mdui-button-icon>
+                <mdui-menu>
+                    <mdui-menu-item>
+                        <i class="material-icons">account_circle</i>
+                        <?=$_COOKIE['user']?>
+                    </mdui-menu-item>
+                    <mdui-menu-item href="javascript:resetpassword()">
+                        <i class="material-icons">lock</i></mdui-icon>修改密码
+                    </mdui-menu-item>
+                    <mdui-menu-item href="javascript:loginout()">
+                        <i class="material-icons">exit_to_app</i>注销
+                    </mdui-menu-item>
+                </mdui-menu>
+            </mdui-dropdown>
+        </mdui-top-app-bar>
+        <mdui-layout-item placement="left">
+            <mdui-navigation-rail value="#" contained divider>
+                <mdui-navigation-rail-item icon="dashboard" value="#" href="#">主面板</mdui-navigation-rail-item>
+                <mdui-navigation-rail-item icon="api" href="#api_control">API管理</mdui-navigation-rail-item>
+                <mdui-navigation-rail-item icon="settings" href="#settings">设置</mdui-navigation-rail-item>
+                <mdui-navigation-rail-item icon="edit_note" href="#edit">修改信息</mdui-navigation-rail-item>
+            </mdui-navigation-rail>
+        </mdui-layout-item>
+        <mdui-layout-main class="tabs" style="height: calc(100vh - 10px);overflow: auto;">
             <div id="home" class="container">
                 <mdui-card class="item" variant="outlined">
                     本地SEAWeb版本: <span id="version">
@@ -96,9 +96,9 @@
                 </span>
                 <mdui-button onclick='save("web")'>Save</mdui-button>
             </div>
-        </div>
-    </div>
-    <script src="https://unpkg.com/mdui@2.0.1/mdui.global.js"></script>
+        </mdui-layout-main>
+    </mdui-layout>
+    <script src="https://unpkg.com/mdui@2.0.2/mdui.global.js"></script>
 </body>
 
 </html>

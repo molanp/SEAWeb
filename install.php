@@ -170,7 +170,7 @@ if (isset($_POST["action"]) && $_POST["action"] == "install") {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>安装SEAWeb</title>
-    <link rel="stylesheet" href="https://unpkg.com/mdui@2.0.1/mdui.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/mdui@2.0.2/mdui.css"/>
     <link rel="stylesheet" href="/assets/css/style.css"/>
     </head>
     <body class="mdui-theme-auto">
@@ -190,5 +190,5 @@ if (isset($_POST["action"]) && $_POST["action"] == "install") {
     <input type="submit">
     </form>';
     echo '</mdui-card></div>';
-    echo '<script src="https://unpkg.com/mdui@2.0.1/mdui.global.js"></script>';
+    echo '<script src="https://unpkg.com/mdui@2.0.2/mdui.global.js"></script>';
 }
