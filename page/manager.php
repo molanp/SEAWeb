@@ -29,7 +29,7 @@ $web = $web->get("web");
     <meta name="description" content="<?= str_replace("\n", "", strip_tags($data['profile'])) ?>">
     <link rel="Shortcut Icon" href="/favicon.ico">
     <link rel="bookmark" href="/favicon.ico" type="image/x-icon" />
-    <link href="https://unpkg.com/mdui@2.0.1/mdui.css" rel="stylesheet">
+    <link href="https://unpkg.com/mdui@2.0.2/mdui.css" rel="stylesheet">
     <script src="/assets/js/marked.min.js"></script>
     <script src="/assets/js/jquery.min.js"></script>
     <script src="/assets/js/purify.min.js"></script>
@@ -139,7 +139,7 @@ $web = $web->get("web");
         <span id="copyright"></span>
         <p>本站内容由网友上传(或整理自网络)，原作者已无法考证，版权归原作者所有。仅供学习参考，其观点不代表本站立场，网站接口数据均收集互联网。</p>
     </footer>
-    <script src="https://unpkg.com/mdui@2.0.1/mdui.global.js"></script>
+    <script src="https://unpkg.com/mdui@2.0.2/mdui.global.js"></script>
 </body>
 
 </html>
