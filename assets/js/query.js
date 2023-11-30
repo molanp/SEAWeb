@@ -1,69 +1,101 @@
 let paramIndex = 0;
 
 function addParamRow() {
-  const paramsTable = document.getElementById('paramsTable');
-  const newRow = paramsTable.insertRow();
+  const newRow = $('<tr></tr>');
 
-  const paramNameCell = newRow.insertCell();
-  const paramNameInput = document.createElement('mdui-text-field');
-  paramNameInput.label = '参数名';
-  paramNameInput.name = `paramName-${paramIndex}`;
-  paramNameCell.appendChild(paramNameInput);
+  const paramNameCell = $('<td></td>');
+  const paramNameInput = $('<input>').attr({
+    'class': 'mdui-text-field',
+    'type': 'text',
+    'name': `paramName-${paramIndex}`,
+    'placeholder': '参数名'
+  });
+  paramNameCell.append(paramNameInput);
 
-  const paramValueCell = newRow.insertCell();
-  const paramValueInput = document.createElement('mdui-text-field');
-  paramValueInput.label = '值';
-  paramValueInput.name = `paramValue-${paramIndex}`;
-  paramValueCell.appendChild(paramValueInput);
+  const paramValueCell = $('<td></td>');
+  const paramValueInput = $('<input>').attr({
+    'class': 'mdui-text-field',
+    'type': 'text',
+    'name': `paramValue-${paramIndex}`,
+    'placeholder': '值'
+  });
+  paramValueCell.append(paramValueInput);
 
-  const actionCell = newRow.insertCell();
-  const deleteButton = document.createElement('mdui-button-icon');
-  deleteButton.setAttribute('icon', 'delete');
-  deleteButton.setAttribute('style', 'color: red');
-  deleteButton.onclick = function () {
-    paramsTable.deleteRow(newRow.rowIndex);
-  };
-  actionCell.appendChild(deleteButton);
+  const actionCell = $('<td></td>');
+  const deleteButton = $('<button></button>').attr({
+    'class': 'mdui-btn mdui-btn-icon',
+    'style': 'color: red'
+  }).append($('<i></i>').addClass('mdui-icon').text('delete')).click(function () {
+    newRow.remove();
+  });
+  actionCell.append(deleteButton);
+
+  newRow.append(paramNameCell, paramValueCell, actionCell);
+  $('#paramsTable').append(newRow);
 
   paramIndex++;
 }
 
 function sendRequest() {
-  const methodSelect = document.getElementById('methodSelect');
+  const methodSelect = $('#methodSelect');
 
-  const paramsTable = document.getElementById('paramsTable');
   const params = {};
-  for (let i = 1; i < paramsTable.rows.length; i++) {
-    const paramName = paramsTable.rows[i].cells[0].querySelector('input') ? paramsTable.rows[i].cells[1].querySelector('input').value : '';
-    const paramValue = paramsTable.rows[i].cells[1].querySelector('input') ? paramsTable.rows[i].cells[1].querySelector('input').value : '';
+  $('#paramsTable tr').each(function (index, row) {
+    const paramName = $(row).find('td:eq(0) input').val();
+    const paramValue = $(row).find('td:eq(1) input').val();
     if (paramName && paramValue) {
       params[paramName] = paramValue;
     }
-  }
+  });
 
   const currentPath = window.location.pathname.match(/\/docs(.*)\//)[1];
   const url = `${currentPath.startsWith('/api') ? '' : '/api'}${currentPath}`; // 拼接 URL
 
   $.ajax({
     url: url,
-    method: methodSelect.value,
+    method: methodSelect.val(),
     data: params,
-    success: function (response) {
-      renderResponseCard(response); // 将返回内容生成到前面的卡片内
+    success: function (response, status, xhr) {
+      var contentType = xhr.getResponseHeader('content-type');
+      if (contentType.startsWith('image/')) {
+        var container = $('#responseTEXT');
+        container.html("暂不支持查看图片");
+      } else {
+        renderResponseCard(response);
+      }
     },
     error: function (xhr, status, error) {
       const response = xhr.responseText || '请求失败';
       try {
         const jsonResponse = JSON.parse(response);
-        renderResponseCard(jsonResponse); // 将错误消息生成到前面的卡片内
+        renderResponseCard(jsonResponse);
       } catch (e) {
-        // 如果无法解析为 JSON 对象，则直接显示原始内容
         renderResponseCard(response);
       }
     }
   });
 }
 
+function syntaxHighlight(json) {
+  json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+    var cls = 'number';
+    if (/^"/.test(match)) {
+      if (/:$/.test(match)) {
+        cls = 'key';
+      } else {
+        cls = 'string';
+      }
+    } else if (/true|false/.test(match)) {
+      cls = 'boolean';
+    } else if (/null/.test(match)) {
+      cls = 'null';
+    }
+    return '<span class="' + cls + '">' + match + '</span>';
+  });
+}
+
 function renderResponseCard(response) {
-  $('#responseTEXT').val(JSON.stringify(response, undefined, 4));
+  const responseText = $('#responseTEXT');
+  responseText.html(syntaxHighlight(JSON.stringify(response, undefined, 4)));
 }

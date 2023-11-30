@@ -29,7 +29,7 @@ if (isset($_POST["action"]) && $_POST["action"] == "install") {
             "copyright" => "molanp 2023",
             "index_description" => "这是网站简介，这里支持*MarkDown*语法",
             "notice" => [
-                "data" => "> **这里也支持markdown语法**\n\n欢迎使用SEAWeb，本模板由[molanp](https://github.com/molanp)开发与维护。目前正在不断完善~\n如果你觉得这个API有什么不完善的地方或者说你有什么更好的想法，可以在[issues](https://github.com/molanp/easyapi_wesbite/issues)上提出建议",
+                "data" => "> **这里也支持markdown语法**\n\n欢迎使用SEAWeb，本模板由[molanp](https://github.com/molanp)开发与维护。目前正在不断完善~\n如果你觉得这个API有什么不完善的地方或者说你有什么更好的想法，可以在[issues](https://github.com/molanp/SEAWeb/issues)上提出建议",
                 "latesttime" => date('Y-m-d')
             ],
             "keywords" => "API,api",

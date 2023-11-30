@@ -129,7 +129,7 @@ $web = $web->get("web");
                 </table>
             </div>
             <a href="javascript:$('#responseTEXT').html('')">清空输出</a>
-            <mdui-text-field readonly autosize label="输出内容" class="language-json" id="responseTEXT"></mdui-text-field>
+            <pre class="language-json" id="responseTEXT" style="text-align: left;"></pre>
             <mdui-button onclick="sendRequest()">发送请求</mdui-button>
     </div>
     </mdui-card>
