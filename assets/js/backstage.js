@@ -69,7 +69,7 @@ function load() {
         <hr>
         <mdui-text-field autosize label="友情链接" helper="例如[链接1](http://xxx)，一行一个" value="${data.links}" id="links"></mdui-text-field>
         <hr>
-        <mdui-text-field autosize label="网站关键词" helper="英文逗号分隔" value="${data.keywords}" id=""keywords></mdui-text-field>`);
+        <mdui-text-field autosize label="网站关键词" helper="英文逗号分隔" value="${data.keywords}" id="keywords"></mdui-text-field>`);
         $('#version').html(data.version);
       }
     }
@@ -138,56 +138,62 @@ function load() {
   )
 }
 
-function save(mode) {
-  if (mode == "setting") {
-    var setting_list = [];
-    $('#setting [id]').each(function () {
-      var id = $(this).attr('id');
-      var status = $(this).prop('checked');
-      var settingObj = {};
-      settingObj[id] = status;
-      setting_list.push(settingObj);
-    });
-    var send = {
-      'for': 'setting',
-      'token': getCookie('token'),
-      'data': setting_list
-    };
-  } else if (mode == "web") {
-    var send = {
-      'for': 'web',
-      'token': getCookie('token'),
-      'record': $('#record').val(),
-      'index_title': $('#index_title').val(),
-      'copyright': $('#copyright').val(),
-      'index_description': $('#index_description').val(),
-      'notice': $('#notice').val(),
-      'keywords': $('#keywords').val(),
-      'links': $('#links').val()
-    };
-  } else if (mode == "status") {
-    var checkboxStatus = {};
-    $('#api_control [name="checkbox"]').each(function () {
-      var checkbox = $(this);
-      checkboxStatus[checkbox.attr('id')] = checkbox.prop('checked');
-    });
-    var send = {
-      'for': 'status',
-      'token': getCookie('token'),
-      'data': checkboxStatus
-    };
-  }
-  sendData("/v2/edit", send, function (data) {
-    if (data.status == 200) {
-      message(data.data);
-    } else {
-      message(data.data);
+function save() {
+    mode = window.location.hash;
+    i = 0;
+    switch(mode) {
+        case "#settings":
+            var setting_list = [];
+            $('#setting [id]').each(function () {
+              var id = $(this).attr('id');
+              var status = $(this).prop('checked');
+              var settingObj = {};
+              settingObj[id] = status;
+              setting_list.push(settingObj);
+            });
+            var send = {
+              'for': 'setting',
+              'data': setting_list
+            };
+            i = 1;
+            break;
+        case "#web":
+            var send = {
+              'for': 'web',
+              'record': $('#record').val(),
+              'index_title': $('#index_title').val(),
+              'copyright': $('#copyright').val(),
+              'index_description': $('#index_description').val(),
+              'notice': $('#notice').val(),
+              'keywords': $('#keywords').val(),
+              'links': $('#links').val()
+            };
+            i = 1;
+            break;
+        case "#api_control":
+            var checkboxStatus = {};
+            $('#api_list [name="checkbox"]').each(function () {
+              var checkbox = $(this);
+              checkboxStatus[checkbox.attr('id')] = checkbox.prop('checked');
+            });
+            var send = {
+              'for': 'status',
+              'data': checkboxStatus
+            };
+            i = 1;
+            break;
+        default:
+            message("无需操作");
     }
-  });
-}
-
-function sider() {
-  window.inst.toggle();
+    if (i == 1) {
+        sendData("/v2/edit", send, function (data) {
+            if (data.status == 200) {
+              message(data.data);
+            } else {
+              message(data.data);
+            }
+        });
+    }
 }
 
 function check_update() {
@@ -323,7 +329,7 @@ function ShowTrendChart(data) {
 
 function up_sys() {
   sendData("/v2/auth/sys_update",
-    { 'token': getCookie('token') },
+    {},
     function (responseData) {
       message(responseData.data);
     });

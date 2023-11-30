@@ -33,6 +33,7 @@ function login() {
 
 function sendData(url, data, callback) {
     try {
+        data["token"] = getCookie('token');
         $.post(url, data, function (data, status) {
             callback(data, status);
         });

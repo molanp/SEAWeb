@@ -50,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
                 $time = time();
                 $conname = [];
                 $pluginFiles = str_replace(['/','\\'], [DIRECTORY_SEPARATOR,DIRECTORY_SEPARATOR], find_files(PLUGIN_FOLDERS,'.php'));
-                                try {
+                try {
                     $threshold = time() - (60 * 30); // 计算30分钟前的时间戳
                     $query_check = "SELECT COUNT(*) FROM api WHERE time < :threshold";
                     $stmt_check = $DATABASE->prepare($query_check);
@@ -128,9 +128,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
                                 ];
                                 UpdateOrCreate($DATABASE, "api", $data);
                             } else {
-                                (new logger())->error("插件类缺少 getInfo() 方法，文件路径：$pluginFilePath ，文件名：$file");
+                                (new logger())->warn("插件类缺少 getInfo() 方法，文件路径：$pluginFilePath ，文件名：$file");
                             }
-                        }
+                        } else {
+                            (new logger())->warn("插件文件缺少主类，文件路径：$pluginFilePath ，文件名：$file");}
                     }
                 }
                 break;

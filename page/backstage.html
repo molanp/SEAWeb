@@ -15,11 +15,11 @@
     <script src="/assets/js/cookie.js"></script>
     <script src="/assets/js/theme.js"></script>
     <script src="/assets/js/backstage.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.min.js"></script>
     <title>后台管理</title>
 </head>
 
-<body>
+<body style="overflow: hidden;">
     <mdui-layout>
         <mdui-top-app-bar>
             <mdui-buutton-icon icon="home"></mdui-buutton-icon>
@@ -41,16 +41,18 @@
                 </mdui-menu>
             </mdui-dropdown>
         </mdui-top-app-bar>
-        <mdui-layout-item placement="left">
-            <mdui-navigation-rail value="#" contained divider>
-                <mdui-navigation-rail-item icon="dashboard" value="#" href="#">主面板</mdui-navigation-rail-item>
-                <mdui-navigation-rail-item icon="api" href="#api_control">API管理</mdui-navigation-rail-item>
-                <mdui-navigation-rail-item icon="settings" href="#settings">设置</mdui-navigation-rail-item>
-                <mdui-navigation-rail-item icon="edit_note" href="#edit">修改信息</mdui-navigation-rail-item>
-            </mdui-navigation-rail>
-        </mdui-layout-item>
+        <mdui-navigation-rail value="#" contained divider>
+            <mdui-navigation-rail-item icon="dashboard" value="#" href="#">主面板</mdui-navigation-rail-item>
+            <mdui-navigation-rail-item icon="api" href="#api_control">API管理</mdui-navigation-rail-item>
+            <mdui-navigation-rail-item icon="settings" href="#settings">设置</mdui-navigation-rail-item>
+            <mdui-navigation-rail-item icon="edit_note" href="#web">修改信息</mdui-navigation-rail-item>
+            <mdui-navigation-rail-item icon="save" onclick="save()">保存修改</mdui-navigation-rail-item>
+        </mdui-navigation-rail>
         <mdui-layout-main class="tabs" style="height: calc(100vh - 10px);overflow: auto;">
             <div id="home" class="container">
+                <mdui-card class="item" variant="outlined">
+                    <mdui-button onclick='sendData("/v2/auth/cache",{},function (responseData) {message(responseData.data);});'>清理缓存</mdui-button>
+                </mdui-card>
                 <mdui-card class="item" variant="outlined">
                     本地SEAWeb版本: <span id="version">
                         <mdui-chip loading></mdui-chip>
@@ -79,7 +81,6 @@
                     <mdui-circular-progress></mdui-circular-progress>
                 </div>
                 <br>
-                <mdui-button onclick='save("status")' class='login-button mdui-btn mdui-btn-raised mdui-ripple'>Save</mdui-button>
             </div>
             <div id="settings">
                 <div id="setting" class="mdui-table">
@@ -87,15 +88,14 @@
                     <mdui-circular-progress></mdui-circular-progress>
                 </div>
                 <br>
-                <mdui-button onclick='save("setting")' class='login-button mdui-btn mdui-btn-raised mdui-ripple'>Save</mdui-button>
             </div>
-            <div id="edit">
+            <div id="web">
                 <span id="web_info">
                     <br>
                     <mdui-circular-progress></mdui-circular-progress>
                 </span>
-                <mdui-button onclick='save("web")'>Save</mdui-button>
             </div>
+            
         </mdui-layout-main>
     </mdui-layout>
     <script src="https://unpkg.com/mdui@2.0.2/mdui.global.js"></script>
