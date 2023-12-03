@@ -1,9 +1,9 @@
 // 获取Cookie
 function getCookie(name) {
-  const cookies = document.cookie.split(';');
+  const cookies = document.cookie.split(";");
   for (let i = 0; i < cookies.length; i++) {
     const cookie = cookies[i].trim();
-    if (cookie.startsWith(name + '=')) {
+    if (cookie.startsWith(name + "=")) {
       return cookie.substring(name.length + 1);
     }
   }
@@ -11,7 +11,7 @@ function getCookie(name) {
 }
 
 // 设置Cookie，expires单位分钟
-function setCookie(name, value, expires = 0, path = '/') {
+function setCookie(name, value, expires = 0, path = "/") {
   let cookie = `${name}=${encodeURIComponent(value)}`;
   if (expires) {
     const date = new Date();
@@ -23,7 +23,7 @@ function setCookie(name, value, expires = 0, path = '/') {
 }
 
 // 修改Cookie
-function modifyCookie(name, value, expires, path = '/') {
+function modifyCookie(name, value, expires, path = "/") {
   deleteCookie(name);
   setCookie(name, value, expires, path);
 }

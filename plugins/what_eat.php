@@ -171,13 +171,13 @@ class what_eat {
     }
     public function getInfo() {
         return [
-            'name' => '今天吃什么',
-            'version' => '1.0',
-            'profile'=> '一键获取今天要吃的菜名',
-            'method'=>'GET',
-            'author'=>'molanp',
-            'request_par'=> re_par(),
-            'return_par'=> re_par()
+            "name" => "今天吃什么",
+            "version" => "1.0",
+            "profile"=> "一键获取今天要吃的菜名",
+            "method"=>"GET",
+            "author"=>"molanp",
+            "request_par"=> re_par(),
+            "return_par"=> re_par()
         ];
     }
     public function run($request) {

@@ -15,7 +15,7 @@ function web(data) {
     $("#title").html(data.index_title);
     $("#title_bar").html(data.index_title);
     $("#index_description").html(DOMPurify.sanitize(marked.parse(data.index_description)));
-    var link_list = '';
+    var link_list = "";
     var links = data.links.split(/[\r\n]+/);
     for (var i = 0; i < links.length; i++) {
         var title = links[i].match(/\[(.*?)\]/)[1];
@@ -30,10 +30,10 @@ function web(data) {
 
 function api(data) {
     window.search = data;
-    item = '';
+    item = "";
     for (var type in data) {
         for (var name in data[type]) {
-            if (data[type][name].status === 'false') {
+            if (data[type][name].status === "false") {
                 status = `<mdui-badge style="background-color:#D80000;">维护</mdui-badge>`
             } else {
                 status = `<mdui-badge style="background-color:#39C5BB;">正常</mdui-badge>`
@@ -46,18 +46,18 @@ function api(data) {
                 <i class="material-icons" style="font-size:12px;">folder</i>分类：${type}
                 </small>
                 <br>
-                <p>${marked.parse(data[type][name].api_profile)}</p>
+                <div id="line-block">${marked.parse(data[type][name].api_profile)}</div>
         </mdui-card>`
         }
     }
-    $("#app_api").html(item);
+    $("#app_api").append(item);
 }
 
 function load() {
     $.get("/v2/sitemap");
     $.get(
-        url = '/v2/info',
-        data = { "for": "web" },
+        url = "/v2/info",
+        data = { for: "web" },
     )
         .done(function (data) {
             if (data.status == 200) {
@@ -84,7 +84,44 @@ function load() {
             });
         });
     $.get(
-        url = '/v2/info'
+        url = "/v2/info",
+        data={page: 1}
+    )
+        .done(function (data) {
+            if (data.status == 200) {
+                $("#app_api").html("");
+                api(data.data);
+                $("#lazyload").html("<mdui-button id='2' onclick='lazyload(this)'>继续加载</mdui-button>")
+            } else {
+                mdui.dialog({
+                    body: data.data,
+                    actions: [
+                        {
+                            text: "OK"
+                        }
+                    ]
+                });
+            }
+        })
+        .fail(function (data) {
+            mdui.dialog({
+                body: data.responseJSON.data,
+                actions: [
+                    {
+                        text: "OK"
+                    }
+                ]
+            });
+        });
+}
+
+function lazyload(x) {
+    id = parseInt(x.id ?? 0);
+    x.id = id + 1;
+    //
+    $.get(
+        url = "/v2/info",
+        data={page: id}
     )
         .done(function (data) {
             if (data.status == 200) {

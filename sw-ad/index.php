@@ -1,16 +1,16 @@
 <?php
-include_once($_SERVER['DOCUMENT_ROOT'].'/services/Config.class.php');
-include_once($_SERVER['DOCUMENT_ROOT'].'/services/connect.php');
-include_once($_SERVER['DOCUMENT_ROOT'].'/services/until.php');
+include_once($_SERVER["DOCUMENT_ROOT"]."/services/Config.class.php");
+include_once($_SERVER["DOCUMENT_ROOT"]."/services/connect.php");
+include_once($_SERVER["DOCUMENT_ROOT"]."/services/until.php");
 
-if (isset($_COOKIE['token'], $_COOKIE['user'])) {
+if (isset($_COOKIE["token"], $_COOKIE["user"])) {
     $stmt = $DATABASE->prepare("SELECT token FROM users WHERE username = :username");
-    $stmt->bindParam(':username', $_COOKIE["user"]);
+    $stmt->bindParam(":username", $_COOKIE["user"]);
     $stmt->execute();
     $storedToken = $stmt->fetchColumn();
 
-    if ($storedToken && $storedToken === $_COOKIE['token']) {
-        die(include_once($_SERVER['DOCUMENT_ROOT'] . '/page/backstage.html'));
+    if ($storedToken && $storedToken === $_COOKIE["token"]) {
+        die(include_once($_SERVER["DOCUMENT_ROOT"] . "/page/backstage.html"));
     } else {
         exit;
     }
@@ -29,7 +29,7 @@ if (isset($_COOKIE['token'], $_COOKIE['user'])) {
         <link rel="stylesheet" href="https://unpkg.com/mdui@2.0.1/mdui.css">
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <link rel="stylesheet" href="/assets/css/style.css">
-        <script src="/assets/js/jquery.min.js"></script>
+        <script src="/assets/js/jquery-3.7.1.min.js"></script>
         <script src="/assets/js/login.js"></script>
         <script src="/assets/js/theme.js"></script>
         <script src="/assets/js/cookie.js"></script>

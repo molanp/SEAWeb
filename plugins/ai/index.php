@@ -2,17 +2,17 @@
 class ai {
     public function getInfo() {
         return [
-            'name' => 'AI回复',
-            'version' => '1.0',
-            'profile'=> '搭载青云客ai与本地词库，相对智能的ai.与ai普普通通的对话吧！<br>_~~或许词库有点二次元?~~_',
-            'method'=>'GET',
-            'author'=>'molanp',
-            'request_par'=> re_par(['*msg'=>'你要对ai说的话']),
-            'return_par'=> re_par(['data'=>'ai给你的回复']),
+            "name" => "AI回复",
+            "version" => "1.0",
+            "profile"=> "搭载青云客ai与本地词库，相对智能的ai.与ai普普通通的对话吧！<br>_~~或许词库有点二次元?~~_",
+            "method"=>"GET",
+            "author"=>"molanp",
+            "request_par"=> re_par(["*msg"=>"你要对ai说的话"]),
+            "return_par"=> re_par(["data"=>"ai给你的回复"]),
         ];
     }
     private function findMostSimilarWord($input, $dictionary) {
-        $bestMatch = '';
+        $bestMatch = "";
         $bestScore = 0;
         foreach ($dictionary as $word) {
             $score = similar_text($input, $word);
@@ -29,7 +29,7 @@ class ai {
     }
 
     public function run($get) {
-        $anime = json(file_get_contents(__DIR__.'/anime.json'));
+        $anime = json(file_get_contents(__DIR__."/anime.json"));
         $wozai = [
             "哦豁？！",
             "你好！Ov<",
@@ -44,7 +44,7 @@ class ai {
             "你觉得我听懂了吗？嗯？",
             "我！不！知！道！",
         ];
-        $msg = $get['msg'] ?? '都不知道说什么';
+        $msg = $get["msg"] ?? "都不知道说什么";
         foreach(["你好啊","你好","在吗","在不在","您好","您好啊","你好","在",] as $zai){
             if (strpos($msg,$zai)!==false) {
                 $data = $wozai[array_rand($wozai)];

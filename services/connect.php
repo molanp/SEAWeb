@@ -38,7 +38,7 @@ function tokentime($data) {
     $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if ($row) {
-        if (time() - $row['logtime'] < 60 * 30) {
+        if (time() - $row["logtime"] < 60 * 30) {
             return true;
         } else {
             return false;

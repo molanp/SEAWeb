@@ -1,9 +1,9 @@
 $(function () {
-  $.get(
+  $.post(
     url = '/v2/info',
     data = {
-      "for": "setting",
-      'token': getCookie('token')
+      for: "setting",
+      token: getCookie('token')
     },
     function (data, status) {
       if (status == 'success' && data.status == 200) {
@@ -100,11 +100,11 @@ function load() {
       }
     }
   );
-  $.get(
+  $.post(
     url = '/v2/info',
     data = {
-      "for": "setting",
-      'token': getCookie('token')
+      for: "setting",
+      token: getCookie('token')
     },
     function (data, status) {
       if (status == 'success') {
@@ -139,9 +139,8 @@ function load() {
 }
 
 function save() {
-    mode = window.location.hash;
     i = 0;
-    switch(mode) {
+    switch(window.location.hash) {
         case "#settings":
             var setting_list = [];
             $('#setting [id]').each(function () {
@@ -152,21 +151,21 @@ function save() {
               setting_list.push(settingObj);
             });
             var send = {
-              'for': 'setting',
-              'data': setting_list
+              for: 'setting',
+              data: setting_list
             };
             i = 1;
             break;
         case "#web":
             var send = {
-              'for': 'web',
-              'record': $('#record').val(),
-              'index_title': $('#index_title').val(),
-              'copyright': $('#copyright').val(),
-              'index_description': $('#index_description').val(),
-              'notice': $('#notice').val(),
-              'keywords': $('#keywords').val(),
-              'links': $('#links').val()
+              for: 'web',
+              record: $('#record').val(),
+              index_title: $('#index_title').val(),
+              copyright: $('#copyright').val(),
+              index_description: $('#index_description').val(),
+              notice: $('#notice').val(),
+              keywords: $('#keywords').val(),
+              links: $('#links').val()
             };
             i = 1;
             break;
@@ -177,8 +176,8 @@ function save() {
               checkboxStatus[checkbox.attr('id')] = checkbox.prop('checked');
             });
             var send = {
-              'for': 'status',
-              'data': checkboxStatus
+              for: 'status',
+              data: checkboxStatus
             };
             i = 1;
             break;

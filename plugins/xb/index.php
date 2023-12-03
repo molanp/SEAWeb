@@ -2,22 +2,22 @@
 class xb {
     public function getInfo() {
         return [
-            'name' => '喜/悲报生成器',
-            'version' => '1.0',
-            'profile'=> '一键生成喜/悲报',
-            'method'=>'GET',
-            'author'=>'molanp',
-            'type'=>'memes',
-            'request_par'=> re_par(["*content"=>"喜/悲报内容", "type"=>"生成类型，`0`为喜报，`1`为悲报，默认为`0`"]),
-            'return_par'=> re_par(),
+            "name" => "喜/悲报生成器",
+            "version" => "1.0",
+            "profile"=> "一键生成喜/悲报",
+            "method"=>"GET",
+            "author"=>"molanp",
+            "type"=>"memes",
+            "request_par"=> re_par(["*content"=>"喜/悲报内容", "type"=>"生成类型，`0`为喜报，`1`为悲报，默认为`0`"]),
+            "return_par"=> re_par(),
         ];
     }
-    private function drawPost($text = '', $imageMode = 0) {
+    private function drawPost($text = "", $imageMode = 0) {
         if (mb_strlen($text) > 100) {
             _return_("字数超出最大限制", 400);
         }
-        $happy = __DIR__.'/happy.jpg';
-        $sad = __DIR__.'/sad.jpg';
+        $happy = __DIR__."/happy.jpg";
+        $sad = __DIR__."/sad.jpg";
         if ($imageMode==1) {
             list($width, $height) = getimagesize($sad);
         } else {
@@ -36,7 +36,7 @@ class xb {
         $centerX = $width / 2;
         $centerY = $height / 2;
         $lines = array_filter(explode("\n", trim($text)));
-        $fontFile = __DIR__.'/font.ttf';
+        $fontFile = __DIR__."/font.ttf";
         $fontSize = 200;
         $fontColor = imagecolorallocate($canvas, 195, 20, 27);
         if ($imageMode == 1)

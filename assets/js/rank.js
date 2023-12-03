@@ -52,7 +52,7 @@ function rank(data) {
 
 function load() {
     $.get(
-        url = '/v2/info',
+        url = "/v2/info",
         data = { "for": "web" },
     )
         .done(function (data) {
@@ -66,7 +66,7 @@ function load() {
             alert(data.responseJSON.data)
         });
     $.get(
-        url = '/v2/hot',
+        url = "/v2/hot",
     )
         .done(function (data) {
             if (data.status == 200) {

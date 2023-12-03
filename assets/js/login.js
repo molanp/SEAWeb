@@ -8,13 +8,13 @@ function login() {
     }
     else {
         var send = {
-            'username': username,
-            'password': password
+            "username": username,
+            "password": password
         };
         sendData("/v2/auth/login", send, function (data, status) {
             try {
-                if (status === 'success') {
-                    if (data.data.login == 'success') {
+                if (status === "success") {
+                    if (data.data.login == "success") {
                         setCookie("user",data.data.user, 30);
                         setCookie("token", data.data.token, 30);
                         location.reload();
@@ -33,7 +33,7 @@ function login() {
 
 function sendData(url, data, callback) {
     try {
-        data["token"] = getCookie('token');
+        data["token"] = getCookie("token");
         $.post(url, data, function (data, status) {
             callback(data, status);
         });
@@ -42,12 +42,12 @@ function sendData(url, data, callback) {
     }
 }
 
-function message(data, title='') {
+function message(data, title="") {
     mdui.dialog({
         headline: title,
         body: data,
         actions: [{
-            text: '确定',
+            text: "确定",
         }]
     });
 }

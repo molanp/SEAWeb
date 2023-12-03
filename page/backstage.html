@@ -5,17 +5,17 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://unpkg.com/mdui@2.0.2/mdui.css">
+    <link rel="stylesheet" href="https://unpkg.com/mdui/mdui.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="/assets/css/mark.css">
     <link rel="stylesheet" href="/assets/css/style.css">
-    <script src="/assets/js/jquery.min.js"></script>
+    <script src="/assets/js/jquery-3.7.1.min.js"></script>
     <script src="/assets/js/marked.min.js"></script>
     <script src="/assets/js/login.js"></script>
     <script src="/assets/js/cookie.js"></script>
     <script src="/assets/js/theme.js"></script>
     <script src="/assets/js/backstage.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.min.js"></script>
+    <script src="/assets/js/chart-4.4.0.min.js"></script>
     <title>后台管理</title>
 </head>
 
@@ -30,7 +30,7 @@
                 <mdui-menu>
                     <mdui-menu-item>
                         <i class="material-icons">account_circle</i>
-                        <?=$_COOKIE['user']?>
+                        <?=$_COOKIE["user"]?>
                     </mdui-menu-item>
                     <mdui-menu-item href="javascript:resetpassword()">
                         <i class="material-icons">lock</i></mdui-icon>修改密码
@@ -41,7 +41,7 @@
                 </mdui-menu>
             </mdui-dropdown>
         </mdui-top-app-bar>
-        <mdui-navigation-rail value="#" contained divider>
+        <mdui-navigation-rail contained divider>
             <mdui-navigation-rail-item icon="dashboard" value="#" href="#">主面板</mdui-navigation-rail-item>
             <mdui-navigation-rail-item icon="api" href="#api_control">API管理</mdui-navigation-rail-item>
             <mdui-navigation-rail-item icon="settings" href="#settings">设置</mdui-navigation-rail-item>
@@ -51,7 +51,7 @@
         <mdui-layout-main class="tabs" style="height: calc(100vh - 10px);overflow: auto;">
             <div id="home" class="container">
                 <mdui-card class="item" variant="outlined">
-                    <mdui-button onclick='sendData("/v2/auth/cache",{},function (responseData) {message(responseData.data);});'>清理缓存</mdui-button>
+                    <mdui-button onclick="sendData('/v2/auth/cache',{},function (responseData) {message(responseData.data);});">清理缓存</mdui-button>
                 </mdui-card>
                 <mdui-card class="item" variant="outlined">
                     本地SEAWeb版本: <span id="version">
@@ -98,7 +98,7 @@
             
         </mdui-layout-main>
     </mdui-layout>
-    <script src="https://unpkg.com/mdui@2.0.2/mdui.global.js"></script>
+    <script src="https://unpkg.com/mdui/mdui.global.js"></script>
 </body>
 
 </html>

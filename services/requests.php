@@ -25,7 +25,7 @@ class requests {
     }
     
     public function put($url, $data = null) {
-        $ip = rand(10,200).'.'.rand(10,200).'.'.rand(10,200).'.'.rand(10,200);
+        $ip = rand(10,200).".".rand(10,200).".".rand(10,200).".".rand(10,200);
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
         curl_setopt($ch, CURLOPT_URL, $url);
@@ -55,11 +55,11 @@ class requests {
 
         if ($data !== null) {
             curl_setopt($ch, CURLOPT_PUT, 1);
-            curl_setopt($ch, CURLOPT_INFILE, fopen($data, 'rb'));
+            curl_setopt($ch, CURLOPT_INFILE, fopen($data, "rb"));
             curl_setopt($ch, CURLOPT_INFILESIZE, filesize($data));
         }
 
-        curl_setopt($ch, CURLOPT_ENCODING, 'gzip');
+        curl_setopt($ch, CURLOPT_ENCODING, "gzip");
         $response = curl_exec($ch);
         $headerSize = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
         $headers = substr($response, 0, $headerSize);
@@ -98,8 +98,8 @@ class requests {
     }
         
     private function request($url, $method, $data=[]) {
-         $url = $url . '?' . http_build_query($data);
-         $ip = rand(10,200).'.'.rand(10,200).'.'.rand(10,200).'.'.rand(10,200);
+         $url = $url . "?" . http_build_query($data);
+         $ip = rand(10,200).".".rand(10,200).".".rand(10,200).".".rand(10,200);
          $ch = curl_init(); 
          curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true); 
          curl_setopt($ch, CURLOPT_URL, $url); 
@@ -124,7 +124,7 @@ class requests {
              } 
              curl_setopt($ch, CURLOPT_HTTPHEADER, $headerString); 
          } 
-         curl_setopt($ch, CURLOPT_ENCODING, 'gzip'); 
+         curl_setopt($ch, CURLOPT_ENCODING, "gzip"); 
          $response = curl_exec($ch);
          $headerSize = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
          $headers = substr($response, 0, $headerSize);
