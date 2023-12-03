@@ -73,10 +73,7 @@ function parseTable($prefix, $key, &$table) {
         if (is_array($v)) {
             parseTable($prefix . "{$k}.", $v, $table);
         } else {
-            if (preg_match('/^\*(\w+)$/', $k, $matches)) {
-                $k = "<font color='red'>`" . $matches[1] . "`</font>";
-            }
-            $table .= "\n| {$prefix}{$k} | {$v} |";
+            $table .= "\n| `{$prefix}{$k}` | {$v} |";
         }
     }
 }

@@ -24,12 +24,12 @@ $(function () {
     try {
         $("#bar").html(`
     <mdui-top-app-bar-title style="display: inline-block;">
-        <span id="title_bar" onclick="window.location.href='/'">title</span>
+        <span id="title_bar" onclick="window.location.href="/"">title</span>
     </mdui-top-app-bar-title>
     <div style="flex-grow: 1"></div>
     <mdui-button-icon href="javascript:output_search()" icon="search"></mdui-button-icon>
     <mdui-button-icon href="/page/rank.html" icon="equalizer"></mdui-button-icon>
-    <mdui-button-icon mdui-tooltip="{content: '公告', position: 'bottom'}" onclick="notice()" icon="announcement--outlined"></mdui-button-icon>
+    <mdui-button-icon mdui-tooltip="{content: "公告", position: "bottom"}" onclick="notice()" icon="announcement--outlined"></mdui-button-icon>
     <mdui-dropdown>
         <mdui-button-icon slot="trigger" icon="light_mode--outlined" id="theme"></mdui-button-icon>
         <mdui-menu selects="single" value="auto">
@@ -59,7 +59,7 @@ function notice() {
         if (data.status==200) {
             data = data.data;
             mdui.dialog({
-                headline: '公告 | '+data.time,
+                headline: "公告 | "+data.time,
                 body: marked.parse(data.notice),
                 actions: [
                     {

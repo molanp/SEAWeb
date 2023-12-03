@@ -1,18 +1,18 @@
 <?php
-include_once($_SERVER['DOCUMENT_ROOT'] . '/services/until.php');
+include_once($_SERVER["DOCUMENT_ROOT"] . "/services/until.php");
 
-include_once($_SERVER['DOCUMENT_ROOT'] . '/services/connect.php');
-if ($DATABASE->query("SELECT value FROM setting WHERE item = '维护模式'")->fetchColumn() == 'true') {
-    die(include_once('maintenance.html'));
+include_once($_SERVER["DOCUMENT_ROOT"] . "/services/connect.php");
+if ($DATABASE->query("SELECT value FROM setting WHERE item = '维护模式'")->fetchColumn() == "true") {
+    die(include_once("maintenance.html"));
 };
 $sql = "SELECT name, profile FROM api WHERE url_path = :urlPath";
 $statement = $DATABASE->prepare($sql);
 $statement->execute([":urlPath" => addSlashIfNeeded($_GET["__"])]);
 $data = $statement->fetch(PDO::FETCH_ASSOC);
 if ($data == null) {
-    die(include_once($_SERVER['DOCUMENT_ROOT'] . '/404.php'));
+    die(include_once($_SERVER["DOCUMENT_ROOT"] . "/404.php"));
 }
-$web = new Config($_SERVER['DOCUMENT_ROOT'] . '/data/web');
+$web = new Config($_SERVER["DOCUMENT_ROOT"] . "/data/web");
 $web = $web->get("web");
 ?>
 
@@ -26,12 +26,12 @@ $web = $web->get("web");
     <meta name="force-rendering" content="webkit" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="keywords" content="<?= $web["keywords"] ?>">
-    <meta name="description" content="<?= str_replace("\n", "", strip_tags($data['profile'])) ?>">
+    <meta name="description" content="<?= str_replace("\n", "", strip_tags($data["profile"])) ?>">
     <link rel="Shortcut Icon" href="/favicon.ico">
     <link rel="bookmark" href="/favicon.ico" type="image/x-icon" />
-    <link href="https://unpkg.com/mdui@2.0.2/mdui.css" rel="stylesheet">
+    <link href="https://unpkg.com/mdui/mdui.css" rel="stylesheet">
     <script src="/assets/js/marked.min.js"></script>
-    <script src="/assets/js/jquery.min.js"></script>
+    <script src="/assets/js/jquery-3.7.1.min.js"></script>
     <script src="/assets/js/purify.min.js"></script>
     <script src="/assets/js/bar.js"></script>
     <script src="/assets/js/cookie.js"></script>
@@ -91,7 +91,7 @@ $web = $web->get("web");
             </div>
         </mdui-card>
         <mdui-card class="item" variant="outlined">
-            <h3><i class="material-icons">vpn_key</i>参数列表 (红色是必填项)</h3>
+            <h3><i class="material-icons">vpn_key</i>参数列表 (<code>*</code>是必填项)</h3>
             <div class="mdui-table">
                 <table id="request"></table>
             </div>
@@ -139,7 +139,7 @@ $web = $web->get("web");
         <span id="copyright"></span>
         <p>本站内容由网友上传(或整理自网络)，原作者已无法考证，版权归原作者所有。仅供学习参考，其观点不代表本站立场，网站接口数据均收集互联网。</p>
     </footer>
-    <script src="https://unpkg.com/mdui@2.0.2/mdui.global.js"></script>
+    <script src="https://unpkg.com/mdui/mdui.global.js"></script>
 </body>
 
 </html>

@@ -7,12 +7,11 @@ html {
 }
 
 body {
-    /*background: url('api/picture?type=pic');*/
+    /*background: url("api/picture?type=pic");*/
     background-size: cover;
     background-position: center center;
     background-attachment: fixed;
     background-repeat: no-repeat;
-    padding-bottom: 100px;
     margin: 0 auto;
 }
 
@@ -82,4 +81,11 @@ mdui-card {
 .item {
     padding: 20px;
     text-align: center;
+
+}
+
+#line-block {
+    line-height: 1.2; /* 设置行高，根据需要进行调整 */
+    max-height: 4.8em; /* 设置最大高度，根据行高和行数进行计算（行高 * 行数） */
+    overflow: hidden; /* 内容超出部分隐藏 */
 }

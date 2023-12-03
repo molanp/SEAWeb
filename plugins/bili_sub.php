@@ -2,13 +2,13 @@
 class bili_sub {
     public function getInfo() {
         return [
-            'name' => 'bilibili视频解析',
-            'version' => '1.0',
-            'profile'=> '获取b站视频基本信息',
-            'method'=>'GET',
-            'author'=>'molanp',
-            'request_par'=> re_par(['url' => "视频链接"]),
-            'return_par'=> re_par([
+            "name" => "bilibili视频解析",
+            "version" => "1.0",
+            "profile"=> "获取b站视频基本信息",
+            "method"=>"GET",
+            "author"=>"molanp",
+            "request_par"=> re_par(["url" => "视频链接"]),
+            "return_par"=> re_par([
                 "avid"=>"视频AV号",
                 "title"=>"视频标题",
                 "cover"=>"视频封面",
@@ -35,7 +35,7 @@ class bili_sub {
     }
     public function run($request) {
         if (isset($request["url"])) {
-            preg_match('/BV(\w+)/', $request["url"], $matches);
+            preg_match("/BV(\w+)/", $request["url"], $matches);
             if (isset($matches[1])) {
                 $json = $GLOBALS["requests"]->get("https://api.bilibili.com/x/web-interface/view",["bvid"=>"BV".$matches[1]])->json();
                 if ($json["message"]==0) {

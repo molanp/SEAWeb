@@ -13,8 +13,8 @@ $(function () {
 
 function load() {
     $.get(
-        url = '/v2/api_info',
-        data = { "url": window.location.pathname }
+        url = "/v2/info",
+        data = { url: window.location.pathname, for: "api" }
     )
         .done(function (data) {
             if (data.status == 200) {
@@ -41,7 +41,7 @@ function load() {
             });
         });
     $.get(
-        url = '/v2/info',
+        url = "/v2/info",
         data = { "for": "web" },
     )
         .done(function (data) {
@@ -84,9 +84,9 @@ function api(api_data) {
     $("#response").html(DOMPurify.sanitize(marked.parse(api_data.response)));
     $("#request").html(DOMPurify.sanitize(marked.parse(api_data.request)));
     path = window.location.pathname.match(/\/docs(.*)\//)[1];
-    $("#api_address").html(DOMPurify.sanitize(marked.parse(`|Method|Url|\n|--|--|\n|${api_data.method}|<a target='_blank' href='/api${path}'>/api${path}</a>|`)));
+    $("#api_address").html(DOMPurify.sanitize(marked.parse(`|Method|Url|\n|--|--|\n|${api_data.method}|<a target="_blank" href="/api${path}">/api${path}</a>|`)));
     $("#author").html(DOMPurify.sanitize(api_data.author));
     $("#api_version").html(DOMPurify.sanitize(api_data.version));
     $("#api_profile").html(DOMPurify.sanitize(marked.parse(api_data.profile)));
-    $("#urlInput").attr('value', window.location.host + '/api' + path);
+    $("#urlInput").attr("value", window.location.host + "/api" + path);
 }

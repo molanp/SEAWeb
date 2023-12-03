@@ -3,14 +3,14 @@ if (file_exists("install.php")) {
     die(include("install.php"));
 }
 
-include_once('services/until.php');
-include_once('services/Config.class.php');
+include_once("services/until.php");
+include_once("services/Config.class.php");
 
-include_once('services/connect.php');
-if ($DATABASE->query("SELECT value FROM setting WHERE item = '维护模式'")->fetchColumn() == 'true') {
-    die(include_once('page/maintenance.html'));
+include_once("services/connect.php");
+if ($DATABASE->query("SELECT value FROM setting WHERE item = '维护模式'")->fetchColumn() == "true") {
+    die(include_once("page/maintenance.html"));
 };
-$web = new Config($_SERVER['DOCUMENT_ROOT'] . '/data/web');
+$web = new Config($_SERVER["DOCUMENT_ROOT"] . "/data/web");
 $web = $web->get("web");
 ?>
 
@@ -23,13 +23,13 @@ $web = $web->get("web");
     <meta name="renderer" content="webkit" />
     <meta name="force-rendering" content="webkit" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-    <meta name="description" content="<?= str_replace("\n", "", strip_tags($web['index_description'])); ?>">
+    <meta name="description" content="<?= str_replace("\n", "", strip_tags($web["index_description"])); ?>">
     <meta name="keywords" content="<?= $web["keywords"]; ?>">
     <link rel="Shortcut Icon" href="/favicon.ico">
     <link rel="bookmark" href="/favicon.ico" type="image/x-icon" />
-    <link href="https://unpkg.com/mdui@2.0.2/mdui.css" rel="stylesheet">
+    <link href="https://unpkg.com/mdui/mdui.css" rel="stylesheet">
     <script src="/assets/js/marked.min.js"></script>
-    <script src="/assets/js/jquery.min.js"></script>
+    <script src="/assets/js/jquery-3.7.1.min.js"></script>
     <script src="/assets/js/purify.min.js"></script>
     <script src="/assets/js/cookie.js"></script>
     <script src="/assets/js/bar.js"></script>
@@ -55,17 +55,16 @@ $web = $web->get("web");
     </noscript>
     <div id="app_api" class="container">
         <br>
-        <div style="text-align:center;">
             <mdui-circular-progress ></mdui-circular-progress>
-        </div>
     </div>
+    <div id="lazyload" class="container"></div>
 
     <footer style="text-align: center;margin-top: 10%;">
         <span id="record"></span>
         <span id="copyright"></span>
         <p>本站内容由网友上传(或整理自网络)，原作者已无法考证，版权归原作者所有。仅供学习参考，其观点不代表本站立场，网站接口数据均收集互联网。</p>
     </footer>
-    <script src="https://unpkg.com/mdui@2.0.2/mdui.global.js"></script>
+    <script src="https://unpkg.com/mdui/mdui.global.js"></script>
 </body>
 
 </html>

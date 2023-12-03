@@ -2,14 +2,14 @@
 class name_generator {
     public function getInfo() {
         return [
-            'name' => '亚文化取名机',
-            'version' => '1.0',
-            'profile'=> '一键生成最潮的亚文化网名',
-            'method'=>'GET',
-            'author'=>'molanp',
-            'type'=>'潮',
-            'request_par'=> re_par(),
-            'return_par'=> re_par(['data'=>'你的亚文化名字']),
+            "name" => "亚文化取名机",
+            "version" => "1.0",
+            "profile"=> "一键生成最潮的亚文化网名",
+            "method"=>"GET",
+            "author"=>"molanp",
+            "type"=>"潮",
+            "request_par"=> re_par(),
+            "return_par"=> re_par(["data"=>"你的亚文化名字"]),
         ];
     }
     public function run() {
