@@ -88,12 +88,13 @@ function load() {
         data={page: 1}
     )
         .done(function (data) {
-            if (data.status == 200) {
+            if (data.status == 200 && data.data.length != 0) {
                 $("#app_api").html("");
                 api(data.data);
                 $("#lazyload").html("<mdui-button id='2' onclick='lazyload(this)'>继续加载</mdui-button>")
             } else {
                 mdui.dialog({
+                    headline: "⚠️",
                     body: data.data,
                     actions: [
                         {

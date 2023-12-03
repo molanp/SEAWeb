@@ -27,5 +27,5 @@ function watchdog($errno,$errstr=NULL, $errfile=NULL, $errline=NULL) {
     header("Content-type:text/json;charset=utf-8");
     die(json_encode(["status"=>500,"data"=>$message,"time"=>time()],JSON_UNESCAPED_UNICODE|JSON_PRETTY_PRINT));
 }
-set_error_handler("watchdog");
+//set_error_handler("watchdog");
 set_exception_handler("watchdog");

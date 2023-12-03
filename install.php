@@ -21,7 +21,7 @@ if (file_exists("configs/config.php")) {?>
     <div class="container">
         <div class="item"></div>
         <mdui-card class="item">
-            <h3>请勿重复安装，已取消本次安装</h3>
+            <h3>请勿重复安装，已取消本次安装操作</h3>
             <mdui-button href="/">主页</mdui-button>
             <mdui-button href="/sw-ad">管理员登录</mdui-button>
         </mdui-card>
@@ -40,12 +40,10 @@ if (file_exists("configs/config.php")) {?>
             $username = $_POST["mysql_username"];
             $password = $_POST["mysql_password"];
             $DATABASE = new PDO($bind, $username, $password);
-    $config = "<?php\n";
-    $config .= "\t\$bind = \"{$bind}\";\n";
-    $config .= "\t\$mysql_username = \"{$username}\";\n";
-    $config .= "\t\$mysql_password = \"{$password}\";";
-    
-    
+            $config = "<?php\n";
+            $config .= "\t\$bind = \"{$bind}\";\n";
+            $config .= "\t\$mysql_username = \"{$username}\";\n";
+            $config .= "\t\$mysql_password = \"{$password}\";";
     
             $file = fopen("configs/config.php", "w");
             fwrite($file, $config);
