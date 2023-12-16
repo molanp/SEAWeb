@@ -2,48 +2,37 @@
 ini_set("date.timezone","Asia/Shanghai");
 class logger {
 
-    private $file;
-    private $error_file;
-
-    function __construct() {
-        if(!file_exists($_SERVER["DOCUMENT_ROOT"]."/logs")) {
-            mkdir($_SERVER["DOCUMENT_ROOT"]."/logs");
-        };
-        $file = $_SERVER["DOCUMENT_ROOT"]."/logs/".date("Y-m-d").".log"; 
-        $error_file = $_SERVER["DOCUMENT_ROOT"]."/logs/"."error_".date("Y-m-d").".log"; 
-        $this->error_file = $error_file;
-        $this->file = $file;
+    public function info($str) {
+        $time = date("Y-m-d H:i:s");
+        $level = "INFO";
+        $content = $str;
+        $this->writeToDatabase($time, $level, $content);
     }
 
-    function info($str) {
-        $file = fopen($this->file, "a"); 
-        if(!$file) return "写入文件失败，请赋予 ".$file." 文件写权限！"; 
-        $str = date("Y-m-d H:i:s")."[INFO] > $str\n";
-        fwrite($file, $str); 
-        fclose($file); 
+    public function warn($str) {
+        $time = date("Y-m-d H:i:s");
+        $level = "WARN";
+        $content = $str;
+        $this->writeToDatabase($time, $level, $content);
     }
 
-    function warn($str) {
-        $file = fopen($this->file, "a"); 
-        if(!$file) return "写入文件失败，请赋予 ".$file." 文件写权限！"; 
-        $str = date("Y-m-d H:i:s")."[WARN] > $str\n";
-        fwrite($file, $str); 
-        fclose($file); 
+    public function debug($str) {
+        $time = date("Y-m-d H:i:s");
+        $level = "DEBUG";
+        $content = $str;
+        $this->writeToDatabase($time, $level, $content);
     }
 
-    function debug($str) {
-        $file = fopen($this->file, "a"); 
-        if(!$file) return "写入文件失败，请赋予 ".$file." 文件写权限！"; 
-        $str = date("Y-m-d H:i:s")."[DEBUG] > $str\n";
-        fwrite($file, $str); 
-        fclose($file); 
+    public function error($str) {
+        $time = date("Y-m-d H:i:s");
+        $level = "ERROR";
+        $content = $str;
+        $this->writeToDatabase($time, $level, $content);
     }
 
-    function error($str) {
-        $file = fopen($this->error_file, "a"); 
-        if(!$file) return "写入文件失败，请赋予 ".$file." 文件写权限！"; 
-        $str = date("Y-m-d H:i:s")."[ERROR] > $str\n";
-        fwrite($file, $str); 
-        fclose($file); 
+    private function writeToDatabase($time, $level, $content) {
+        global $DATABASE;
+        $stmt = $DATABASE->prepare("INSERT INTO log (time, level, content) VALUES (?, ?, ?)");
+        $stmt->execute([$time, $level, $content]);
     }
 }

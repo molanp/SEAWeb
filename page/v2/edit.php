@@ -1,7 +1,8 @@
 <?php
+include_once($_SERVER["DOCUMENT_ROOT"]."/services/until.php");
+logger();
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     include_once($_SERVER["DOCUMENT_ROOT"]."/services/Config.class.php");
-    include_once($_SERVER["DOCUMENT_ROOT"]."/services/until.php");
     include_once($_SERVER["DOCUMENT_ROOT"]."/services/connect.php");
 
     $for = $_POST["for"] ?? NULL;
@@ -9,17 +10,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     switch($for) {
         case "web":
             if (tokentime($token)) {
-                $WEB= new Config($_SERVER["DOCUMENT_ROOT"]."/data/web");
+                $WEB= new Data();
                 $WEB->set("web",[
                     "record"=>$_POST["record"],
                     "index_title"=>$_POST["index_title"],
                     "copyright"=>$_POST["copyright"],
                     "index_description"=>$_POST["index_description"],
-                    "notice"=>[
-                        "data"=>$_POST["notice"],
-                        "latesttime"=>date("Y-m-d")],
+                    "notice"=>$_POST["notice"],
                     "keywords"=>$_POST["keywords"],
-                    "links"=>$_POST["links"]])->save();
+                    "links"=>$_POST["links"]]);
                 _return_("修改成功");
             } else {
                 _return_("身份验证失败",403);

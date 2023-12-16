@@ -39,7 +39,7 @@ function api(data) {
                 status = `<mdui-badge style="background-color:#39C5BB;">正常</mdui-badge>`
             }
             item += `
-            <mdui-card variant="outlined" class="item" target="_blank" href="docs${data[type][name].path}">
+            <mdui-card variant="outlined" target="_blank" href="docs${data[type][name].path}">
                 <h3>${name}&nbsp;${status}</h3>
                 <small>
                 <i class="material-icons" style="font-size:12px;">equalizer</i>累计调用：${data[type][name].count}次|
@@ -85,13 +85,23 @@ function load() {
         });
     $.get(
         url = "/v2/info",
-        data={page: 1}
+        data={
+            page: 1
+        }
     )
         .done(function (data) {
             if (data.status == 200) {
-                $("#app_api").html("");
-                api(data.data);
-                $("#lazyload").html("<mdui-button id='2' onclick='lazyload(this)'>继续加载</mdui-button>")
+                if (data.data.length != 0) {
+                    $("#app_api").html("");
+                    api(data.data);
+                    $("#lazyload").html("<mdui-button id='2' onclick='lazyload(this)'>继续加载</mdui-button>")
+                } else {
+                    mdui.snackbar({
+                        message: "运气不佳，加载失败了呢",
+                        placement: "top",
+                        closeable: true
+                    })
+                }
             } else {
                 mdui.dialog({
                     body: data.data,
@@ -118,14 +128,24 @@ function load() {
 function lazyload(x) {
     id = parseInt(x.id ?? 0);
     x.id = id + 1;
-    //
     $.get(
         url = "/v2/info",
-        data={page: id}
+        data={
+            page: id
+        }
     )
         .done(function (data) {
             if (data.status == 200) {
-                api(data.data);
+                if (data.data.length != 0) {
+                    api(data.data);
+                } else {
+                    x.style.display = "none";
+                    mdui.snackbar({
+                        message: "已经到顶了哦！",
+                        placement: "top",
+                        closeable: true
+                    })
+                }
             } else {
                 mdui.dialog({
                     body: data.data,

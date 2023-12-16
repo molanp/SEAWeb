@@ -19,7 +19,7 @@ function login() {
                         setCookie("token", data.data.token, 30);
                         location.reload();
                     } else {
-                        message(data.data.msg);
+                        message(data.data);
                     }
                 } else {
                     message(data.data);

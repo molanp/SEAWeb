@@ -1,8 +1,9 @@
 <?php
 include_once($_SERVER["DOCUMENT_ROOT"]."/services/until.php");
 
+logger();
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    RequestLimit("10/min","login");
+    RequestLimit("10/min");
     include_once($_SERVER["DOCUMENT_ROOT"]."/services/connect.php");
     $data = $_POST;
     $type = $_POST["type"] ?? NULL;

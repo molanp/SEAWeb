@@ -1,25 +1,24 @@
 <?php
+include_once($_SERVER["DOCUMENT_ROOT"] . "/services/until.php");
+logger();
 if ($_SERVER["REQUEST_METHOD"] == "GET") {
-    include_once($_SERVER["DOCUMENT_ROOT"]."/services/until.php");
-    include_once($_SERVER["DOCUMENT_ROOT"]."/services/connect.php");
-    if(tokentime($_GET)) {
-        $result = $DATABASE->query("SELECT SUBSTR(time, 1, 10) AS date, COUNT(*) AS count FROM access_log GROUP BY SUBSTR(time, 1, 10) ORDER BY date ASC LIMIT 5");
-        $data = [];
-    
+    include_once($_SERVER["DOCUMENT_ROOT"] . "/services/connect.php");
+    $data = [];
+    if (tokentime($_GET)) {
+        $result = $DATABASE->query("SELECT SUBSTR(time, 1, 10) AS date, COUNT(*) AS count FROM access_log WHERE url LIKE '/api%' GROUP BY SUBSTR(time, 1, 10) ORDER BY date ASC LIMIT 5");
         while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
-            $date = $row["date"];
-            $count = $row["count"];
-            array_push($data, ["date"=>$date, "count"=>$count]);
+            array_push($data, ["date" => $row["date"], "count" => $row["count"]]);
         }
     } else {
-        $result = $DATABASE->query("SELECT name, url, COUNT(*) AS count FROM access_log GROUP BY name, url ORDER BY count DESC LIMIT 10");
-        $data = [];
-        while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
-            $data[] = [
-                "name" => $row["name"],
-                "url" => $row["url"],
-                "count" => $row["count"]
-            ];
+        $counts = $DATABASE->query("SELECT url, COUNT(*) AS count FROM access_log WHERE url LIKE '/api%' GROUP BY url ORDER BY count DESC LIMIT 10");
+        while ($row = $counts->fetch(PDO::FETCH_ASSOC)) {
+            $url = substr($row['url'], 4);
+            $count = $row['count'];
+            $apiStmt = $DATABASE->query("SELECT name FROM api WHERE url_path = '$url'");
+            $result = $apiStmt->fetch(PDO::FETCH_ASSOC);
+            if ($result) {
+                $data[] = ["name" => $result['name'], "count" => $count, "url" => $row['url']];
+            }
         };
     }
     _return_($data);
