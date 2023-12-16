@@ -104,7 +104,6 @@ function load() {
                 }
             } else {
                 mdui.dialog({
-                    headline: "⚠️",
                     body: data.data,
                     actions: [
                         {
