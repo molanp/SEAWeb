@@ -1,14 +1,13 @@
 <?php
 include_once($_SERVER["DOCUMENT_ROOT"] . "/services/until.php");
 
+logger();
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     include_once($_SERVER["DOCUMENT_ROOT"] . "/services/connect.php");
     $data = $_POST;
     if (isset($data["token"])) {
-        $token = $data["token"];
         if (tokentime($data)) {
-            $DATABASE->exec("DELETE FROM api");
-            @unlink($_SERVER["DOCUMENT_ROOT"] . "/data/limit.php");
+            $DATABASE->exec("TRUNCATE api");
             @unlink($_SERVER["DOCUMENT_ROOT"] . "/sitemap.xml");
             _return_("OK");
         } else {

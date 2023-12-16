@@ -1,12 +1,13 @@
 <?php
 include_once($_SERVER["DOCUMENT_ROOT"] . "/services/until.php");
-include_once($_SERVER["DOCUMENT_ROOT"] . "/services/connect.php");
 
+logger();
 $path = $_SERVER["DOCUMENT_ROOT"] . "/sitemap.xml";
 header("Content-Type: application/xml");
 if (file_exists($path) && filemtime($path) > strtotime("-1 day")) {
     exit;
 }
+include_once($_SERVER["DOCUMENT_ROOT"] . "/services/connect.php");
 $stmt = $DATABASE->query("SELECT url_path FROM api");
 $urls = $stmt->fetchAll(PDO::FETCH_COLUMN);
 if ($urls) {

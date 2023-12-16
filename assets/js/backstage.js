@@ -45,6 +45,14 @@ function showTab() {
       tab.style.display = 'none';
     }
   }
+    // 修复样式
+    $('.tabs').children().each(function () {
+      var $element = $(this);
+      if ($element.css('display') === 'block') {
+        $element.css('display', '');
+        // $element.css('display', 'none');
+      }
+    });
 }
 
 function load() {
@@ -132,67 +140,67 @@ function load() {
             </td></tr>`;
           }
         }
-        $('#setting').html(setting);
+        $('#options').html(setting);
       }
     }
   )
 }
 
 function save() {
-    i = 0;
-    switch(window.location.hash) {
-        case "#settings":
-            var setting_list = [];
-            $('#setting [id]').each(function () {
-              var id = $(this).attr('id');
-              var status = $(this).prop('checked');
-              var settingObj = {};
-              settingObj[id] = status;
-              setting_list.push(settingObj);
-            });
-            var send = {
-              for: 'setting',
-              data: setting_list
-            };
-            i = 1;
-            break;
-        case "#web":
-            var send = {
-              for: 'web',
-              record: $('#record').val(),
-              index_title: $('#index_title').val(),
-              copyright: $('#copyright').val(),
-              index_description: $('#index_description').val(),
-              notice: $('#notice').val(),
-              keywords: $('#keywords').val(),
-              links: $('#links').val()
-            };
-            i = 1;
-            break;
-        case "#api_control":
-            var checkboxStatus = {};
-            $('#api_list [name="checkbox"]').each(function () {
-              var checkbox = $(this);
-              checkboxStatus[checkbox.attr('id')] = checkbox.prop('checked');
-            });
-            var send = {
-              for: 'status',
-              data: checkboxStatus
-            };
-            i = 1;
-            break;
-        default:
-            message("无需操作");
-    }
-    if (i == 1) {
-        sendData("/v2/edit", send, function (data) {
-            if (data.status == 200) {
-              message(data.data);
-            } else {
-              message(data.data);
-            }
-        });
-    }
+  i = 0;
+  switch (window.location.hash) {
+    case "#settings":
+      var setting_list = [];
+      $('#setting [id]').each(function () {
+        var id = $(this).attr('id');
+        var status = $(this).prop('checked');
+        var settingObj = {};
+        settingObj[id] = status;
+        setting_list.push(settingObj);
+      });
+      var send = {
+        for: 'setting',
+        data: setting_list
+      };
+      i = 1;
+      break;
+    case "#web":
+      var send = {
+        for: 'web',
+        record: $('#record').val(),
+        index_title: $('#index_title').val(),
+        copyright: $('#copyright').val(),
+        index_description: $('#index_description').val(),
+        notice: $('#notice').val(),
+        keywords: $('#keywords').val(),
+        links: $('#links').val()
+      };
+      i = 1;
+      break;
+    case "#api_control":
+      var checkboxStatus = {};
+      $('#api_list [name="checkbox"]').each(function () {
+        var checkbox = $(this);
+        checkboxStatus[checkbox.attr('id')] = checkbox.prop('checked');
+      });
+      var send = {
+        for: 'status',
+        data: checkboxStatus
+      };
+      i = 1;
+      break;
+    default:
+      message("无需操作");
+  }
+  if (i == 1) {
+    sendData("/v2/edit", send, function (data) {
+      if (data.status == 200) {
+        message(data.data);
+      } else {
+        message(data.data);
+      }
+    });
+  }
 }
 
 function check_update() {
@@ -323,18 +331,23 @@ function ShowTrendChart(data) {
         backgroundColor: 'rgba(0, 0, 0, 0)'
       }]
     },
+    options: {
+      responsive: false
+    }
   });
 }
 
 function up_sys() {
-  sendData("/v2/auth/sys_update",
-    {},
+  sendData("/v2/info",
+    {
+      for: 'update'
+    },
     function (responseData) {
       message(responseData.data);
     });
 }
 
 function preview(id) {
-  content = marked.parse($("#"+id).val());
+  content = marked.parse($("#" + id).val());
   message(content, "预览内容");
 }

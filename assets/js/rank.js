@@ -65,6 +65,7 @@ function load() {
         .fail(function (data) {
             alert(data.responseJSON.data)
         });
+    $("#rank").html('');
     $.get(
         url = "/v2/hot",
     )

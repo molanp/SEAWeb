@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://unpkg.com/mdui/mdui.css">
+    <link rel="stylesheet" href="https://registry.npmmirror.com/mdui/2.0.3/files/mdui.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="/assets/css/mark.css">
     <link rel="stylesheet" href="/assets/css/style.css">
@@ -49,25 +49,25 @@
             <mdui-navigation-rail-item icon="save" onclick="save()">保存修改</mdui-navigation-rail-item>
         </mdui-navigation-rail>
         <mdui-layout-main class="tabs" style="height: calc(100vh - 10px);overflow: auto;">
-            <div id="home" class="container">
-                <mdui-card class="item" variant="outlined">
+            <div id="home" class="grid">
+                <mdui-card variant="outlined">
                     <mdui-button onclick="sendData('/v2/auth/cache',{},function (responseData) {message(responseData.data);});">清理缓存</mdui-button>
                 </mdui-card>
-                <mdui-card class="item" variant="outlined">
+                <mdui-card variant="outlined">
                     本地SEAWeb版本: <span id="version">
                         <mdui-chip loading></mdui-chip>
                     </span><br>
                     网络版本:<span id="latest_version"><a href="javascript:check_update()">检查更新</a></span>
                     <mdui-text-field readonly autosize label="更新内容" id="update_info"></mdui-text-field>
                 </mdui-card>
-                <mdui-card class="item" variant="outlined">
+                <mdui-card variant="outlined">
                     <mdui-list-subheader>调用排行</mdui-list-subheader>
                     <mdui-list id="api-rank-list">
                         <br>
                         <mdui-circular-progress></mdui-circular-progress>
                     </mdui-list>
                 </mdui-card>
-                <mdui-card class="item" variant="outlined">
+                <mdui-card variant="outlined" style="overflow-x: auto;white-space: nowrap;">
                     调用统计
                     <canvas id="api-trend-chart">
                         <br>
@@ -95,10 +95,9 @@
                     <mdui-circular-progress></mdui-circular-progress>
                 </span>
             </div>
-            
         </mdui-layout-main>
     </mdui-layout>
-    <script src="https://unpkg.com/mdui/mdui.global.js"></script>
+    <script src="https://registry.npmmirror.com/mdui/2.0.3/files/mdui.global.js"></script>
 </body>
 
 </html>

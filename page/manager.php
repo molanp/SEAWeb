@@ -12,7 +12,7 @@ $data = $statement->fetch(PDO::FETCH_ASSOC);
 if ($data == null) {
     die(include_once($_SERVER["DOCUMENT_ROOT"] . "/404.php"));
 }
-$web = new Config($_SERVER["DOCUMENT_ROOT"] . "/data/web");
+$web = new Data();
 $web = $web->get("web");
 ?>
 
@@ -29,7 +29,7 @@ $web = $web->get("web");
     <meta name="description" content="<?= str_replace("\n", "", strip_tags($data["profile"])) ?>">
     <link rel="Shortcut Icon" href="/favicon.ico">
     <link rel="bookmark" href="/favicon.ico" type="image/x-icon" />
-    <link href="https://unpkg.com/mdui/mdui.css" rel="stylesheet">
+    <link href="https://registry.npmmirror.com/mdui/2.0.3/files/mdui.css" rel="stylesheet">
     <script src="/assets/js/marked.min.js"></script>
     <script src="/assets/js/jquery-3.7.1.min.js"></script>
     <script src="/assets/js/purify.min.js"></script>
@@ -76,7 +76,7 @@ $web = $web->get("web");
             </mdui-chip>
         </mdui-tooltip>
     </div>
-    <div class="container">
+    <div class="grid">
         <mdui-card class="item" variant="outlined">
             <h3>
                 <i class="material-icons">language</i>
@@ -139,7 +139,7 @@ $web = $web->get("web");
         <span id="copyright"></span>
         <p>本站内容由网友上传(或整理自网络)，原作者已无法考证，版权归原作者所有。仅供学习参考，其观点不代表本站立场，网站接口数据均收集互联网。</p>
     </footer>
-    <script src="https://unpkg.com/mdui/mdui.global.js"></script>
+    <script src="https://registry.npmmirror.com/mdui/2.0.3/files/mdui.global.js"></script>
 </body>
 
 </html>

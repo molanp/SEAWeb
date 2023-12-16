@@ -18,7 +18,7 @@ class zhihu_yx {
         ];
     }
     private function fetchArticle($url) {     
-        RequestLimit("20/min",$this);
+        RequestLimit("20/min");
         $database = __DIR__."/zhihu.db";
         $api = "http://36.134.102.174:8087/article/link";
         $parsedUrl = parse_url($url);

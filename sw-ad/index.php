@@ -26,7 +26,7 @@ if (isset($_COOKIE["token"], $_COOKIE["user"])) {
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
         <link rel="Shortcut Icon" href="/favicon.ico">
         <link rel="bookmark" href="/favicon.ico" type="image/x-icon" />   
-        <link rel="stylesheet" href="https://unpkg.com/mdui@2.0.1/mdui.css">
+        <link rel="stylesheet" href="https://registry.npmmirror.com/mdui/2.0.3/files/mdui.css">
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <link rel="stylesheet" href="/assets/css/style.css">
         <script src="/assets/js/jquery-3.7.1.min.js"></script>
@@ -36,15 +36,18 @@ if (isset($_COOKIE["token"], $_COOKIE["user"])) {
         <title>登录</title>
     </head>
     
-    <body style="text-align:center;" class="mdui-theme-auto">
-        <mdui-card style="width: 70%;height: 400px">
+    <body class="mdui-theme-auto grid">
+        <div></div>
+        <mdui-card>
             <h2>登录</h2>
             <mdui-text-field label="账号" id="username" clearable></mdui-text-field>
             <mdui-text-field label="密码" id="password" type="password" toggle-password clearable></mdui-text-field>
+            <p></p>
             <mdui-button onclick="login()">登录</mdui-button>
             <br>
             <a href="javascript:window.history.back()">返回</a>
         </mdui-card>
-    <script src="https://unpkg.com/mdui@2.0.1/mdui.global.js"></script>
+        <div></div>
+    <script src="https://registry.npmmirror.com/mdui/2.0.3/files/mdui.global.js"></script>
     </body>
     </html><?php }?>

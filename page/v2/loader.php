@@ -14,20 +14,7 @@ $data = $statement->fetch(PDO::FETCH_ASSOC);
 if($data==null) {
     die(include_once($_SERVER["DOCUMENT_ROOT"]."/404.php"));
 } elseif (handle_check($data["name"]) && $_SERVER["REQUEST_METHOD"] == $data["method"] || $data["method"] == "ALL"){
-    $time = date("Y-m-d H:i:s");
-    $ip = $_SERVER["REMOTE_ADDR"] ?? "Unknown";
-    $url = "/api".$plugin_path ?? "Unknown";
-    $referer = $_SERVER["HTTP_REFERER"] ?? "Unknown";
-    $param = json($_REQUEST);
-    $stmt = $DATABASE->prepare("INSERT INTO access_log (time, ip, url, referer, param, name) VALUES (?, ?, ?, ?, ?, ?)");
-    $stmt->bindParam(1, $time);
-    $stmt->bindParam(2, $ip);
-    $stmt->bindParam(3, $url);
-    $stmt->bindParam(4, $referer);
-    $stmt->bindParam(5, $param);
-    $stmt->bindParam(6, $data["name"]);
-    $stmt->execute();
-    
+    logger();
     include_once($data["file_path"]);
     $plugin = new $data["class"];
     $plugin->run($_REQUEST);
