@@ -10,7 +10,7 @@
     <link rel="Shortcut Icon" href="/favicon.ico">
     <link rel="bookmark" href="/favicon.ico" type="image/x-icon" />
     <title>安装SEAWeb</title>
-    <link rel="stylesheet" href="https://registry.npmmirror.com/mdui/2.0.3/files/mdui.css" />
+    <link rel="stylesheet" href="https://unpkg.com/mdui@2.0.3/mdui.css" />
     <link rel="stylesheet" href="/assets/css/style.css" />
 </head>
 
