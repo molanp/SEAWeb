@@ -221,19 +221,19 @@ function RequestLimit($limit)
     include_once("connect.php");
     global $DATABASE;
 
+    $url = addSlashIfNeeded(parse_url($_SERVER['REQUEST_URI'])["path"]) ?? "Unknown";
     $stmt = $DATABASE->prepare("SELECT COUNT(*) AS count FROM access_log WHERE ip = :ip AND time >= :start_time AND time <= :end_time AND url = :url;");
     $stmt->bindParam(':ip', $ip, PDO::PARAM_STR);
     $stmt->bindParam(':start_time', date('Y-m-d H:i:s', $startTime), PDO::PARAM_INT);
     $stmt->bindParam(':end_time', date('Y-m-d H:i:s', $currentTime), PDO::PARAM_INT);
-    $stmt->bindParam(':url', addSlashIfNeeded($_SERVER['PHP_SELF']));
+    $stmt->bindParam(':url', $url);
     $stmt->execute();
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
     $count = $result['count'];
 
     $count = $count + 1;
-    #$ip !== "127.0.0.1" && $ip !== "::1" && 
-    if ($count > $quantity) {
+    if ($count > $quantity && $ip !== "127.0.0.1" && $ip !== "::1") {
         _return_('请求次数超过限制(Too Many Requests)', 429);
     }
 }

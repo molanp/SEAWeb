@@ -10,4 +10,5 @@
     RewriteRule ^rank.html$ page/rank.html [QSA,L]
     RewriteRule ^api/(.*)$ page/v2/loader.php?__=$1 [QSA,L]
     RewriteRule ^docs/(.*)$ page/manager.php?__=$1 [QSA,L]
+    RewriteRule ^sw-ad/(.*)$ page/backstage.php [QSA,L]
 </IfModule>

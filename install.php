@@ -33,7 +33,7 @@ if (file_exists("data/web.php")) {
         agent TEXT
     )");
     try {
-        $DATABASE->exec("CREATE INDEX idx_access ON access_log (time(50), ip(50), url(50), name(50), referer(50))");
+        $DATABASE->exec("CREATE INDEX idx_access ON access_log (time(50), ip(50), url(50), referer(50))");
     } catch(Exception $e){}
     
     $DATABASE->exec("CREATE TABLE IF NOT EXISTS log (
@@ -52,7 +52,7 @@ if (file_exists("data/web.php")) {
         time TEXT
     )");
     try {
-        $DATABASE->exec("CREATE INDEX idx_data ON data (item(50), belong(50))");
+        $DATABASE->exec("CREATE UNIQUE INDEX idx_data ON data (item(50), belong(50))");
     } catch(Exception $e){}
 
     $data->set('web',[
@@ -108,7 +108,7 @@ if (file_exists("configs/config.php")) {?>
                 time TEXT
             )");
             try {
-                $DATABASE->exec("CREATE INDEX idx_data ON data (item(50), belong(50))");
+                $DATABASE->exec("CREATE UNIQUE INDEX idx_data ON data (item(50), belong(50))");
             } catch(Exception $e){}
             $data->set('web',[
                 "record" => "",
@@ -188,7 +188,7 @@ if (file_exists("configs/config.php")) {?>
                 agent TEXT
             )");
             try {
-                $DATABASE->exec("CREATE INDEX idx_access ON access_log (time(50), ip(50), url(50), name(50), referer(50))");
+                $DATABASE->exec("CREATE INDEX idx_access ON access_log (time(50), ip(50), url(50), referer(50))");
             } catch(Exception $e){}
 
             $DATABASE->exec("CREATE TABLE IF NOT EXISTS log (

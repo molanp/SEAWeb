@@ -29,7 +29,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
                 while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                     $count[$row["url"]] = $row["count"];
                 };
-                $conname["count"] = $count["/api" . $urlPath] ?? "N/A";
+                $conname["count"] = $count["/api" . $urlPath] ?? "0";
             } else {
                 _return_("Not Found.", 404);
             }
