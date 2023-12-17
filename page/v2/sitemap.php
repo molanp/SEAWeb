@@ -1,7 +1,7 @@
 <?php
 include_once($_SERVER["DOCUMENT_ROOT"] . "/services/until.php");
 
-logger();
+req_log();
 $path = $_SERVER["DOCUMENT_ROOT"] . "/sitemap.xml";
 header("Content-Type: application/xml");
 if (file_exists($path) && filemtime($path) > strtotime("-1 day")) {

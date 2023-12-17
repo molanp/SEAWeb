@@ -5,7 +5,7 @@ include_once($_SERVER["DOCUMENT_ROOT"] . "/services/path.php");
 include_once($_SERVER["DOCUMENT_ROOT"] . "/services/__version__.php");
 include_once($_SERVER["DOCUMENT_ROOT"] . "/services/logger.php");
 
-logger();
+req_log();
 
 if ($_SERVER["REQUEST_METHOD"] == "GET") {
     include_once($_SERVER["DOCUMENT_ROOT"] . "/services/connect.php");

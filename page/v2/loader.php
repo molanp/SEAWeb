@@ -14,7 +14,8 @@ $data = $statement->fetch(PDO::FETCH_ASSOC);
 if($data==null) {
     die(include_once($_SERVER["DOCUMENT_ROOT"]."/404.php"));
 } elseif (handle_check($data["name"]) && $_SERVER["REQUEST_METHOD"] == $data["method"] || $data["method"] == "ALL"){
-    logger();
+    include_once($_SERVER["DOCUMENT_ROOT"]."/services/logger.php");
+    req_log();
     include_once($data["file_path"]);
     $plugin = new $data["class"];
     $plugin->run($_REQUEST);

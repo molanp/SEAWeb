@@ -17,7 +17,7 @@ class gpt_url {
 
     public function run() {
         $default = [];
-        $html = $GLOBALS["requests"]->get('https://c.aalib.net/tool/chatgpt/')->json();
+        $html = (new requests())->get('https://c.aalib.net/tool/chatgpt/')->json();
         preg_match_all('/<td><a\s+href="([^"]+)"\s+target="_blank">([^<]+)<\/a><\/td>/', $html, $matches);
         if (count($matches[1]) > 0) {
             foreach ($matches[1] as $index => $link) {
