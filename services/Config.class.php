@@ -9,50 +9,30 @@ class Data
 
      * @param $belong 要获取的项名
 
-     * @param $default 默认值
-
      * @return data
 
      */
 
-    public function get($belong = '', $default = '')
+    public function get($belong = '', $time = false)
     {
         global $DATABASE;
 
-        $stmt = $DATABASE->prepare("SELECT item, content FROM data WHERE belong = :belong");
+        $stmt = $DATABASE->prepare("SELECT item, content, time FROM data WHERE belong = :belong");
         $stmt->bindParam(':belong', $belong);
         $stmt->execute();
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
         if (count($result) > 0) {
             $text = [];
             foreach ($result as $row) {
-                $text[$row["item"]] = $row["content"];
+                if ($time === true) {
+                    $text[$row["item"]] = [$row["content"], $row["time"]];
+                } else {
+                    $text[$row["item"]] = $row["content"];
+                }
             }
             return $text;
-        } else {
-            return $default;
         }
-    }
-
-    public function time($belong = '', $default = '')
-    {
-        global $DATABASE;
-
-        $stmt = $DATABASE->prepare("SELECT item, time FROM data WHERE belong = :belong");
-        $stmt->bindParam(':belong', $belong);
-        $stmt->execute();
-        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        if (count($result) > 0) {
-            $text = [];
-            foreach ($result as $row) {
-                $text[$row["item"]] = $row["time"];
-            }
-            return $text;
-        } else {
-            return $default;
-        }
+        return [];
     }
 
     public function set($belong, $data)
@@ -65,6 +45,23 @@ class Data
             $stmt->bindParam(':value', $value);
             $stmt->bindParam(':belong', $belong);
             $stmt->bindParam(':time', date('Y-m-d H:i:s'));
+            $stmt->execute();
+        }
+    }
+
+    public function delete($belong, $items=[]) {
+        global $DATABASE;
+
+        if (isset($items)) {
+            foreach ($items as $item) {
+                $stmt = $DATABASE->prepare("DELETE FROM data WHERE item = :item AND belong = :belong");
+                $stmt->bindParam(':item', $item);
+                $stmt->bindParam(':belong', $belong);
+                $stmt->execute();
+            }
+        } else {
+            $stmt = $DATABASE->prepare("DELETE FROM data WHERE belong = :belong");
+            $stmt->bindParam(':belong', $belong);
             $stmt->execute();
         }
     }

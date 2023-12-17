@@ -20,7 +20,7 @@ class bilitop
     }
     public function run()
     {
-        $bilitop = $GLOBALS["requests"]->get("https://api.bilibili.com/x/web-interface/popular")->json()["data"]["list"];
+        $bilitop = (new requests())->get("https://api.bilibili.com/x/web-interface/popular")->json()["data"]["list"];
         $i = 0;
         $top = [];
         for ($i; $i < count($bilitop); $i++) {

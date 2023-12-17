@@ -1,6 +1,6 @@
 <?php
 include_once($_SERVER["DOCUMENT_ROOT"]."/services/until.php");
-logger();
+req_log();
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     include_once($_SERVER["DOCUMENT_ROOT"]."/services/Config.class.php");
     include_once($_SERVER["DOCUMENT_ROOT"]."/services/connect.php");

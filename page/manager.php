@@ -14,6 +14,7 @@ if ($data == null) {
 }
 $web = new Data();
 $web = $web->get("web");
+req_log();
 ?>
 
 <!DOCTYPE html>

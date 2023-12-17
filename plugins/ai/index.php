@@ -58,7 +58,7 @@ class ai {
             }
         }
         if (empty($data)) {
-            $result = $GLOBALS["requests"]->get("http://api.qingyunke.com/api.php",["key"=>"free","appid"=>0,"msg"=>$msg])->json();
+            $result = (new requests())->get("http://api.qingyunke.com/api.php",["key"=>"free","appid"=>0,"msg"=>$msg])->json();
             if ($result["result"]==0) {
                 $data = $result["content"];
                 str_ireplace("菲菲","咱",$data);

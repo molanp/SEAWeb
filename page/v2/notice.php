@@ -2,10 +2,9 @@
 include_once($_SERVER["DOCUMENT_ROOT"]."/services/Config.class.php");
 include_once($_SERVER["DOCUMENT_ROOT"]."/services/until.php");
 
-logger();
+req_log();
 if ($_SERVER["REQUEST_METHOD"] == "GET") {
     $WEB= new Data();
     $data = $WEB->get("web");
-    $time = $WEB->time("web");
-    _return_(["notice"=>$data["notice"],"time"=>$time["notice"]]);
+    _return_(["notice"=>$data["notice"][0],"time"=>$data["notice"][1]]);
 }

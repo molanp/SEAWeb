@@ -4,8 +4,6 @@ include_once('Config.class.php');
 include_once('requests.php');
 include_once('watchdog.php');
 
-$GLOBALS["requests"] = new requests();
-
 /**
  * 在给定的字符串开头或末尾添加斜杠("/")，如果它尚未以斜杠结尾。
  *
@@ -244,7 +242,7 @@ function RequestLimit($limit)
  * 将请求记录到日志
  * @return null 无返回数据
  */
-function logger()
+function req_log()
 {
     include_once("connect.php");
     global $DATABASE;
