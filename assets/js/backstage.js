@@ -1,161 +1,217 @@
 $(function () {
-  $.post(
-    url = '/v2/info',
-    data = {
-      for: "setting",
-      token: getCookie('token')
-    },
-    function (data, status) {
-      if (status == 'success' && data.status == 200) {
-        load();
-        RankList();
-        TrendChart();
-      } else {
-        deleteCookie("user");
-        deleteCookie("token");
-        location.reload();
-      }
-    })
+  load();
 })
 
-$(document).ready(function () {
-  showTab();
-});
-
-$(window).on("hashchange", function () {
-  showTab();
-});
-
-
-function showTab() {
-  var hash = window.location.hash;
-  var tabsContainer = document.querySelector('.tabs');
-  var tabs = tabsContainer.children;
-  for (var i = 0; i < tabs.length; i++) {
-    var tab = tabs[i];
-    if (hash === '') {
-      if (tab.id === 'home') {
-        tab.style.display = 'block';
-      } else {
-        tab.style.display = 'none';
-      }
-    } else if ('#' + tab.id === hash) {
-      tab.style.display = 'block';
-    } else {
-      tab.style.display = 'none';
-    }
-  }
-    // 修复样式
-    $('.tabs').children().each(function () {
-      var $element = $(this);
-      if ($element.css('display') === 'block') {
-        $element.css('display', '');
-        // $element.css('display', 'none');
-      }
-    });
-}
-
 function load() {
-  $.get(
-    url = '/v2/info',
-    data = { "for": "web" },
-    function (data, status) {
-      if (status == 'success') {
-        var data = data.data;
-        $('#web_info').html(`
-        <mdui-text-field autosize label="网站标题" value="${data.index_title}" id="index_title"></mdui-text-field>
-        <hr>
-        <a href="javascript:preview('index_description')">预览简介</a>
-        <mdui-text-field autosize label="网站简介" value="${data.index_description}" id="index_description"></mdui-text-field>
-        <hr>
-        <a href="javascript:preview('notice')">预览公告</a>
-        <mdui-text-field autosize label="网站公告" value="${data.notice.data}" id="notice"></mdui-text-field>
-        <hr>
-        <mdui-text-field autosize label="网站底部版权信息" value="${data.copyright}" id="copyright"></mdui-text-field>
-        <hr>
-        <mdui-text-field autosize label="网页备案号" value="${data.record}" id="record"></mdui-text-field>
-        <hr>
-        <mdui-text-field autosize label="友情链接" helper="例如[链接1](http://xxx)，一行一个" value="${data.links}" id="links"></mdui-text-field>
-        <hr>
-        <mdui-text-field autosize label="网站关键词" helper="英文逗号分隔" value="${data.keywords}" id="keywords"></mdui-text-field>`);
-        $('#version').html(data.version);
-      }
-    }
-  );
-  $.get(
-    url = '/v2/info',
-    data = { "for": "status" },
-    function (data, status) {
-      if (status == 'success') {
-        var data = data.data;
-        var list = `<table><thead>
-                <tr><th>API Name</th>
-                <th>Status</th>
-                </tr></thead><tbody>`;
-        for (var key in data) {
-          if (data[key] == "true") {
-            list += `<tr><td>${key}</td><td>
-                          <mdui-switch id="${key}" name="checkbox" checked></mdui-switch>
-                        </td></tr>`;
-          } else {
-            list += `<tr><td>${key}</td><td>
-                          <mdui-switch id="${key}" name="checkbox"></mdui-switch>
-                        </td></tr>`;
+  var url = window.location.pathname;
+  if (url.indexOf("/sw-ad/") === 0) {
+    var url = url.replace("/sw-ad/", "");
+  }
+  switch (url) {
+    case '':
+      $("#data").html(`<div class="grid">
+        <mdui-card variant="outlined">
+            功能区
+            <br>
+            <mdui-button onclick="sendData('/v2/auth/cache',{},function (responseData) {message(responseData.data);});">清理缓存</mdui-button>
+            <mdui-button onclick="sendData('/v2/info',{for: 'update'},function (responseData) {message(responseData.data);});">更新设置列表</mdui-button>
+        </mdui-card>
+        <mdui-card variant="outlined">
+            本地SEAWeb版本: <span id="version">
+                <mdui-chip loading></mdui-chip>
+            </span>
+            <br>
+            网络版本:<span id="latest_version"><a href="javascript:check_update()">检查更新</a></span>
+            <mdui-text-field readonly autosize label="更新内容" id="update_info"></mdui-text-field>
+        </mdui-card>
+        <mdui-card variant="outlined">
+            <mdui-list-subheader>调用排行</mdui-list-subheader>
+            <mdui-list id="api-rank-list">
+                <br>
+                <mdui-circular-progress></mdui-circular-progress>
+            </mdui-list>
+        </mdui-card>
+        <mdui-card variant="outlined" style="overflow-x: auto;white-space: nowrap;">
+            调用统计
+            <canvas id="api-trend-chart">
+                <br>
+                <mdui-circular-progress></mdui-circular-progress>
+            </canvas>
+        </mdui-card>
+      </div>`);
+      $.get(
+        url = '/v2/info',
+        data = { "for": "web" },
+        function (data, status) {
+          if (status == 'success') {
+            $('#version').html(data.data.version);
           }
-        };
-        list += "</tbody></table>"
-        $('#api_list').html(list);
-      }
-    }
-  );
-  $.post(
-    url = '/v2/info',
-    data = {
-      for: "setting",
-      token: getCookie('token')
-    },
-    function (data, status) {
-      if (status == 'success') {
-        var setting = `<table><thead>
-        <tr><th>Name</th>
-        <th>Description</th>
-        <th><mdui-button onclick="up_sys()">更新设置列表</mdui-button></th>
-        </tr></thead><tbody>`;
-        var data = data.data;
-        for (var key in data) {
-          var value = data[key][0];
-          if (value === "true") {
-            setting += `
-            <tr><td>${key}</td>
-            <td>${data[key][1]}</td>
-            <td>
-              <mdui-switch id="${key}" name="checkbox" checked></mdui-switch>
-            </td></tr>`;
-          } else if (value === "false") {
-            setting += `
-            <tr><td>${key}</td>
-            <td>${data[key][1]}</td>
-            <td>
-              <mdui-switch id="${key}" name="checkbox"></mdui-switch>
-            </td></tr>`;
+        })
+      RankList();
+      TrendChart();
+      break;
+    case 'log':
+      sendData("/v2/auth/log", {mode: 'log'}, function (data) {
+        var dataList = data.data;
+        var list = `<div class="mdui-table">
+                        <table>
+                          <thead>
+                            <tr>
+                              <th>时间</th>
+                              <th>级别</th>
+                              <th>内容</th>
+                            </tr>
+                          </thead>
+                          <tbody>`;
+        $.each(dataList, function (index, item) {
+          if (item.level === 'INFO') {
+            color = 'green';
+          } else if (item.level === 'WARN') {
+            color = 'orange';
+          } else if (item.level === 'ERROR') {
+            color = 'red';
+          } else if (item.level === 'DEBUG') {
+            color = 'blue';
+          } else {
+            color = 'black';
+          }
+          list += `<tr style="color: ${color};">
+                       <td>${item.time}</td>
+                       <td>${item.level}</td>
+                       <td>${item.content}</td>
+                     </tr>`;
+        });
+        list += "</tbody></table></div>"
+        $('#data').html(list);
+      });
+      break;
+    case 'web':
+      $.get(
+        url = '/v2/info',
+        data = { "for": "web" },
+        function (data, status) {
+          if (status == 'success') {
+            var data = data.data;
+            $('#data').html(`
+            <mdui-text-field autosize label="网站标题" value="${data.index_title}" id="index_title"></mdui-text-field>
+            <hr>
+            <a href="javascript:preview('index_description')">预览简介</a>
+            <mdui-text-field autosize label="网站简介" value="${data.index_description}" id="index_description"></mdui-text-field>
+            <hr>
+            <a href="javascript:preview('notice')">预览公告</a>
+            <mdui-text-field autosize label="网站公告" value="${data.notice}" id="notice"></mdui-text-field>
+            <hr>
+            <mdui-text-field autosize label="网站底部版权信息" value="${data.copyright}" id="copyright"></mdui-text-field>
+            <hr>
+            <mdui-text-field autosize label="网页备案号" value="${data.record}" id="record"></mdui-text-field>
+            <hr>
+            <mdui-text-field autosize label="友情链接" helper="例如[链接1](http://xxx)，一行一个" value="${data.links}" id="links"></mdui-text-field>
+            <hr>
+            <mdui-text-field autosize label="网站关键词" helper="英文逗号分隔" value="${data.keywords}" id="keywords"></mdui-text-field>`);
           }
         }
-        $('#options').html(setting);
-      }
-    }
-  )
+      );
+      break;
+    case 'api':
+      $.get(
+        url = '/v2/info',
+        data = { "for": "status" },
+        function (data, status) {
+          if (status == 'success') {
+            var data = data.data;
+            var list = `<div class="mdui-table">
+            <table><thead>
+            <tr><th>API Name</th>
+            <th>Status</th>
+            </tr></thead><tbody>`;
+            for (var key in data) {
+              if (data[key] == "true") {
+                list += `<tr><td>${key}</td><td>
+                  <mdui-switch id="${key}" name="checkbox" checked></mdui-switch>
+                </td></tr>`;
+              } else {
+                list += `<tr><td>${key}</td><td>
+                  <mdui-switch id="${key}" name="checkbox"></mdui-switch>
+                </td></tr>`;
+              }
+            };
+            list += "</tbody></table></div>"
+            $('#data').html(list);
+          }
+        }
+      );
+      break;
+    case 'settings':
+      $.post(
+        url = '/v2/info',
+        data = {
+          for: "setting",
+          token: getCookie('token')
+        },
+        function (data, status) {
+          if (status == 'success') {
+            var setting = `<div class="mdui-table">
+            <table><thead>
+            <tr><th>Name</th>
+            <th>Description</th>
+            <th></th>
+            </tr></thead><tbody>`;
+            var data = data.data;
+            for (var key in data) {
+              var value = data[key][0];
+              if (value === "true") {
+                setting += `
+                <tr><td>${key}</td>
+                <td>${data[key][1]}</td>
+                <td>
+                <mdui-switch id="${key}" checked></mdui-switch>
+                </td></tr>`;
+              } else if (value === "false") {
+                setting += `
+                <tr><td>${key}</td>
+                <td>${data[key][1]}</td>
+                <td>
+                <mdui-switch id="${key}"></mdui-switch>
+                </td></tr>`;
+              } else {
+                setting += `
+                <tr><td>${key}</td>
+                <td>${data[key][1]}</td>
+                <td>
+                <mdui-text-field id="${key}" value="${value}"></mdui-text-field>
+                </td></tr>`;
+              }
+            }
+            setting += `</tbody></table></div>`;
+            $('#data').html(setting);
+          }
+        }
+      )
+      break;
+    default:
+      break;
+  }
 }
 
 function save() {
   i = 0;
-  switch (window.location.hash) {
-    case "#settings":
+  var url = window.location.pathname;
+  if (url.indexOf("/sw-ad/") === 0) {
+    var url = url.replace("/sw-ad/", "");
+  }
+  console.log(url)
+  switch (url) {
+    case "settings":
       var setting_list = [];
-      $('#setting [id]').each(function () {
+      $('#data [id]').each(function () {
         var id = $(this).attr('id');
-        var status = $(this).prop('checked');
+        if ($(this).is('mdui-switch')) {
+          var value = $(this).prop('checked');
+        } else {
+          var value = $(this).val();
+        }
         var settingObj = {};
-        settingObj[id] = status;
+        settingObj[id] = value;
         setting_list.push(settingObj);
       });
       var send = {
@@ -164,7 +220,7 @@ function save() {
       };
       i = 1;
       break;
-    case "#web":
+    case "web":
       var send = {
         for: 'web',
         record: $('#record').val(),
@@ -177,9 +233,9 @@ function save() {
       };
       i = 1;
       break;
-    case "#api_control":
+    case "api":
       var checkboxStatus = {};
-      $('#api_list [name="checkbox"]').each(function () {
+      $('#data [name="checkbox"]').each(function () {
         var checkbox = $(this);
         checkboxStatus[checkbox.attr('id')] = checkbox.prop('checked');
       });
@@ -222,8 +278,8 @@ function check_update() {
 
 function resetpassword() {
   var content = `
-        <mdui-text-field clearable label="新的密码" id="new"></mdui-text-field>
-        <mdui-text-field clearable label="再输一次" id="again"></mdui-text-field>`;
+    <mdui-text-field clearable label="新的密码" id="new"></mdui-text-field>
+    <mdui-text-field clearable label="再输一次" id="again"></mdui-text-field>`;
 
   mdui.dialog({
     headline: '修改密码',
@@ -335,16 +391,6 @@ function ShowTrendChart(data) {
       responsive: false
     }
   });
-}
-
-function up_sys() {
-  sendData("/v2/info",
-    {
-      for: 'update'
-    },
-    function (responseData) {
-      message(responseData.data);
-    });
 }
 
 function preview(id) {
