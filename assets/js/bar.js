@@ -24,7 +24,7 @@ $(function () {
     try {
         $("#bar").html(`
     <mdui-top-app-bar-title>
-        <a id="title_bar" href="/">title</a>
+        <span id="title_bar" onclick="javascript:window.location.href='/'">title</span>
     </mdui-top-app-bar-title>
     <div style="flex-grow: 1"></div>
     <mdui-button-icon href="javascript:output_search()" icon="search"></mdui-button-icon>
@@ -32,7 +32,7 @@ $(function () {
     <mdui-button-icon mdui-tooltip="{content: "公告", position: "bottom"}" onclick="notice()" icon="announcement--outlined"></mdui-button-icon>
     <mdui-dropdown>
         <mdui-button-icon slot="trigger" icon="light_mode--outlined" id="theme"></mdui-button-icon>
-        <mdui-menu selects="single" value="auto">
+        <mdui-menu selects="single" id="theme_select" value="auto">
             <mdui-menu-item href="javascript:theme_light()" value="light">亮色模式</mdui-menu-item>
             <mdui-menu-item href="javascript:theme_dark()" value="dark">暗色模式</mdui-menu-item>
             <mdui-divider></mdui-divider>
@@ -52,6 +52,22 @@ $(function () {
         console.error(e);
     }
 })
+
+$(document).ready(function() {
+    $('body').append('<mdui-fab id="ToTop" icon="vertical_align_top"></mdui-fab>');
+    $(window).scroll(function() {
+        if ($(this).scrollTop() > 100) {
+            $('#ToTop').fadeIn();
+        } else {
+            $('#ToTop').fadeOut();
+        }
+    });
+    $('#ToTop').click(function() {
+    $('html, body').animate({scrollTop : 0},800);
+    return false;
+  });
+});
+
 
 function notice() {
     $.get("/v2/notice")
