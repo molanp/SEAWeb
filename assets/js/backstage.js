@@ -4,10 +4,10 @@ $(function () {
 
 var page = 1;
 
-function previous() {
+function previous(mode = 'log') {
   if (page > 1) {
     page = page - 1;
-    fetchData(page);
+    fetchData(page, mode);
   } else {
     mdui.snackbar({
       message: "已经到顶了呢！",
@@ -17,9 +17,9 @@ function previous() {
   }
 }
 
-function next() {
+function next(mode = 'log') {
   page = page + 1;
-  fetchData(page);
+  fetchData(page, mode);
 }
 
 function fetchData(page, mode = 'log', pageSize = 20) {
@@ -35,35 +35,28 @@ function fetchData(page, mode = 'log', pageSize = 20) {
 }
 
 function displayData(data) {
-  var list = `<div class="mdui-table">
-  <table>
-    <thead>
-      <tr>
-        <th>时间</th>
-        <th>级别</th>
-        <th>内容</th>
-      </tr>
-    </thead>
-    <tbody>`;
+  var list = `
+  <div class="mdui-table">
+    <table>
+      <thead>
+        <tr>`;
+  for (var key in data[0]) {
+    list += `<th>${key}</th>`;
+  }
+  list += `</tr>
+      </thead>
+      <tbody>`;
   $.each(data, function (index, item) {
-    if (item.level === 'INFO') {
-      color = 'green';
-    } else if (item.level === 'WARN') {
-      color = 'orange';
-    } else if (item.level === 'ERROR') {
-      color = 'red';
-    } else if (item.level === 'DEBUG') {
-      color = 'blue';
-    } else {
-      color = 'black';
+    list += `<tr>`;
+    for (var key in item) {
+      list += `<td>${item[key]}</td>`;
     }
-    list += `<tr style="color: ${color};">
-    <td>${item.time}</td>
-    <td>${item.level}</td>
-    <td>${item.content}</td>
-    </tr>`;
+    list += `</tr>`;
   });
-  list += "</tbody></table></div>"
+  list += `
+      </tbody>
+    </table>
+  </div>`;
   $('#data').html(list);
 }
 
@@ -122,7 +115,15 @@ function load() {
       <mdui-segmented-button id="page" onclick="$('#data').animate({scrollTop:0},800);">N/A</mdui-segmented-button>
       <mdui-segmented-button onclick="next()">Next</mdui-segmented-button>
     </mdui-segmented-button-group>`);
-      fetchData(page);
+      fetchData(page, 'log');
+      break;
+    case 'acclog':
+      $('body').append(`<mdui-segmented-button-group full-width style="position:fixed;bottom:20px;right:20px;">
+      <mdui-segmented-button onclick="previous('access')">Previous</mdui-segmented-button>
+      <mdui-segmented-button id="page" onclick="$('#data').animate({scrollTop:0},800);">N/A</mdui-segmented-button>
+      <mdui-segmented-button onclick="next('access')">Next</mdui-segmented-button>
+    </mdui-segmented-button-group>`);
+      fetchData(page, 'access');
       break;
     case 'web':
       $('body').append(`<mdui-fab icon="save" onclick="save()" style="position:fixed;bottom:20px;right:20px;"></mdui-fab>`);
