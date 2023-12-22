@@ -9,13 +9,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (tokentime($data)) {
             $DATABASE->exec("TRUNCATE api");
             @unlink($_SERVER["DOCUMENT_ROOT"] . "/sitemap.xml");
-            _return_("OK");
+            code(200);
         } else {
-            _return_("莫得权限", 403);
+            code(401);
         }
     } else {
-        _return_("Bad Requests", 400);
+        code(400);
     }
 } else {
-    _return_("Bad Requests", 400);
+    code(400);
 }

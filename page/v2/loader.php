@@ -20,6 +20,6 @@ if($data==null) {
     $plugin = new $data["class"];
     $plugin->run($_REQUEST);
 } else {
-    _return_("Method Not Allowed.Needed {$data["method"]}, but {$_SERVER["REQUEST_METHOD"]} is given",405);
+    code(405);
 }
 unset($plugin);

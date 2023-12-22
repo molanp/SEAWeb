@@ -45,7 +45,7 @@ if (isset($_COOKIE["token"], $_COOKIE["user"])) {
             <p></p>
             <mdui-button onclick="login()">登录</mdui-button>
             <br>
-            <a href="javascript:window.history.back()">返回</a>
+            <a href="/">返回</a>
         </mdui-card>
         <div></div>
     <script src="https://registry.npmmirror.com/mdui/2.0.3/files/mdui.global.js"></script>

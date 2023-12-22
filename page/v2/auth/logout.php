@@ -8,14 +8,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($data["token"])) {
         $token = $data["token"];
         if (tokentime($data)) {
-            $DATABASE->exec("UPDATE users SET token = NULL WHERE token = '$token'");
-            _return_("OK");
+            $stmt = $DATABASE->prepare("UPDATE users SET token = NULL WHERE token = :token");
+            $stmt->bindParam(':token', $token);
+            $stmt->execute();
+            code(200);
         } else {
-            _return_("身份验证失败", 403);
+            code(401);
         }
     } else {
-        _return_("Bad Requests", 400);
+        code(400);
     }
 } else {
-    _return_("Bad Requests", 400);
+    code(400);
 }

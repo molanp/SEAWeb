@@ -1,8 +1,9 @@
 <IfModule mod_rewrite.c>
     Options -Indexes
+    ErrorDocument 404 /404.php
     RewriteEngine On
     RewriteBase /
-    RewriteCond %{REQUEST_URI} \.(db|log|htaccess)$
+    RewriteCond %{REQUEST_URI} \.(htaccess)$
     RewriteRule ^ - [F]
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d

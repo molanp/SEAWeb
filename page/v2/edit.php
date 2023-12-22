@@ -19,9 +19,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     "notice"=>$_POST["notice"],
                     "keywords"=>$_POST["keywords"],
                     "links"=>$_POST["links"]]);
-                _return_("修改成功");
+                code(200);
             } else {
-                _return_("身份验证失败",403);
+                code(401);
             }
             break;
         case "setting":
@@ -31,9 +31,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         $DATABASE->exec("UPDATE setting SET value='$value' WHERE item='$key'");
                     }
                 };
-                _return_("修改成功");
+                code(200);
             } else {
-                _return_("身份验证失败",403);
+                code(401);
             }
             break;
         case "status":
@@ -44,9 +44,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 for ($i;$i<count($data);$i++) {
                     $DATABASE->exec("UPDATE api SET status='$data[$i]' WHERE name='$keys[$i]'");
                 }
-                _return_("修改成功");
+                code(200);
             } else {
-                _return_("身份验证失败",403);
+                code(401);
             }
             break;
         }

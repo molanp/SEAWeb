@@ -11,28 +11,41 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         case "pass":
             $token = $data["token"];
             $pwd = hash("sha256", $data["new"]);
-            if (tokentime($data)) {
+            if (tokentime($token)) {
                 if ($pwd !== hash("sha256",$data["again"])) {
-                    _return_("两次输入密码不同",400);
+                    _return_("两次输入密码不同",406);
                 } else {
-                    $DATABASE->exec("UPDATE users SET password = '$pwd' WHERE token = '$token'");
-                    _return_("密码已修改，请重新登录");
+                    $stmt = $DATABASE->prepare("UPDATE users SET password = :password WHERE token = :token");
+                    $stmt->bindParam(':password', $pwd);
+                    $stmt->bindParam(':token', $token);
+                    $stmt->execute();
+                    code(200);
                 }
             } else {
-                _return_("身份验证失败",403);
+                code(401);
             }
             break;
         default:
             if (isset($data["password"]) && isset($data["username"])) {
                 $usr = $data["username"];
                 $pwd = hash("sha256",$data["password"]);
-                if ($DATABASE->query("SELECT password FROM users WHERE username = '$usr'")->fetchColumn()==$pwd) {
+                $stmt = $DATABASE->prepare("SELECT password FROM users WHERE username = :username");
+                $stmt->bindParam(':username', $usr);
+                $stmt->execute();
+                $result = $stmt->fetchColumn();
+                if ($result == $pwd) {
                     $token = uniqid("swb_");
-                    $DATABASE->exec("UPDATE users SET token = '$token', logtime = ".time()." WHERE username = '$usr'");
+                    $hashedToken = hash("sha256", $token);
+                    $currentTime = time();
+                    $stmt = $DATABASE->prepare("UPDATE users SET token = :token, logtime = :time WHERE username = :username");
+                    $stmt->bindParam(':token', $hashedToken);
+                    $stmt->bindParam(':time', $currentTime);
+                    $stmt->bindParam(':username', $usr);
+                    $stmt->execute();
                     _return_([
                         "login"=>"success",
                         "user"=>$data["username"],
-                        "token"=> $token
+                        "token"=> $hashedToken
                     ]);
                 } else {
                     _return_([
@@ -41,7 +54,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     ]);
                 }
             } else {
-                _return_("Bad Request",400);
+                code(400);
             }
     }
 }
