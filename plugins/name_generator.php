@@ -5,7 +5,7 @@ class name_generator {
             "name" => "亚文化取名机",
             "version" => "1.0",
             "profile"=> "一键生成最潮的亚文化网名",
-            "method"=>"GET",
+            "method"=>"ALL",
             "author"=>"molanp",
             "type"=>"潮",
             "request_par"=> re_par(),
