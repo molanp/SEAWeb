@@ -96,7 +96,7 @@ function _return_($content, $status = 200, $location = false)
     header('Access-Control-Allow-Headers: *');
     header('Access-Control-Expose-Headers: *');
     header('Access-Control-Max-Age: 3600');
-    //header("HTTP/1.1 $status");
+    header("HTTP/1.1 $status");
     if ($location === false) {
         header('Content-type:text/json;charset=utf-8');
         die(json_encode(['status' => $status, 'data' => $content, 'time' => time()], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
@@ -118,8 +118,7 @@ function handle_check($name)
     $query->execute();
     $status = $query->fetchColumn();
     if ($status == 'false' || $DATABASE->query("SELECT value FROM setting WHERE item = 'maintenance_mode'")->fetchColumn() == 'true') {
-        header("HTTP/1.1 406");
-        _return_("API already closed", 406);
+        _return_("This API already closed", 406);
     } else {
         return true;
     }
@@ -138,9 +137,7 @@ function find_files($dirs, $file = '.php', $prefix = '')
 
     foreach ($dirs as $dir) {
         if (is_dir($dir)) {
-            // 处理文件夹结果
             $subdirs = glob("$dir/*", GLOB_ONLYDIR);
-            // 处理文件结果
             $files = glob("$dir/*$file");
 
             foreach ($files as $filePath) {
@@ -274,15 +271,12 @@ function getPath($paths, $root = NULL)
         $root = $_SERVER['DOCUMENT_ROOT'];
     }
 
-    // 如果根路径不以斜杠结尾，则添加斜杠
     if (substr($root, -1) != $DIRECTORY_SEPARATOR) {
         $root .= $DIRECTORY_SEPARATOR;
     }
 
-    // 将根路径中的斜杠转换为系统默认类型
     $root = str_replace('/', $DIRECTORY_SEPARATOR, $root);
 
-    // 将路径数组中的斜杠转换为系统默认类型并转义反斜杠
     $paths = array_map(function ($path) use ($DIRECTORY_SEPARATOR) {
         $path = str_replace('/', $DIRECTORY_SEPARATOR, $path);
         if ($DIRECTORY_SEPARATOR === '\\') {
@@ -291,9 +285,66 @@ function getPath($paths, $root = NULL)
         return $path;
     }, $paths);
 
-    // 计算相对路径并返回结果
     return array_map(function ($path) use ($root) {
         $result = str_replace($root, '', $path);
         return ($result == '') ? '/' : $result;
     }, $paths);
+}
+
+/**
+ * 根据输入的HTTP状态码返回对应的内容
+ * @param int $code HTTP状态码
+ * @return void 返回JSON格式的内容并结束脚本
+ * @throws Exception 如果HTTP状态码不存在则抛出异常
+ */
+function code($code)
+{
+    $data = [
+        100 => '继续努力喔！',
+        101 => '切换协议啦！',
+        200 => 'OK啦！',
+        201 => '已经创建啦！',
+        202 => '接受啦！',
+        203 => '权威信息不太权威，但是...',
+        204 => '这里什么都没有喔！',
+        205 => '内容已经重置啦！',
+        206 => '部分内容也很好喔！',
+        300 => '好多选择喔！',
+        301 => '永久搬家啦！',
+        302 => '找到啦！',
+        303 => '看看别的地方吧！',
+        304 => '内容没有变喔！',
+        305 => '需要使用代理喔！',
+        307 => '暂时搬家啦！',
+        400 => '糟糕！请求有问题喔！',
+        401 => '你没有权限喔！',
+        402 => '需要付费喔！',
+        403 => '禁止访问喔！',
+        404 => '迷路了喔！找不到啦！',
+        405 => '这个方法不被允许喔！',
+        406 => '不接受喔！再试一次吧！',
+        407 => '需要代理验证喔！',
+        408 => '请求超时啦！休息一下吧！',
+        409 => '发生冲突啦！',
+        410 => '消失啦！永远不见啦！',
+        411 => '需要长度喔！',
+        412 => '前提条件失败啦！',
+        413 => '请求太大啦！',
+        414 => '请求太长啦！',
+        415 => '不支持的媒体类型喔！',
+        416 => '请求的范围不符合要求喔！',
+        417 => '期望失败啦！',
+        500 => '服务器出错啦！糟糕！',
+        501 => '还没有实现喔！',
+        502 => '网关出错啦！稍后再试试吧！',
+        503 => '服务暂时不可用喔！稍后再试试吧！',
+        504 => '网关超时啦！稍后再试试吧！',
+        505 => '不支持的HTTP版本喔！'
+    ];    
+
+    if (array_key_exists($code, $data)) {
+        _return_($data[$code], $code);
+    } else {
+        throw new Exception("Unknow HTTp code.");
+    }
 }

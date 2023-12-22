@@ -53,41 +53,41 @@ $(function () {
     }
 })
 
-$(document).ready(function() {
+$(document).ready(function () {
     $('body').append('<mdui-fab id="ToTop" icon="vertical_align_top"></mdui-fab>');
-    $(window).scroll(function() {
+    $(window).scroll(function () {
         if ($(this).scrollTop() > 100) {
             $('#ToTop').fadeIn();
         } else {
             $('#ToTop').fadeOut();
         }
     });
-    $('#ToTop').click(function() {
-    $('html, body').animate({scrollTop : 0},800);
-    return false;
-  });
+    $('#ToTop').click(function () {
+        $('html, body').animate({ scrollTop: 0 }, 800);
+        return false;
+    });
 });
 
 
 function notice() {
     $.get("/v2/notice")
-    .done(function(data) {
-        if (data.status==200) {
-            data = data.data;
-            mdui.dialog({
-                headline: "公告 | "+data.time,
-                body: marked.parse(data.notice),
-                actions: [
-                    {
-                      text: "OK",
-                    }
-                ]
-            });
-        } else {
-            alert(JSON.stringify(data.data));
-        }
-    })
-    .fail(function(data){
-        alert(data.responseJSON.data)
-    });
+        .done(function (data) {
+            if (data.status == 200) {
+                data = data.data;
+                mdui.dialog({
+                    headline: "公告 | " + data.time,
+                    body: marked.parse(data.notice),
+                    actions: [
+                        {
+                            text: "OK",
+                        }
+                    ]
+                });
+            } else {
+                alert(JSON.stringify(data.data));
+            }
+        })
+        .fail(function (data) {
+            alert(data.responseJSON.data)
+        });
 }

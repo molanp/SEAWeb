@@ -2,11 +2,77 @@ $(function () {
   load();
 })
 
+var page = 1;
+
+function previous() {
+  if (page > 1) {
+    page = page - 1;
+    fetchData(page);
+  } else {
+    mdui.snackbar({
+      message: "已经到顶了呢！",
+      placement: "top",
+      closeable: true
+    })
+  }
+}
+
+function next() {
+  page = page + 1;
+  fetchData(page);
+}
+
+function fetchData(page, mode = 'log', pageSize = 20) {
+  $("#page").text(page);
+  sendData('/v2/auth/log', {
+    mode: mode,
+    page: page,
+    pageSize: pageSize
+  }, function (response) {
+    $('#data').html('');
+    displayData(response.data);
+  })
+}
+
+function displayData(data) {
+  var list = `<div class="mdui-table">
+  <table>
+    <thead>
+      <tr>
+        <th>时间</th>
+        <th>级别</th>
+        <th>内容</th>
+      </tr>
+    </thead>
+    <tbody>`;
+  $.each(data, function (index, item) {
+    if (item.level === 'INFO') {
+      color = 'green';
+    } else if (item.level === 'WARN') {
+      color = 'orange';
+    } else if (item.level === 'ERROR') {
+      color = 'red';
+    } else if (item.level === 'DEBUG') {
+      color = 'blue';
+    } else {
+      color = 'black';
+    }
+    list += `<tr style="color: ${color};">
+    <td>${item.time}</td>
+    <td>${item.level}</td>
+    <td>${item.content}</td>
+    </tr>`;
+  });
+  list += "</tbody></table></div>"
+  $('#data').html(list);
+}
+
 function load() {
   var url = window.location.pathname;
   if (url.indexOf("/sw-ad/") === 0) {
     var url = url.replace("/sw-ad/", "");
   }
+  $("mdui-navigation-rail").val(url)
   switch (url) {
     case '':
       $("#data").html(`<div class="grid">
@@ -51,41 +117,15 @@ function load() {
       TrendChart();
       break;
     case 'log':
-      sendData("/v2/auth/log", {mode: 'log'}, function (data) {
-        var dataList = data.data;
-        var list = `<div class="mdui-table">
-                        <table>
-                          <thead>
-                            <tr>
-                              <th>时间</th>
-                              <th>级别</th>
-                              <th>内容</th>
-                            </tr>
-                          </thead>
-                          <tbody>`;
-        $.each(dataList, function (index, item) {
-          if (item.level === 'INFO') {
-            color = 'green';
-          } else if (item.level === 'WARN') {
-            color = 'orange';
-          } else if (item.level === 'ERROR') {
-            color = 'red';
-          } else if (item.level === 'DEBUG') {
-            color = 'blue';
-          } else {
-            color = 'black';
-          }
-          list += `<tr style="color: ${color};">
-                       <td>${item.time}</td>
-                       <td>${item.level}</td>
-                       <td>${item.content}</td>
-                     </tr>`;
-        });
-        list += "</tbody></table></div>"
-        $('#data').html(list);
-      });
+      $('body').append(`<mdui-segmented-button-group full-width style="position:fixed;bottom:20px;right:20px;">
+      <mdui-segmented-button onclick="previous()">Previous</mdui-segmented-button>
+      <mdui-segmented-button id="page" onclick="$('#data').animate({scrollTop:0},800);">N/A</mdui-segmented-button>
+      <mdui-segmented-button onclick="next()">Next</mdui-segmented-button>
+    </mdui-segmented-button-group>`);
+      fetchData(page);
       break;
     case 'web':
+      $('body').append(`<mdui-fab icon="save" onclick="save()" style="position:fixed;bottom:20px;right:20px;"></mdui-fab>`);
       $.get(
         url = '/v2/info',
         data = { "for": "web" },
@@ -113,6 +153,7 @@ function load() {
       );
       break;
     case 'api':
+      $('body').append(`<mdui-fab icon="save" onclick="save()" style="position:fixed;bottom:20px;right:20px;"></mdui-fab>`);
       $.get(
         url = '/v2/info',
         data = { "for": "status" },
@@ -142,6 +183,7 @@ function load() {
       );
       break;
     case 'settings':
+      $('body').append(`<mdui-fab icon="save" onclick="save()" style="position:fixed;bottom:20px;right:20px;"></mdui-fab>`);
       $.post(
         url = '/v2/info',
         data = {

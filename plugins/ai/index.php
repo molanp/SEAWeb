@@ -73,6 +73,6 @@ class ai {
         if (empty($data)) {
             $data = $budong[array_rand($budong)];
         }
-        _return_($data, 200);
+        _return_($data);
     }
 }

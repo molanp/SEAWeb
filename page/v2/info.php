@@ -158,7 +158,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
                 $count[$row["url"]] = $row["count"];
             }
 
-            $query = $DATABASE->prepare("SELECT * FROM api ORDER BY name LIMIT 12 OFFSET $pages"); //id
+            $query = $DATABASE->prepare("SELECT * FROM api ORDER BY name LIMIT 12 OFFSET $pages");
             $query->execute();
             $conname = [];
             while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
@@ -190,7 +190,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
                     $conname[$row["item"]] = [$row["value"], $row["info"]];
                 }
             } else {
-                _return_("权限不足", 403);
+                code(401);
             }
             break;
         case "update":
@@ -226,7 +226,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
                 (new logger())->info("用户执行更新设置项操作");
                 $conname = "更新成功";
             } else {
-                _return_("莫的权限", 403);
+                code(401);
             }
             break;
     }
