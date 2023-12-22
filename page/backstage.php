@@ -55,7 +55,7 @@ if (!tokentime($_COOKIE)) {
             <mdui-navigation-rail-item value="settings" icon="settings" href="/sw-ad/settings">设置</mdui-navigation-rail-item>
             <mdui-navigation-rail-item value="web" icon="edit_note" href="/sw-ad/web">修改信息</mdui-navigation-rail-item>
             <mdui-navigation-rail-item value="log" icon="description" href="/sw-ad/log">系统日志查看</mdui-navigation-rail-item>
-            <mdui-navigation-rail-item value="log" icon="description" href="/sw-ad/acclog">访问日志查看</mdui-navigation-rail-item>
+            <mdui-navigation-rail-item value="acclog" icon="description" href="/sw-ad/acclog">访问日志查看</mdui-navigation-rail-item>
         </mdui-navigation-rail>
         <mdui-layout-main>
             <div id="data"  style="height: calc(100vh - 10px);overflow: auto;">
