@@ -23,19 +23,30 @@ function next(mode = 'log') {
 }
 
 function fetchData(page, mode = 'log', pageSize = 20) {
-  $("#page").text(page);
   sendData('/v2/auth/log', {
     mode: mode,
     page: page,
     pageSize: pageSize
   }, function (response) {
-    $('#data').html('');
-    displayData(response.data);
+    displayData(response.data, mode, page);
   })
 }
+/*
+case 'acclog':
+  $('body').append(`<mdui-segmented-button-group full-width style="position:fixed;bottom:20px;right:20px;">
+  <mdui-segmented-button onclick="previous('access')">Previous</mdui-segmented-button>
+  <mdui-segmented-button id="page">N/A</mdui-segmented-button>
+  <mdui-segmented-button onclick="next('access')">Next</mdui-segmented-button>
+</mdui-segmented-button-group>`);
+  fetchData(page, 'access');
+  break;*/
 
-function displayData(data) {
-  var list = `
+function displayData(data, mode, page) {
+  var list = `<mdui-segmented-button-group full-width style="bottom:20px;right:20px;">
+  <mdui-segmented-button onclick="previous('${mode}')">Previous</mdui-segmented-button>
+  <mdui-segmented-button id="page">${page}</mdui-segmented-button>
+  <mdui-segmented-button onclick="next('${mode}')">Next</mdui-segmented-button>
+</mdui-segmented-button-group>
   <div class="mdui-table">
     <table>
       <thead>
@@ -57,7 +68,7 @@ function displayData(data) {
       </tbody>
     </table>
   </div>`;
-  $('#data').html(list);
+  $(`#${mode}`).html(list);
 }
 
 function load() {
@@ -101,39 +112,20 @@ function load() {
       $.get(
         url = '/v2/info',
         data = { "for": "web" },
-        function (data, status) {
-          if (status == 'success') {
-            $('#version').html(data.data.version);
-          }
+        function (data) {
+          $('#version').html(data.data.version);
         })
       RankList();
       TrendChart();
-      break;
-    case 'log':
-      $('body').append(`<mdui-segmented-button-group full-width style="position:fixed;bottom:20px;right:20px;">
-      <mdui-segmented-button onclick="previous()">Previous</mdui-segmented-button>
-      <mdui-segmented-button id="page" onclick="$('#data').animate({scrollTop:0},800);">N/A</mdui-segmented-button>
-      <mdui-segmented-button onclick="next()">Next</mdui-segmented-button>
-    </mdui-segmented-button-group>`);
-      fetchData(page, 'log');
-      break;
-    case 'acclog':
-      $('body').append(`<mdui-segmented-button-group full-width style="position:fixed;bottom:20px;right:20px;">
-      <mdui-segmented-button onclick="previous('access')">Previous</mdui-segmented-button>
-      <mdui-segmented-button id="page" onclick="$('#data').animate({scrollTop:0},800);">N/A</mdui-segmented-button>
-      <mdui-segmented-button onclick="next('access')">Next</mdui-segmented-button>
-    </mdui-segmented-button-group>`);
-      fetchData(page, 'access');
       break;
     case 'web':
       $('body').append(`<mdui-fab icon="save" onclick="save()" style="position:fixed;bottom:20px;right:20px;"></mdui-fab>`);
       $.get(
         url = '/v2/info',
         data = { "for": "web" },
-        function (data, status) {
-          if (status == 'success') {
-            var data = data.data;
-            $('#data').html(`
+        function (data) {
+          var data = data.data;
+          $('#data').html(`
             <mdui-text-field autosize label="网站标题" value="${data.index_title}" id="index_title"></mdui-text-field>
             <hr>
             <a href="javascript:preview('index_description')">预览简介</a>
@@ -149,9 +141,20 @@ function load() {
             <mdui-text-field autosize label="友情链接" helper="例如[链接1](http://xxx)，一行一个" value="${data.links}" id="links"></mdui-text-field>
             <hr>
             <mdui-text-field autosize label="网站关键词" helper="英文逗号分隔" value="${data.keywords}" id="keywords"></mdui-text-field>`);
-          }
         }
       );
+      break;
+    case 'log':
+      $("#data").html(`<div class="grid">
+          <mdui-card variant="outlined" href="javascript:windowManager.openWindow('系统日志', '', 'log');fetchData(page, 'log');">
+              <h2>站务日志查看</h2>
+              <p>点击查询系统日志</p>
+          </mdui-card>
+          <mdui-card variant="outlined" href="javascript:windowManager.openWindow('访问日志', '', 'access');fetchData(page, 'access');">
+          <h2>请求日志查看</h2>
+          <p>点击查询用户访问日志</p>
+      </mdui-card>
+      </div>`);
       break;
     case 'api':
       $('body').append(`<mdui-fab icon="save" onclick="save()" style="position:fixed;bottom:20px;right:20px;"></mdui-fab>`);
@@ -189,7 +192,7 @@ function load() {
         url = '/v2/info',
         data = {
           for: "setting",
-          token: getCookie('token')
+          token: cookie.get('token')
         },
         function (data, status) {
           if (status == 'success') {
@@ -342,7 +345,7 @@ function resetpassword() {
 
         sendData('/v2/auth/login', {
           'type': 'pass',
-          'token': getCookie("token"),
+          'token': cookie.get("token"),
           'new': newPassword,
           'again': newPasswordAgain
         }, function (data) {
@@ -351,7 +354,7 @@ function resetpassword() {
               body: data.data,
               actions: [{
                 text: 'OK',
-                onClick: function (inst) {
+                onClick: function () {
                   loginout();
                 }
               }]
@@ -367,32 +370,24 @@ function resetpassword() {
 
 function loginout() {
   sendData('/v2/auth/logout',
-    { "token": getCookie("token") },
+    { "token": cookie.get("token") },
     function () { })
-  deleteCookie("user");
-  deleteCookie("token");
+  cookie.remove("user");
+  cookie.remove("token");
   location.reload();
 }
 
 function RankList() {
   $.get(url = '/v2/hot')
     .done(function (data) {
-      if (data.status == 200) {
-        ShowRankList(data.data);
-      } else {
-        message(data.data);
-      }
+      ShowRankList(data.data);
     })
 }
 
 function TrendChart() {
-  $.get(url = '/v2/hot', data = { token: getCookie('token') })
+  $.get(url = '/v2/hot', data = { token: cookie.get('token') })
     .done(function (data) {
-      if (data.status == 200) {
-        ShowTrendChart(data.data);
-      } else {
-        message(data.data);
-      }
+      ShowTrendChart(data.data);
     })
 }
 
