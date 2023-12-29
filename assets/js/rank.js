@@ -1,6 +1,4 @@
 $(function () {
-    let darkMode = getCookie("theme");
-    if (darkMode == 1) enableDarkMode();
     marked.setOptions({
         gfm: true,
         tables: true,
@@ -10,7 +8,20 @@ $(function () {
         smartypants: true,
         headerIds: false
     });
-    load();
+    $.get(
+        url = "/v2/info",
+        data = { "for": "web" },
+    )
+        .done(function (data) {
+            web(data.data);
+        })
+    $("#rank").html('');
+    $.get(
+        url = "/v2/hot",
+    )
+        .done(function (data) {
+            rank(data.data);
+        })
 })
 
 function web(data) {
@@ -46,37 +57,4 @@ function rank(data) {
     }
 
     $("#rank").html(table);
-}
-
-
-
-function load() {
-    $.get(
-        url = "/v2/info",
-        data = { "for": "web" },
-    )
-        .done(function (data) {
-            if (data.status == 200) {
-                web(data.data);
-            } else {
-                alert(JSON.stringify(data.data));
-            }
-        })
-        .fail(function (data) {
-            alert(data.responseJSON.data)
-        });
-    $("#rank").html('');
-    $.get(
-        url = "/v2/hot",
-    )
-        .done(function (data) {
-            if (data.status == 200) {
-                rank(data.data);
-            } else {
-                alert(JSON.stringify(data.data));
-            }
-        })
-        .fail(function (data) {
-            alert(data.responseJSON.data)
-        });
 }

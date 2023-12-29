@@ -8,68 +8,21 @@ $(function () {
         smartypants: true,
         headerIds: false
     });
-    load();
-})
-
-function load() {
     $.get(
         url = "/v2/info",
         data = { url: window.location.pathname, for: "api" }
     )
         .done(function (data) {
-            if (data.status == 200) {
-                api(data.data);
-            } else {
-                mdui.dialog({
-                    body: data.data,
-                    actions: [
-                        {
-                            text: "OK"
-                        }
-                    ]
-                });
-            }
-        })
-        .fail(function (data) {
-            mdui.dialog({
-                body: data.responseJSON.data,
-                actions: [
-                    {
-                        text: "OK"
-                    }
-                ]
-            });
+            api(data.data);
         });
     $.get(
         url = "/v2/info",
         data = { "for": "web" },
     )
         .done(function (data) {
-            if (data.status == 200) {
-                var data = data.data;
-                web(data);
-            } else {
-                mdui.dialog({
-                    body: data.data,
-                    actions: [
-                        {
-                            text: "OK"
-                        }
-                    ]
-                });
-            }
+            web(data.data);
         })
-        .fail(function (data) {
-            mdui.dialog({
-                body: data.responseJSON.data,
-                actions: [
-                    {
-                        text: "OK"
-                    }
-                ]
-            });
-        });
-}
+})
 
 function web(data) {
     $("#title_bar").html(data.index_title);
@@ -79,14 +32,14 @@ function web(data) {
 }
 
 function api(api_data) {
-    $("#api_name").html(DOMPurify.sanitize(api_data.name));
+    $("#api_name").html(api_data.name);
     $("#api_count").html(api_data.count);
-    $("#response").html(DOMPurify.sanitize(marked.parse(api_data.response)));
-    $("#request").html(DOMPurify.sanitize(marked.parse(api_data.request)));
+    $("#response").html(marked.parse(api_data.response));
+    $("#request").html(marked.parse(api_data.request));
     path = window.location.pathname.match(/\/docs(.*)\//)[1];
-    $("#api_address").html(DOMPurify.sanitize(marked.parse(`|Method|Url|\n|--|--|\n|${api_data.method}|<a target="_blank" href="/api${path}">/api${path}</a>|`)));
-    $("#author").html(DOMPurify.sanitize(api_data.author));
-    $("#api_version").html(DOMPurify.sanitize(api_data.version));
-    $("#api_profile").html(DOMPurify.sanitize(marked.parse(api_data.profile)));
+    $("#api_address").html(marked.parse(`|Method|Url|\n|--|--|\n|${api_data.method}|<a target="_blank" href="/api${path}">/api${path}</a>|`));
+    $("#author").html(api_data.author);
+    $("#api_version").html(api_data.version);
+    $("#api_profile").html(marked.parse(api_data.profile));
     $("#urlInput").attr("value", window.location.host + "/api" + path);
 }

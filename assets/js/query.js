@@ -54,16 +54,16 @@ function sendRequest() {
     url: url,
     method: methodSelect.val(),
     data: params,
-    success: function (response, status, xhr) {
+    success: function (xhr) {
       var contentType = xhr.getResponseHeader("content-type");
       if (contentType.startsWith("image/")) {
         var container = $("#responseTEXT");
         container.html("暂不支持查看图片");
       } else {
-        renderResponseCard(response);
+        renderResponseCard(xhr);
       }
     },
-    error: function (xhr, status, error) {
+    error: function (xhr) {
       const response = xhr.responseText || "请求失败";
       try {
         const jsonResponse = JSON.parse(response);
@@ -95,6 +95,5 @@ function syntaxHighlight(json) {
 }
 
 function renderResponseCard(response) {
-  const responseText = $("#responseTEXT");
-  responseText.html(syntaxHighlight(JSON.stringify(response, undefined, 4)));
+  $("#responseTEXT").html(syntaxHighlight(JSON.stringify(response, undefined, 4)));
 }

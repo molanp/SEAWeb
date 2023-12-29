@@ -30,7 +30,6 @@ $web = $web->get("web");
     <link href="https://registry.npmmirror.com/mdui/2.0.3/files/mdui.css" rel="stylesheet">
     <script src="/assets/js/marked.min.js"></script>
     <script src="/assets/js/jquery-3.7.1.min.js"></script>
-    <script src="/assets/js/purify.min.js"></script>
     <script src="/assets/js/cookie.js"></script>
     <script src="/assets/js/bar.js"></script>
     <script src="/assets/js/app.js"></script>
