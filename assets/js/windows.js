@@ -36,8 +36,8 @@ const windowManager = {
         const controls = document.createElement("div");
         controls.className = "controls";
 
-        const closeBtn = document.createElement("button");
-        closeBtn.innerHTML = "X";
+        const closeBtn = document.createElement("mdui-icon");
+        closeBtn.setAttribute("name", "close")
 
         const contentElement = document.createElement("div");
         contentElement.className = "content";

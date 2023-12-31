@@ -1,6 +1,6 @@
 $(function () {
   load();
-})
+});
 
 var page = 1;
 
@@ -31,18 +31,9 @@ function fetchData(page, mode = 'log', pageSize = 20) {
     displayData(response.data, mode, page);
   })
 }
-/*
-case 'acclog':
-  $('body').append(`<mdui-segmented-button-group full-width style="position:fixed;bottom:20px;right:20px;">
-  <mdui-segmented-button onclick="previous('access')">Previous</mdui-segmented-button>
-  <mdui-segmented-button id="page">N/A</mdui-segmented-button>
-  <mdui-segmented-button onclick="next('access')">Next</mdui-segmented-button>
-</mdui-segmented-button-group>`);
-  fetchData(page, 'access');
-  break;*/
 
 function displayData(data, mode, page) {
-  var list = `<mdui-segmented-button-group full-width style="bottom:20px;right:20px;">
+  var list = `<mdui-segmented-button-group full-width>
   <mdui-segmented-button onclick="previous('${mode}')">Previous</mdui-segmented-button>
   <mdui-segmented-button id="page">${page}</mdui-segmented-button>
   <mdui-segmented-button onclick="next('${mode}')">Next</mdui-segmented-button>
