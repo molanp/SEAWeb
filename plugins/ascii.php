@@ -1,5 +1,6 @@
 <?php
-class ascii {
+class ascii
+{
     public function getInfo()
     {
         return [
@@ -8,16 +9,20 @@ class ascii {
             'profile' => '上传图片生成字符画',
             'method' => 'PUT',
             'author' => 'molanp',
-            'request_par' => re_par(),
+            'request_par' => re_par(["file" => "如果是表单请将文件置于此项name下"]),
             'return_par' => re_par()
         ];
+    }
+    private function isImage($data)
+    {
+        $image = @imagecreatefromstring($data);
+        return ($image !== false);
     }
     public function run()
     {
         $input = file_get_contents('php://input');
-        $fileType = finfo_buffer(finfo_open(), $input, FILEINFO_MIME_TYPE);
         $fileSize = strlen($input);
-        if ($fileType === 'image/jpeg' && $fileSize < 5000000) {
+        if ($fileSize < 5000000 && $this->isImage($input)) {
             $image =  imagecreatefromstring($input);
             $width = imagesx($image);
             $height = imagesy($image);

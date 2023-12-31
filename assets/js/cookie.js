@@ -19,20 +19,20 @@ const cookie = {
     }
     cookie += `;path=${path}`;
     document.cookie = cookie;
+    return true;
   },
 
-  // 修改Cookie
   modify: function (name, value, expires, path = "/") {
     this.remove(name);
     this.set(name, value, expires, path);
+    return true;
   },
 
-  // 删除Cookie
   remove: function (name) {
     document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;`;
+    return true;
   },
 
-  // 清理Cookies
   clear: function () {
     const cookies = document.cookie.split(";");
     for (let i = 0; i < cookies.length; i++) {
@@ -41,5 +41,6 @@ const cookie = {
       const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
       document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;`;
     }
+    return true;
   }
 };

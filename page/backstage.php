@@ -36,7 +36,7 @@ if (!tokentime($_COOKIE)) {
                 <mdui-button-icon slot="trigger" icon="menu"></mdui-button-icon>
                 <mdui-menu>
                     <mdui-menu-item>
-                        <mdui-icon name="account_circle"></mdui-icon>
+                        <mdui-avatar><?= strtoupper(substr($_COOKIE["user"], 0, 1))?></mdui-avatar>
                         <?= $_COOKIE["user"] ?>
                     </mdui-menu-item>
                     <mdui-menu-item href="javascript:resetpassword()">

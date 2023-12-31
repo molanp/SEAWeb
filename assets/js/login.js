@@ -37,14 +37,3 @@ function sendData(url, data, callback) {
         message(error);
     }
 }
-
-function message(data, title = "") {
-    mdui.dialog({
-        headline: title,
-        body: data,
-        actions: [{
-            text: "确定",
-        }]
-    });
-}
-

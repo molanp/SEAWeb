@@ -31,6 +31,7 @@ req_log();
     <link rel="Shortcut Icon" href="/favicon.ico">
     <link rel="bookmark" href="/favicon.ico" type="image/x-icon" />
     <link href="https://registry.npmmirror.com/mdui/2.0.3/files/mdui.css" rel="stylesheet">
+    <script src="https://registry.npmmirror.com/html2canvas/1.4.1/files/dist/html2canvas.min.js"></script>
     <script src="/assets/js/marked.min.js"></script>
     <script src="/assets/js/jquery-3.7.1.min.js"></script>
     <script src="/assets/js/bar.js"></script>
@@ -129,7 +130,8 @@ req_log();
                 </table>
             </div>
             <a href="javascript:$('#responseTEXT').html('')">清空输出</a>
-            <pre class="language-json" id="responseTEXT" style="text-align: left;"></pre>
+            <a href="javascript:previewData()">预览DATA</a>
+            <pre class="language-json" id="responseTEXT" style="text-align: left;max-height: 50vh;overflow: auto;"></pre>
             <mdui-button onclick="sendRequest()">发送请求</mdui-button>
     </div>
     </mdui-card>

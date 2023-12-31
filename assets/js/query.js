@@ -1,5 +1,28 @@
 let paramIndex = 0;
 
+$(document).ready(function () {
+  $("#methodSelect").change(function () {
+    if ($(this).val() === "PUT") {
+      $("#paramsTable").html($("<input>").attr({
+        "type": "file",
+        "name": "file",
+        "id": "file",
+        "placeholder": "选择文件"
+      }));
+    } else {
+      $("#paramsTable").html(`<thead>
+    <tr>
+        <th>参数名</th>
+        <th>值</th>
+        <th><a href="javascript:addParamRow()">添加参数</a></th>
+    </tr>
+</thead>
+<tbody>
+</tbody>`);
+    }
+  });
+});
+
 function addParamRow() {
   const newRow = $("<tr></tr>");
 
@@ -24,7 +47,7 @@ function addParamRow() {
   const actionCell = $("<td></td>");
   const deleteButton = $("<mdui-button-icon></mdui-button-icon>").attr({
     "style": "color: red"
-  }).attr("icon","delete").click(function () {
+  }).attr("icon", "delete").click(function () {
     newRow.remove();
   });
   actionCell.append(deleteButton);
@@ -38,42 +61,68 @@ function addParamRow() {
 function sendRequest() {
   const methodSelect = $("#methodSelect");
 
-  const params = {};
-  $("#paramsTable tr").each(function (index, row) {
-    const paramName = $(row).find("td:eq(0) input").val();
-    const paramValue = $(row).find("td:eq(1) input").val();
-    if (paramName && paramValue) {
-      params[paramName] = paramValue;
-    }
-  });
-
-  const currentPath = window.location.pathname.match(/\/docs(.*)\//)[1];
-  const url = `${currentPath.startsWith("/api") ? "" : "/api"}${currentPath}`; // 拼接 URL
-
-  $.ajax({
-    url: url,
-    method: methodSelect.val(),
-    data: params,
-    success: function (xhr) {
-      var contentType = xhr.getResponseHeader("content-type");
-      if (contentType.startsWith("image/")) {
-        var container = $("#responseTEXT");
-        container.html("暂不支持查看图片");
-      } else {
-        renderResponseCard(xhr);
+  if (methodSelect.val() !== "PUT") {
+    const params = {};
+    $("#paramsTable tr").each(function (index, row) {
+      const paramName = $(row).find("td:eq(0) input").val();
+      const paramValue = $(row).find("td:eq(1) input").val();
+      if (paramName && paramValue) {
+        params[paramName] = paramValue;
       }
-    },
-    error: function (xhr) {
-      const response = xhr.responseText || "请求失败";
-      try {
-        const jsonResponse = JSON.parse(response);
-        renderResponseCard(jsonResponse);
-      } catch (e) {
-        renderResponseCard(response);
+    });
+
+    $.ajax({
+      url: `${window.location.pathname.match(/\/docs(.*)\//)[1].startsWith("/api") ? "" : "/api"}${window.location.pathname.match(/\/docs(.*)\//)[1]}`,
+      method: methodSelect.val(),
+      data: params,
+      success: function (data, status, jqxhr) {
+        var contentType = jqxhr.getResponseHeader("content-type");
+        if (contentType.startsWith("image/")) {
+          var container = $("#responseTEXT");
+          container.html("暂不支持查看图片");
+        } else {
+          renderResponseCard(data);
+        }
+      },
+      error: function (xhr) {
+        const response = xhr.responseText || "请求失败";
+        try {
+          const jsonResponse = JSON.parse(response);
+          renderResponseCard(jsonResponse);
+        } catch (e) {
+          renderResponseCard(response);
+        }
       }
-    }
-  });
+    });
+  } else {
+    $.ajax({
+      url: `${window.location.pathname.match(/\/docs(.*)\//)[1].startsWith("/api") ? "" : "/api"}${window.location.pathname.match(/\/docs(.*)\//)[1]}`,
+      method: "PUT",
+      data: $('#file')[0].files[0],
+      processData: false,
+      contentType: false,
+      success: function (data, status, jqxhr) {
+        var contentType = jqxhr.getResponseHeader("content-type");
+        if (contentType.startsWith("image/")) {
+          var container = $("#responseTEXT");
+          container.html("暂不支持查看图片");
+        } else {
+          renderResponseCard(data);
+        }
+      },
+      error: function (xhr) {
+        const response = xhr.responseText || "请求失败";
+        try {
+          const jsonResponse = JSON.parse(response);
+          renderResponseCard(jsonResponse);
+        } catch (e) {
+          renderResponseCard(response);
+        }
+      }
+    });
+  }
 }
+
 
 function syntaxHighlight(json) {
   json = json.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -96,4 +145,20 @@ function syntaxHighlight(json) {
 
 function renderResponseCard(response) {
   $("#responseTEXT").html(syntaxHighlight(JSON.stringify(response, undefined, 4)));
+}
+
+function previewData() {
+  var data = JSON.parse($('#responseTEXT').text() || '{"data":"这里空空如也，和你的头脑一样"}').data;
+  var preElement = document.createElement('pre');
+  preElement.textContent = data;
+  document.body.appendChild(preElement);
+  preElement.style.whiteSpace = 'pre-wrap';
+  preElement.style.display = 'inline-block';
+  html2canvas(preElement, {
+    backgroundColor: '#f6f8fa'
+  }).then(function (canvas) {
+    var imgData = canvas.toDataURL('image/png');
+    preElement.remove();
+    message('<img src="' + imgData + '" style="clear:both;display:block;margin:auto;">');
+  });
 }
