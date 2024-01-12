@@ -67,7 +67,9 @@ class logger {
      */
     private function writeToDatabase($time, $level, $content) {
         global $DATABASE;
-        $stmt = $DATABASE->prepare("INSERT INTO log (time, level, content) VALUES (?, ?, ?)");
-        $stmt->execute([$time, $level, $content]);
+        try {
+            $stmt = $DATABASE->prepare("INSERT INTO log (time, level, content) VALUES (?, ?, ?)");
+            $stmt->execute([$time, $level, $content]);
+        } catch(ERROR $e) {}
     }
 }

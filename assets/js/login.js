@@ -3,7 +3,7 @@ function login() {
     var password = $("#password").val();
 
     if (username == "" || password == "") {
-        message("用户名或密码不能为空");
+        popups.tips.add("用户名或密码不能为空", "error_outline");
         return;
     }
     else {
@@ -12,17 +12,9 @@ function login() {
             "password": password
         };
         sendData("/v2/auth/login", send, function (data) {
-            try {
-                if (data.data.login == "success") {
-                    cookie.set("user", data.data.user, 30);
-                    cookie.set("token", data.data.token, 30);
-                    location.reload();
-                } else {
-                    message(data.data);
-                }
-            } catch {
-                message(data);
-            }
+            cookie.set("user", data.data.user, 60);
+            cookie.set("token", data.data.token, 60);
+            location.reload();
         })
     }
 }
@@ -34,6 +26,6 @@ function sendData(url, data, callback) {
             callback(data, status);
         });
     } catch (error) {
-        message(error);
+        popups.dialog(error);
     }
 }

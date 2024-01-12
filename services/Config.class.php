@@ -1,6 +1,5 @@
 <?php
 include_once("connect.php");
-
 class Data
 {
     /**
@@ -49,7 +48,8 @@ class Data
         }
     }
 
-    public function delete($belong, $items=[]) {
+    public function delete($belong, $items = [])
+    {
         global $DATABASE;
 
         if (isset($items)) {

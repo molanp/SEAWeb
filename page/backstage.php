@@ -21,7 +21,6 @@ if (!tokentime($_COOKIE)) {
     <script src="/assets/js/cookie.js"></script>
     <script src="/assets/js/theme.js"></script>
     <script src="/assets/js/backstage.js"></script>
-    <script src="/assets/js/windows.js"></script>
     <script src="/assets/js/chart-4.4.0.min.js"></script>
     <title>后台管理</title>
 </head>
@@ -57,8 +56,8 @@ if (!tokentime($_COOKIE)) {
             <mdui-navigation-rail-item value="web" icon="edit_note" href="/sw-ad/web">修改信息</mdui-navigation-rail-item>
             <mdui-navigation-rail-item value="log" icon="description" href="/sw-ad/log">日志分析</mdui-navigation-rail-item>
         </mdui-navigation-rail>
-        <mdui-layout-main>
-            <div id="data"  style="height: calc(100vh - 10px);overflow: auto;">
+        <mdui-layout-main style="height: calc(100vh - 1px);overflow: auto;">
+            <div id="data">
                 <mdui-circular-progress></mdui-circular-progress>
             </div>
         </mdui-layout-main>

@@ -60,30 +60,8 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
 
             $pattern = "~(" . implode("|", $paths) . ")[/\\\\](.*)~";
             if (apineedupdate()) {
-                $time = time();
                 $conname = [];
                 $pluginFiles = str_replace(["/", "\\"], [DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR], find_files(PLUGIN_FOLDERS, ".php"));
-                try {
-                    $threshold = time() - (60 * 30); // 计算30分钟前的时间戳
-                    $query_check = "SELECT COUNT(*) FROM api WHERE time < :threshold";
-                    $stmt_check = $DATABASE->prepare($query_check);
-                    $stmt_check->bindParam(":threshold", $threshold, PDO::PARAM_INT);
-                    $stmt_check->execute();
-                    $count = $stmt_check->fetchColumn();
-
-                    if ($count > 0) {
-                        $query_delete = "DELETE FROM api WHERE time < :threshold";
-                        $stmt_delete = $DATABASE->prepare($query_delete);
-                        $stmt_delete->bindParam(":threshold", $threshold, PDO::PARAM_INT);
-                        $stmt_delete->execute();
-                        $rowCount = $stmt_delete->rowCount();
-                        (new logger())->info("已删除 $rowCount 条过期API记录。");
-                    } else {
-                        //(new logger())->info("没有过期API记录需要删除。");
-                    }
-                } catch (PDOException $e) {
-                    (new logger())->error("删除过期API数据时出错: " . $e->getMessage());
-                }
                 if (count($pluginFiles) > 0) {
                     foreach ($pluginFiles as $pluginFilePath) {
                         include_once $_SERVER["DOCUMENT_ROOT"] . DIRECTORY_SEPARATOR . $pluginFilePath;
@@ -128,7 +106,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
                                     "name" => $info["name"],
                                     "version" => $info["version"] ?? "1.0",
                                     "author" => $info["author"] ?? "Unknown",
-                                    "method" => $info["method"] ?? "GET",
+                                    "method" => $info["method"] ?? "ALL",
                                     "profile" => $info["profile"],
                                     "request" => $info["request_par"],
                                     "response" => $info["return_par"],
@@ -137,7 +115,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
                                     "file_path" => $absolutePath,
                                     "type" => $type,
                                     "status" => (string) $status,
-                                    "time" => $time
+                                    "time" => time()
                                 ];
                                 UpdateOrCreate($DATABASE, "api", $data);
                             } else {
@@ -148,7 +126,27 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
                         }
                     }
                 }
-                break;
+                try {
+                    $threshold = time() - (60 * 30);
+                    $query_check = "SELECT COUNT(*) FROM api WHERE time < :threshold";
+                    $stmt_check = $DATABASE->prepare($query_check);
+                    $stmt_check->bindParam(":threshold", $threshold, PDO::PARAM_INT);
+                    $stmt_check->execute();
+                    $count = $stmt_check->fetchColumn();
+
+                    if ($count > 0) {
+                        $query_delete = "DELETE FROM api WHERE time < :threshold";
+                        $stmt_delete = $DATABASE->prepare($query_delete);
+                        $stmt_delete->bindParam(":threshold", $threshold, PDO::PARAM_INT);
+                        $stmt_delete->execute();
+                        $rowCount = $stmt_delete->rowCount();
+                        (new logger())->info("已删除 $rowCount 条过期API记录。");
+                    } else {
+                        //(new logger())->info("没有过期API记录需要删除。");
+                    }
+                } catch (PDOException $e) {
+                    (new logger())->error("删除过期API数据时出错: " . $e->getMessage());
+                }
             };
             $count = [];
             $query = "SELECT url, COUNT(*) AS count FROM access_log GROUP BY url";

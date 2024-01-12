@@ -43,15 +43,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $stmt->bindParam(':username', $usr);
                     $stmt->execute();
                     _return_([
-                        "login"=>"success",
                         "user"=>$data["username"],
                         "token"=> $hashedToken
                     ]);
                 } else {
-                    _return_([
-                        "login"=>"failed",
-                        "msg"=>"账号或密码错误"
-                    ]);
+                    _return_("账号或密码错误", 400);
                 }
             } else {
                 code(400);
