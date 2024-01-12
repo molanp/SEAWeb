@@ -22,18 +22,18 @@ function next(mode = 'log') {
   fetchData(page, mode);
 }
 
-function fetchData(page, mode = 'log', pageSize = 20) {
+function fetchData(page, mode = 'log', element="", pageSize = 20) {
   sendData('/v2/auth/log', {
     mode: mode,
     page: page,
     pageSize: pageSize
   }, function (response) {
-    displayData(response.data, mode, page);
+    displayData(response.data, element, page, mode);
   })
 }
 
-function displayData(data, mode, page) {
-  var list = `<mdui-segmented-button-group full-width>
+function displayData(data, element, page, mode) {
+  var list = `<mdui-segmented-button-group style="cursor: pointer;position: absolute;top: 90vh;right: 3vh;">
   <mdui-segmented-button onclick="previous('${mode}')">Previous</mdui-segmented-button>
   <mdui-segmented-button id="page">${page}</mdui-segmented-button>
   <mdui-segmented-button onclick="next('${mode}')">Next</mdui-segmented-button>
@@ -59,7 +59,7 @@ function displayData(data, mode, page) {
       </tbody>
     </table>
   </div>`;
-  $(`#${mode}`).html(list);
+  element.html(list);
 }
 
 function load() {
@@ -74,8 +74,8 @@ function load() {
         <mdui-card variant="outlined">
             功能区
             <br>
-            <mdui-button onclick="sendData('/v2/auth/cache',{},function (responseData) {message(responseData.data);});">清理缓存</mdui-button>
-            <mdui-button onclick="sendData('/v2/info',{for: 'update'},function (responseData) {message(responseData.data);});">更新设置列表</mdui-button>
+            <mdui-button onclick="sendData('/v2/auth/cache',{},function (responseData) {popups.dialog(responseData.data);});">清理缓存</mdui-button>
+            <mdui-button onclick="sendData('/v2/info',{for: 'update'},function (responseData) {popups.dialog(responseData.data);});">更新设置列表</mdui-button>
         </mdui-card>
         <mdui-card variant="outlined">
             本地SEAWeb版本: <span id="version">
@@ -92,6 +92,8 @@ function load() {
                 <mdui-circular-progress></mdui-circular-progress>
             </mdui-list>
         </mdui-card>
+      </div>
+      <div class="grid">
         <mdui-card variant="outlined" style="overflow-x: auto;white-space: nowrap;">
             调用统计
             <canvas id="api-trend-chart">
@@ -136,19 +138,11 @@ function load() {
       );
       break;
     case 'log':
-      $("#data").html(`<div class="grid">
-          <mdui-card variant="outlined" href="javascript:windowManager.openWindow('系统日志', '', 'log');fetchData(page, 'log');">
-              <h2>站务日志查看</h2>
-              <p>点击查询系统日志</p>
-          </mdui-card>
-          <mdui-card variant="outlined" href="javascript:windowManager.openWindow('访问日志', '', 'access');fetchData(page, 'access');">
-          <h2>请求日志查看</h2>
-          <p>点击查询用户访问日志</p>
-      </mdui-card>
-      </div>`);
+      fetchData(page, 'log', $("#data"))
       break;
     case 'api':
       $('body').append(`<mdui-fab icon="save" onclick="save()" style="position:fixed;bottom:20px;right:20px;"></mdui-fab>`);
+      $.get('/v2/info');
       $.get(
         url = '/v2/info',
         data = { "for": "status" },
@@ -236,7 +230,6 @@ function save() {
   if (url.indexOf("/sw-ad/") === 0) {
     var url = url.replace("/sw-ad/", "");
   }
-  console.log(url)
   switch (url) {
     case "settings":
       var setting_list = [];
@@ -283,14 +276,14 @@ function save() {
       i = 1;
       break;
     default:
-      message("无需操作");
+      popups.dialog("无需操作");
   }
   if (i == 1) {
     sendData("/v2/edit", send, function (data) {
       if (data.status == 200) {
-        message(data.data);
+        popups.dialog(data.data);
       } else {
-        message(data.data);
+        popups.dialog(data.data);
       }
     });
   }
@@ -330,7 +323,7 @@ function resetpassword() {
         var newPassword = $('#new').val();
         var newPasswordAgain = $('#again').val();
         if (newPassword === '' || newPasswordAgain === '') {
-          message('密码不能为空');
+          popups.dialog('密码不能为空');
           return;
         }
 
@@ -340,7 +333,6 @@ function resetpassword() {
           'new': newPassword,
           'again': newPasswordAgain
         }, function (data) {
-          if (data.status === 200) {
             mdui.dialog({
               body: data.data,
               actions: [{
@@ -350,9 +342,6 @@ function resetpassword() {
                 }
               }]
             });
-          } else {
-            message(data.data);
-          }
         });
       }
     }]
@@ -417,12 +406,11 @@ function ShowTrendChart(data) {
       }]
     },
     options: {
-      responsive: false
     }
   });
 }
 
 function preview(id) {
   content = marked.parse($("#" + id).val());
-  message(content, "预览内容");
+  popups.dialog(content, "预览内容");
 }

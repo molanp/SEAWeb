@@ -24,17 +24,9 @@ $(function () {
         }
     )
         .done(function (data) {
-            if (data.data.length != 0) {
-                $("#app_api").html("");
-                api(data.data);
-                $("#lazyload").html("<mdui-button id='2' onclick='lazyload(this)'>继续加载</mdui-button>")
-            } else {
-                mdui.snackbar({
-                    message: "运气不佳，加载失败了呢",
-                    placement: "top",
-                    closeable: true
-                })
-            }
+            $("#app_api").html("");
+            api(data.data);
+            $("#lazyload").html("<mdui-button id='2' onclick='lazyload(this)'>继续加载</mdui-button>")
         });
 })
 

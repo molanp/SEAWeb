@@ -221,8 +221,8 @@ function RequestLimit($limit)
     $url = addSlashIfNeeded(parse_url($_SERVER['REQUEST_URI'])["path"]) ?? "Unknown";
     $stmt = $DATABASE->prepare("SELECT COUNT(*) AS count FROM access_log WHERE ip = :ip AND time >= :start_time AND time <= :end_time AND url = :url;");
     $stmt->bindParam(':ip', $ip, PDO::PARAM_STR);
-    $stmt->bindParam(':start_time', date('Y-m-d H:i:s', $startTime), PDO::PARAM_INT);
-    $stmt->bindParam(':end_time', date('Y-m-d H:i:s', $currentTime), PDO::PARAM_INT);
+    $stmt->bindValue(':start_time', date('Y-m-d H:i:s', $startTime), PDO::PARAM_INT);
+    $stmt->bindValue(':end_time', date('Y-m-d H:i:s', $currentTime), PDO::PARAM_INT);
     $stmt->bindParam(':url', $url);
     $stmt->execute();
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -248,7 +248,7 @@ function req_log()
     $referer = $_SERVER["HTTP_REFERER"] ?? "Unknown";
     $param = json($_REQUEST);
     $stmt = $DATABASE->prepare("INSERT INTO access_log (time, ip, url, referer, param, method, agent) VALUES (?, ?, ?, ?, ?, ?, ?)");
-    $stmt->bindParam(1, date('Y-m-d H:i:s'));
+    $stmt->bindValue(1, date('Y-m-d H:i:s'));
     $stmt->bindParam(2, $ip);
     $stmt->bindParam(3, $url);
     $stmt->bindParam(4, $referer);

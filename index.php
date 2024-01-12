@@ -54,7 +54,7 @@ $web = $web->get("web");
     </noscript>
     <div id="app_api" class="grid">
         <br>
-            <mdui-circular-progress ></mdui-circular-progress>
+        <mdui-circular-progress></mdui-circular-progress>
     </div>
     <div id="lazyload" class="grid"></div>
 

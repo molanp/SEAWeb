@@ -1,4 +1,5 @@
 <?php
+
 /**
  * 自定义错误处理函数
  *
@@ -8,26 +9,28 @@
  * @param int $errline 发生错误的行号
  * @return void
  */
-function watchdog($errno,$errstr=NULL, $errfile=NULL, $errline=NULL) {
+function watchdog($errno, $errstr = NULL, $errfile = NULL, $errline = NULL)
+{
+    if (error_reporting() === 0) {
+        return;
+    }
     header("HTTP/1.1 500");
-    if (isset($errfile,$errline)) {
+    if (isset($errfile, $errline)) {
         $message = "[$errno]: $errstr in $errfile line $errline.";
-    } elseif(isset($errstr)) {
+    } elseif (isset($errstr)) {
         $message = "[$errno]: $errstr";
     } else {
         $message = "$errno";
     };
     include_once("logger.php");
-    try {
-        (new logger())->error($message);
-    } catch(Exception $e) {};
+    (new logger())->error($message);
     header("Access-Control-Allow-Origin: *");
     header("Access-Control-Allow-Methods: *");
     header("Access-Control-Allow-Headers: *");
     header("Access-Control-Expose-Headers: *");
     header("Access-Control-Max-Age: 3600");
     header("Content-type:text/json;charset=utf-8");
-    die(json_encode(["status"=>500,"data"=>$message,"time"=>time()],JSON_UNESCAPED_UNICODE|JSON_PRETTY_PRINT));
+    die(json_encode(["status" => 500, "data" => $message, "time" => time()], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
 }
-//set_error_handler("watchdog");
+set_error_handler("watchdog");
 set_exception_handler("watchdog");

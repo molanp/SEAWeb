@@ -31,13 +31,13 @@ req_log();
     <link rel="Shortcut Icon" href="/favicon.ico">
     <link rel="bookmark" href="/favicon.ico" type="image/x-icon" />
     <link href="https://registry.npmmirror.com/mdui/2.0.3/files/mdui.css" rel="stylesheet">
-    <script src="https://registry.npmmirror.com/html2canvas/1.4.1/files/dist/html2canvas.min.js"></script>
+    <script src="https://registry.npmmirror.com/interactjs/1.10.26/files/dist/interact.min.js"></script>
+    <script src="https://registry.npmmirror.com/dom-to-image/2.6.0/files/src/dom-to-image.js"></script>
     <script src="/assets/js/marked.min.js"></script>
     <script src="/assets/js/jquery-3.7.1.min.js"></script>
     <script src="/assets/js/bar.js"></script>
     <script src="/assets/js/cookie.js"></script>
     <script src="/assets/js/api.js"></script>
-    <script src="/assets/js/query.js"></script>
     <title><?= $data["name"] . " - " . $web["index_title"] ?></title>
 </head>
 
@@ -130,7 +130,7 @@ req_log();
                 </table>
             </div>
             <a href="javascript:$('#responseTEXT').html('')">清空输出</a>
-            <a href="javascript:previewData()">预览DATA</a>
+            <a href="javascript:preview()">预览内容</a>
             <pre class="language-json" id="responseTEXT" style="text-align: left;max-height: 50vh;overflow: auto;"></pre>
             <mdui-button onclick="sendRequest()">发送请求</mdui-button>
     </div>
