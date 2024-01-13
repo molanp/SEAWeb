@@ -3,7 +3,7 @@
     ErrorDocument 404 /404.php
     RewriteEngine On
     RewriteBase /
-    RewriteCond %{REQUEST_URI} \.(htaccess)$
+    RewriteCond %{REQUEST_URI} \.(htaccess|json)$
     RewriteRule ^ - [F]
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d

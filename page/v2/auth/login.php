@@ -9,7 +9,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $type = $_POST["type"] ?? NULL;
     switch($type) {
         case "pass":
-            $token = $data["token"];
             $pwd = hash("sha256", $data["new"]);
             if (tokentime($token)) {
                 if ($pwd !== hash("sha256",$data["again"])) {
