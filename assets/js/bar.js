@@ -30,15 +30,7 @@ $(function () {
     <mdui-button-icon href="javascript:output_search()" icon="search"></mdui-button-icon>
     <mdui-button-icon href="/rank.html" icon="equalizer"></mdui-button-icon>
     <mdui-button-icon mdui-tooltip="{content: "公告", position: "bottom"}" onclick="notice()" icon="announcement--outlined"></mdui-button-icon>
-    <mdui-dropdown>
-        <mdui-button-icon slot="trigger" icon="light_mode--outlined" id="theme"></mdui-button-icon>
-        <mdui-menu selects="single" id="theme_select" value="auto">
-            <mdui-menu-item href="javascript:theme_light()" value="light">亮色模式</mdui-menu-item>
-            <mdui-menu-item href="javascript:theme_dark()" value="dark">暗色模式</mdui-menu-item>
-            <mdui-divider></mdui-divider>
-            <mdui-menu-item href="javascript:theme_auto()" value="auto">跟随系统</mdui-menu-item>
-        </mdui-menu>
-    </mdui-dropdown>
+    <mdui-button-icon href="javascript:theme_menu()" icon="color_lens--outlined"></mdui-button-icon>
     <mdui-dropdown>
         <mdui-button-icon slot="trigger" icon="more_vert"></mdui-button-icon>
         <mdui-menu>

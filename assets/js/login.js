@@ -12,8 +12,8 @@ function login() {
             "password": password
         };
         sendData("/v2/auth/login", send, function (data) {
-            cookie.set("user", data.data.user, 60);
-            cookie.set("token", data.data.token, 60);
+            cookie.set("user", data.data.user, 60*60);
+            cookie.set("token", data.data.token, 60*60);
             location.reload();
         })
     }

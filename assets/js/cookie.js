@@ -10,13 +10,9 @@ const cookie = {
     return null;
   },
 
-  set: function (name, value, expires = 0, path = "/") {
+  set: function (name, value, max_age = 0, path = "/") {
     let cookie = `${name}=${encodeURIComponent(value)}`;
-    if (expires) {
-      const date = new Date();
-      date.setTime(date.getTime() + expires * 60 * 1000);
-      cookie += `;expires=${date.toUTCString()}`;
-    }
+    //cookie += `;max-age=${max_age}`;
     cookie += `;path=${path}`;
     document.cookie = cookie;
     return true;

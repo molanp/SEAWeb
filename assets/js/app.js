@@ -61,8 +61,8 @@ function api(data) {
             <mdui-card variant="outlined" target="_blank" href="docs${data[type][name].path}">
                 <h3>${name}&nbsp;${status}</h3>
                 <small>
-                <i class="material-icons" style="font-size:12px;">equalizer</i>累计调用：${data[type][name].count}次|
-                <i class="material-icons" style="font-size:12px;">folder</i>分类：${type}
+                <mdui-icon name="equalizer" style="font-size: 12px"></mdui-icon>累计调用：${data[type][name].count}次|
+                <mdui-icon name="folder" style="font-size: 12px"></mdui-icon>分类：${type}
                 </small>
                 <br>
                 <div id="line-block">${marked.parse(data[type][name].api_profile)}</div>
