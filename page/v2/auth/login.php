@@ -10,13 +10,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     switch($type) {
         case "pass":
             $pwd = hash("sha256", $data["new"]);
-            if (tokentime($token)) {
+            if (tokentime($_POST)) {
                 if ($pwd !== hash("sha256",$data["again"])) {
                     _return_("两次输入密码不同",406);
                 } else {
-                    $stmt = $DATABASE->prepare("UPDATE users SET password = :password WHERE token = :token");
+                    $stmt = $DATABASE->prepare("UPDATE users SET password = :password WHERE token = :token or apikey = :token");
                     $stmt->bindParam(':password', $pwd);
-                    $stmt->bindParam(':token', $token);
+                    $stmt->bindValue(':token', $_POST["token"]??$_POST["apikey"]);
                     $stmt->execute();
                     code(200);
                 }

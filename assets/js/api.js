@@ -27,6 +27,7 @@ $(function() {
 		.done(function(data) {
 			web(data.data);
 		})
+    $('#code').html(span_code('javascript'))
 })
 
 function web(data) {
@@ -344,4 +345,82 @@ function getData(data) {
 			preElement.remove();
 			openLightbox(dataUrl);
 		})
+}
+
+
+function span_code(language) {
+	const url = $("#urlInput")
+		.val();
+	const method = $("#methodSelect")
+		.val();
+	if (method !== "PUT") {
+		var params = {};
+		$("#paramsTable tr")
+			.each(function(index, row) {
+				const paramName = $(row)
+					.find("td:eq(0) input")
+					.val();
+				const paramValue = $(row)
+					.find("td:eq(1) input")
+					.val();
+				if (paramName && paramValue) {
+					params[paramName] = paramValue;
+				}
+			});
+
+	} else {
+		return "No data."
+	}
+	let code = "";
+
+	switch (language.toLowerCase()) {
+		case "python":
+			const paramString = JSON.stringify(params);
+			code = `import requests\n\nurl = ${url}\nparams = ${paramString}\n\nresponse = requests.${method.toLowerCase()}(url, params=params)\n`;
+			code += `if response.headers['Content-Type'] == 'application/json':\n`;
+			code += `    data = response.json()\n`;
+			code += `else:\n`;
+			code += `    data = response.text\n`;
+			code += `print(data)\n`;
+			break;
+
+		case "javascript":
+			code = `const url = "${url}";\nconst params = ${JSON.stringify(params)};\n\nfetch(url, {\n  method: "${method}",\n  body: params,\n})\n`;
+			code += `  .then(response => {\n`;
+			code += `    if (response.headers.get('content-type') === 'application/json')\n`;
+			code += `      return response.json();\n`;
+			code += `    else\n`;
+			code += `      return response.text();\n`;
+			code += `  })\n`;
+			code += `  .then(data => console.log(data))\n`;
+			code += `  .catch(error => console.error("请求失败"));\n`;
+			break;
+
+		case "php":
+			const param = Object.keys(params)
+                .map((key) => `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`)
+                .join("&");
+            code = `<?php\n\n$url = "${url}";\n$params="${param}";\n$response = file_get_contents($url . "?" . $params);\nif ($response === false) {\n  echo "请求失败";\n} else {\n  $contentType = $http_response_header[0];\n  if (strpos($contentType, 'application/json') !== false) {\n    $data = json_decode($response);\n  } else {\n    $data = $response;\n  }\n  print_r($data);\n}\n`;
+            break;
+
+		case "java":
+            const paramStringJava = Object.keys(params)
+                .map((key) => `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`)
+                .join("&");
+            code = `import java.io.BufferedReader;\nimport java.io.InputStreamReader;\nimport java.net.HttpURLConnection;\nimport java.net.URL;\n\npublic class HttpRequestExample {\n\n  public static void main(String[] args) throws Exception {\n    String url = "${url}";\n    String params = "${paramStringJava}";\n\n    URL obj = new URL(url + "?" + params);\n    HttpURLConnection con = (HttpURLConnection) obj.openConnection();\n    con.setRequestMethod("${method}");\n\n    BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));\n    String inputLine;\n    StringBuffer response = new StringBuffer();\n    while ((inputLine = in.readLine()) != null) {\n      response.append(inputLine);\n    }\n    in.close();\n\n    String contentType = con.getHeaderField("Content-Type");\n    if (contentType != null && contentType.contains("application/json")) {\n      String data = response.toString();\n      // parse JSON data\n      System.out.println(data);\n    } else {\n      System.out.println(response.toString());\n    }\n  }\n}`;
+            break;
+
+		case "powershell":
+			const paramStringPs = Object.keys(params)
+				.map((key) => `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`)
+				.join("&");
+			code = `$url = "${url}"\n$params = "${paramStringPs}"\n\n$wc = New-Object System.Net.WebClient\n$response = $wc.DownloadString("$url?$params")\n\n$contentType = $wc.ResponseHeaders["Content-Type"]\nif ($contentType -ne $null -and $contentType.Contains("application/json")) {\n  $data = ConvertFrom-Json $response\n} else {\n  $data = $response\n}\nWrite-Output $data\n`;
+			break;
+
+		default:
+			code = "No data.";
+			break;
+	}
+
+	return code;
 }

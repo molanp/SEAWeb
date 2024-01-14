@@ -1,43 +1,31 @@
 $(function() {
 	mdui.setColorScheme("#39c5bc");
-	if (cookie.get("theme") == 1) theme_dark();
+	theme(cookie.get("theme")??"auto");
 });
-
-window
-	.matchMedia("(prefers-color-scheme: dark)")
-	.addListener(e => (e.matches ? theme_dark() : theme_light()))
-
-function theme_light() {
-	cookie.remove("theme");
-	mdui.setTheme("light");
-	$("#theme_select")
-		.val("light");
-	$("#theme")
-		.attr("icon", "light_mode--outlined");
+	
+function theme_menu (x=cookie) {
+    let value = x.get("theme");
+    let body = `
+    <p>深色模式</p>
+    <mdui-segmented-button-group selects="single" value="${value}">
+    <mdui-segmented-button value="light" onclick="theme('light')">浅色</mdui-segmented-button>
+    <mdui-segmented-button value="auto" onclick="theme('auto')">自动</mdui-segmented-button>
+    <mdui-segmented-button value="dark" onclick="theme('dark')">深色</mdui-segmented-button>
+    </mdui-segmented-button-group>
+    `
+    popups.dialog(body, "主题设置")
 }
 
-function theme_dark() {
-	cookie.set("theme", 1);
-	mdui.setTheme("dark");
-	$("#theme_select")
-		.val("dark");
-	$("#theme")
-		.attr("icon", "dark_mode--outlined");
-}
-
-function theme_auto() {
-	cookie.remove("theme");
-	mdui.setTheme("auto");
-	$("#theme_select")
-		.val("auto");
-	$("#theme")
-		.attr("icon", "light_mode--outlined");
+function theme(theme) {
+  cookie.set("theme", theme);
+  mdui.setTheme(theme);
+  return theme;
 }
 
 $.ajaxSetup({
 	error: function(xhr) {
 		if (xhr.status !== 200) {
-			popups.dialog(xhr.responseJSON ? xhr.responseJSON.data : xhr.status);
+			popups.dialog(xhr.responseJSON ? xhr.responseJSON.data : xhr.status, "HTTP ${xhr.status}");
 		}
 	}
 });
@@ -47,10 +35,10 @@ const popups = {
 		mdui.dialog({
 			headline: title,
 			body: data,
-			closeOnOverlayClick: true,
+			closeOnOverlayClick: false,
 			closeOnEsc: true,
 			actions: [{
-				text: "确定",
+				text: "确定"
 			}]
 		});
 	},
