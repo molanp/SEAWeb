@@ -130,8 +130,76 @@ mdui-chip {
     cursor: zoom-out;
 }
 
-::-webkit-scrollbar-thumb {
-    background-color: #F90;
-    background-image: -webkit-linear-gradient(45deg,rgba(255,255,255,.4) 25%,transparent 25%,transparent 50%,rgba(255,255,255,.4) 50%,rgba(255,255,255,.4) 75%,transparent 75%,transparent);
+::-webkit-scrollbar-track {
+    background-color: transparent;
     border-radius: 2em;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #39c5bc;
+    background-image: -webkit-linear-gradient(45deg, rgba(255, 255, 255, .4) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .4) 50%, rgba(255, 255, 255, .4) 75%, transparent 75%, transparent);
+    border-radius: 2em;
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-corner {
+    background-color: transparent;
+}
+
+.dark-mode-sky,
+.dark-mode-sky:before {
+    content: "";
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 999999999;
+    transition: 2s ease all;
+}
+
+.dark-mode-sky {
+    background: linear-gradient(#feb8b0, #fef9db);
+}
+
+.dark-mode-sky:before {
+    opacity: 0;
+    background: linear-gradient(#4c3f6d, #6c62bb, #93b1ed);
+}
+
+.dark-mode .dark-mode-sky:before {
+    opacity: 1;
+}
+
+.dark-mode-planet {
+    z-index: 1999999999;
+    position: fixed;
+    left: -50%;
+    top: -50%;
+    width: 200%;
+    height: 200%;
+    transform-origin: center bottom;
+    transition: 1s cubic-bezier(.7, 0, 0, 1) all;
+}
+
+.dark-mode-planet:after {
+    position: absolute;
+    left: 35%;
+    top: 40%;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    content: "";
+    background: linear-gradient(#fefefe, #fffbe8);
+
+}
+
+.dark-mode .dark-mode-planet:after {
+    box-shadow: 40px 15px 0 0 #fffbe8;
+    background: none;
+    transition: 1s cubic-bezier(.7, 0, 0, 1) all;
 }

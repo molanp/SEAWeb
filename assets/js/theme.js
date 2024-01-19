@@ -1,11 +1,20 @@
-$(function() {
+$(function () {
 	mdui.setColorScheme("#39c5bc");
-	theme(cookie.get("theme")??"auto");
+	$("body").append(`<div class="dark-mode-sky"><div class="dark-mode-planet"></div></div>`)
+	theme(cookie.get("theme") ?? "auto");
 });
-	
-function theme_menu (x=cookie) {
-    let value = x.get("theme");
-    let body = `
+
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (event) => {
+	if (event.matches) {
+		theme("dark");
+	} else {
+		theme("light");
+	}
+});
+
+function theme_menu(x = cookie) {
+	let value = x.get("theme");
+	let body = `
     <p>深色模式</p>
     <mdui-segmented-button-group selects="single" value="${value}">
     <mdui-segmented-button value="light" onclick="theme('light')">浅色</mdui-segmented-button>
@@ -13,17 +22,30 @@ function theme_menu (x=cookie) {
     <mdui-segmented-button value="dark" onclick="theme('dark')">深色</mdui-segmented-button>
     </mdui-segmented-button-group>
     `
-    popups.dialog(body, "主题设置")
+	popups.dialog(body, "主题设置")
 }
 
 function theme(theme) {
-  cookie.set("theme", theme);
-  mdui.setTheme(theme);
-  return theme;
+	cookie.set("theme", theme);
+	mdui.setTheme(theme);
+	$(".dark-mode-sky").show();
+	setTimeout(function () {
+		$(".dark-mode-sky").fadeOut();
+	}, 1500);
+	if (theme == 'dark') {
+		$("body").addClass("dark-mode");
+		var angle = 360;
+	} else {
+		$("body").removeClass("dark-mode");
+		var angle = 0;
+	}
+	$('.dark-mode-planet').css({ 'transform': 'rotate(' + angle + 'deg)' });
+	$('.dark-mode-planet').data('angle', angle);
+	return theme;
 }
 
 $.ajaxSetup({
-	error: function(xhr) {
+	error: function (xhr) {
 		if (xhr.status !== 200) {
 			popups.dialog(xhr.responseJSON ? xhr.responseJSON.data : xhr.status, "HTTP ${xhr.status}");
 		}
@@ -31,7 +53,7 @@ $.ajaxSetup({
 });
 
 const popups = {
-	dialog: function(data, title = "") {
+	dialog: function (data, title = "") {
 		mdui.dialog({
 			headline: title,
 			body: data,
@@ -43,12 +65,12 @@ const popups = {
 		});
 	},
 	tips: {
-		id: function() {
+		id: function () {
 			return Math.random()
 				.toString(36)
 				.substr(2, 9);
 		},
-		add: function(content, icon = "") {
+		add: function (content, icon = "") {
 			var _Container = $('#tips-container');
 
 			if (!_Container.length) {
@@ -77,7 +99,7 @@ const popups = {
 			var closeBtn = $('<mdui-icon>')
 				.attr("name", 'close')
 				.attr('style', 'cursor: pointer;position: absolute;top: 1px;right: 0;')
-				.click(function() {
+				.click(function () {
 					popups.tips.remove(id);
 				});
 
@@ -85,21 +107,21 @@ const popups = {
 			tips.append(iconEl, tipsContent, closeBtn);
 			_Container.prepend(tips);
 
-			setTimeout(function() {
+			setTimeout(function () {
 				popups.tips.remove(id);
 			}, 3000);
 		},
-		remove: function(id) {
+		remove: function (id) {
 			$('#' + id)
 				.fadeOut('slow');
-			setTimeout(function() {
+			setTimeout(function () {
 				$('#' + id)
 					.remove();
 			}, 1000);
 		}
 	},
 	snaker: {
-		add: function(content) {
+		add: function (content) {
 			var _Container = $('body');
 
 			var snaker = $('<div>')
@@ -111,14 +133,14 @@ const popups = {
 
 			_Container.append(snaker);
 
-			setTimeout(function() {
+			setTimeout(function () {
 				popups.snaker.remove();
 			}, 3000);
 		},
-		remove: function() {
+		remove: function () {
 			$('.snaker')
 				.fadeOut('slow');
-			setTimeout(function() {
+			setTimeout(function () {
 				$('.snaker')
 					.remove();
 			}, 1000);

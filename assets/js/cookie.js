@@ -12,11 +12,14 @@ const cookie = {
 
   set: function (name, value, max_age = 0, path = "/") {
     let cookie = `${name}=${encodeURIComponent(value)}`;
-    //cookie += `;max-age=${max_age}`;
+    if (max_age !== 0) {
+      cookie += `;max-age=${max_age}`;
+    }
     cookie += `;path=${path}`;
     document.cookie = cookie;
     return true;
   },
+  
 
   modify: function (name, value, expires, path = "/") {
     this.remove(name);
