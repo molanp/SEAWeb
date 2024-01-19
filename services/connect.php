@@ -1,5 +1,7 @@
 <?php
-include_once($_SERVER["DOCUMENT_ROOT"] . "/configs/config.php");
+try{
+    include_once($_SERVER["DOCUMENT_ROOT"] . "/configs/config.php");
+} catch(Exception $e) {}
 include_once("watchdog.php");
 include_once("logger.php");
 

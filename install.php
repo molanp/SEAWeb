@@ -16,13 +16,10 @@
 
 <body class="mdui-theme-auto">
     <?php
-    try {
+    if (file_exists("configs/config.php")) {
         include_once($_SERVER["DOCUMENT_ROOT"] . "/services/connect.php");
         $DATABASE->exec("DROP INDEX idx_api ON api");
-        $DATABASE->exec("CREATE INDEX idx_api ON api (name(50))");
-    } catch (Exception $e) {
-    }
-    if (file_exists("configs/config.php")) { ?>
+        $DATABASE->exec("CREATE INDEX idx_api ON api (name(50))");?>
         <div class="grid">
             <div></div>
             <mdui-card>

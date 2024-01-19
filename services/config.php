@@ -27,28 +27,42 @@ class Config
             return $default;
         }
 
-        return $this->config[$this->className][$key][0];
+        return $this->config[$this->className][$key];
     }
 
-    public function set($key, $value, $help="")
+    public function set($key, $value)
     {
-        $this->config[$this->className][$key] = [$value, $help];
+        if (!isset($this->config[$this->className][$key])) {
+            $this->config[$this->className][$key] = $value;
+
+            file_put_contents($this->filePath, json_encode($this->config, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+            return true;
+        }
+        return false;
+    }
+
+    public function update($key, $value)
+    {
+        $this->config[$this->className][$key] = $value;
 
         file_put_contents($this->filePath, json_encode($this->config, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+        return true;
     }
 
-    public function delete($key, $default = "")
+    public function delete($key)
     {
         if (!array_key_exists($this->className, $this->config) || !array_key_exists($key, $this->config[$this->className])) {
-            return $default;
+            return true;
         }
 
         unset($this->config[$this->className][$key]);
 
         file_put_contents($this->filePath, json_encode($this->config, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+        return true;
     }
-    
-    public function getAll() {
+
+    public function getAll()
+    {
         return $this->config;
     }
 }

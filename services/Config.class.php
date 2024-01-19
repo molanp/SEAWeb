@@ -43,7 +43,7 @@ class Data
             $stmt->bindParam(':item', $item);
             $stmt->bindParam(':value', $value);
             $stmt->bindParam(':belong', $belong);
-            $stmt->bindParam(':time', date('Y-m-d H:i:s'));
+            $stmt->bindValue(':time', date('Y-m-d H:i:s'));
             $stmt->execute();
         }
     }
