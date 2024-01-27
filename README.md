@@ -1,3 +1,4 @@
+# 本项目已停止维护，目前正在重构新的项目，现在你可以[下载release](https://github.com/molanp/SEAWeb/releases)
 # SEAWeb
 一个简单的api模板网页
 
